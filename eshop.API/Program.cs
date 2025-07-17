@@ -1,3 +1,4 @@
+using eshop.Application;
 using eshop.Infrastructure;
 using FastEndpoints;
 using Scalar.AspNetCore;
@@ -8,6 +9,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddFastEndpoints();
 
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 

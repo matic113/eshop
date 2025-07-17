@@ -1,6 +1,11 @@
-﻿using System.Text;
+﻿using System.Net;
+using System.Net.Mail;
+using System.Text;
+using eshop.Application.Contracts;
 using eshop.Infrastructure.Authentication;
+using eshop.Infrastructure.Email;
 using eshop.Infrastructure.Persistence;
+using eshop.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -63,6 +68,25 @@ namespace eshop.Infrastructure
             services.AddScoped<JwtService>();
 
             services.AddAuthorization();
+
+            // Email
+
+            services.AddFluentEmail(configuration["Email:FromAddress"]!)
+                .AddSmtpSender(new SmtpClient
+                {
+                    Host = configuration["Email:SmtpHost"]!,
+                    Port = int.Parse(configuration["Email:SmtpPort"]!),
+                    EnableSsl = bool.Parse(configuration["Email:SmtpEnableSsl"]!),
+                    Credentials = new NetworkCredential(
+                        configuration["Email:SmtpUsername"]!,
+                        configuration["Email:SmtpPassword"]!)
+                });
+
+            services.AddScoped<IEmailService, EmailService>();
+
+            // Repositories
+
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         }
     }
 }

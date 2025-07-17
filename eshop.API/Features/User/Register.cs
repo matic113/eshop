@@ -1,4 +1,5 @@
-﻿using eshop.Infrastructure.Persistence;
+﻿using eshop.Application.Contracts;
+using eshop.Infrastructure.Persistence;
 using FastEndpoints;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
@@ -45,11 +46,13 @@ public class Register : Endpoint<RegisterRequest>
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IOtpService _otpService;
 
-    public Register(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+    public Register(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IOtpService otpService)
     {
         _context = context;
         _userManager = userManager;
+        _otpService = otpService;
     }
 
     public override void Configure()
@@ -83,9 +86,13 @@ public class Register : Endpoint<RegisterRequest>
             return;
         }
 
+        var otp = await _otpService.GenerateOtpAsync(user.Id);
+
+        await _otpService.SendOtpEmailAsync(otp, req.Email);
+
         await SendOkAsync(new
         {
-            Message = "User registered successfully."
+            Message = "Registeration Successfull, an otp is sent to your email inbox please use it to verify your email."
         }, ct);
     }
 }

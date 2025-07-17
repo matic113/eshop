@@ -7,15 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Persistence\Repositories\" />
-  </ItemGroup>
-
-  <ItemGroup>
 	<FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="EFCore.NamingConventions" Version="9.0.0" />
+    <PackageReference Include="FluentEmail.Smtp" Version="3.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="9.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.7" />
@@ -30,6 +27,11 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.7" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\eshop.Application\eshop.Application.csproj" />
+    <ProjectReference Include="..\eshop.Domain\eshop.Domain.csproj" />
   </ItemGroup>
 
 </Project>

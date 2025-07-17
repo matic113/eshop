@@ -30,7 +30,7 @@ namespace eshop.Infrastructure.Authentication
             {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            new Claim(JwtRegisteredClaimNames.Email, user.Email!),
             new Claim(JwtRegisteredClaimNames.Name, user.ToString())
         };
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using eshop.Domain.Entities;
 
 namespace eshop.Infrastructure.Persistence
 {
@@ -17,6 +18,6 @@ namespace eshop.Infrastructure.Persistence
         }
 
         // Identity Tables are added by base class IdentityDbContext
-
+        public DbSet<VerificationToken> VerificationTokens { get; set; } = null!;
     }
 }
