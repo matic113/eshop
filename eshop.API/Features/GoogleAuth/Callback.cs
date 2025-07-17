@@ -1,0 +1,112 @@
+﻿using System.Security.Claims;
+using Auth.API.Extensions;
+using eshop.Infrastructure.Authentication;
+using eshop.Infrastructure.Persistence;
+using FastEndpoints;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Identity;
+
+namespace Auth.API.Features.Google
+{
+    public record CallbackRequest(string returnUrl);
+    public record LoginResponse(string AccessToken, DateTime ExpiresAtUtc, string RefreshToken);
+    public class Callback : Endpoint<CallbackRequest>
+    {
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly JwtService _jwtService;
+
+        public Callback(UserManager<ApplicationUser> userManager, JwtService jwtService)
+        {
+            _userManager = userManager;
+            _jwtService = jwtService;
+        }
+        public override void Configure()
+        {
+            Get("/api/auth/google/callback");
+            AllowAnonymous();
+            Description(x => x.WithName("GoogleLoginCallback"));
+        }
+        public override async Task HandleAsync(CallbackRequest req, CancellationToken ct)
+        {
+            var authResult = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+
+            if (!authResult.Succeeded)
+            {
+                await SendUnauthorizedAsync(cancellation: ct);
+                return;
+            }
+
+            var claimsPrincipal = authResult.Principal;
+
+            if (claimsPrincipal == null)
+            {
+                await SendUnauthorizedAsync(cancellation: ct);
+                return;
+            }
+
+            var email = claimsPrincipal.FindFirstValue(ClaimTypes.Email);
+
+            if (email is null)
+            {
+                await SendUnauthorizedAsync(cancellation: ct);
+                return;
+            }
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                var newUser = new ApplicationUser
+                {
+                    UserName = email,
+                    Email = email,
+                    FirstName = claimsPrincipal.FindFirstValue(ClaimTypes.GivenName) ?? string.Empty,
+                    LastName = claimsPrincipal.FindFirstValue(ClaimTypes.Surname) ?? string.Empty,
+                    EmailConfirmed = true
+                };
+
+                var result = await _userManager.CreateAsync(newUser);
+
+                if (!result.Succeeded)
+                {
+                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                    AddError("Registration: ", errors);
+                    await SendErrorsAsync(cancellation: ct);
+                    return;
+                }
+
+                user = newUser;
+            }
+
+            // Check if the external login already exists
+            var existingLogin = await _userManager.FindByLoginAsync("Google", claimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier) ?? email);
+
+            if (existingLogin == null)
+            {
+                var info = new UserLoginInfo("Google", claimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier) ?? email, "Google");
+
+                var loginResult = await _userManager.AddLoginAsync(user, info);
+
+                if (!loginResult.Succeeded)
+                {
+                    var errors = string.Join(", ", loginResult.Errors.Select(e => e.Description));
+                    AddError("Login: ", errors);
+                    await SendErrorsAsync(cancellation: ct);
+                    return;
+                }
+            }
+
+            var (jwtToken, expirationDateInUtc) = _jwtService.GenerateJwtToken(user);
+
+            var refreshTokenValue = _jwtService.GenerateRefreshToken();
+            var refreshTokenExpirationDateInUtc = DateTime.UtcNow.AddDays(7);
+
+            user.RefreshToken = refreshTokenValue.HashedToken();
+            user.RefreshTokenExpiresAtUtc = refreshTokenExpirationDateInUtc;
+
+            await _userManager.UpdateAsync(user); var response = new LoginResponse(jwtToken, expirationDateInUtc, refreshTokenValue);
+
+            await SendOkAsync(response, cancellation: ct);
+        }
+    }
+}
