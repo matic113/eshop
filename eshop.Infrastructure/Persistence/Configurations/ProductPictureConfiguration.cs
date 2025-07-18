@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace eshop.Infrastructure.Persistence.Configurations
 {
-    public class ProductPicturesConfiguration : IEntityTypeConfiguration<ProductPictures>
+    public class ProductPictureConfiguration : IEntityTypeConfiguration<ProductPicture>
     {
-        public void Configure(EntityTypeBuilder<ProductPictures> builder)
+        public void Configure(EntityTypeBuilder<ProductPicture> builder)
         {
             builder.HasKey(pp => pp.Id);
 

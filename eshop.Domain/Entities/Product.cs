@@ -22,7 +22,7 @@ namespace eshop.Domain.Entities
         // Navigational properties
         public ICollection<Category> Categories{ get; set; } = new HashSet<Category>();
         // Pictures
-        public ICollection<ProductPictures> ProductPictures { get; set; } = new HashSet<ProductPictures>();
+        public ICollection<ProductPicture> ProductPictures { get; set; } = new HashSet<ProductPicture>();
         // Reviews
         public ICollection<Review> Reviews { get; set; } = new HashSet<Review>();
         // Order Items

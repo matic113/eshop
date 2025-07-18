@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace eshop.Domain.Entities
 {
-    public class ProductPictures : IBaseEntity
+    public class ProductPicture : IBaseEntity
     {
         public Guid Id { get; set; }
         public Guid ProductId { get; set; }
