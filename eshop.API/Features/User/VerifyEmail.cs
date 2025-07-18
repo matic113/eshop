@@ -35,6 +35,8 @@ namespace eshop.API.Features.User
         {
             Post("/api/auth/verify-email");
             AllowAnonymous();
+            Description(x => x
+                .WithTags("Auth"));
         }
 
         public override async Task HandleAsync(VerifyEmailRequest req, CancellationToken ct)

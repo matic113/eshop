@@ -59,6 +59,8 @@ public class Register : Endpoint<RegisterRequest>
     {
         Post("/api/auth/register");
         AllowAnonymous();
+        Description(x => x.
+            WithTags("Auth"));
     }
 
     public override async Task HandleAsync(RegisterRequest req, CancellationToken ct)

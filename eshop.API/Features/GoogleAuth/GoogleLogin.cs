@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Auth.API.Features.Google
 {
-    public record LoginRequest(string returnUrl);
-    public class Login : Endpoint<LoginRequest>
+    public record GoogleLoginRequest(string returnUrl);
+    public class Login : Endpoint<GoogleLoginRequest>
     {
         private readonly LinkGenerator _linkGenerator;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -22,8 +22,10 @@ namespace Auth.API.Features.Google
             Get("/api/auth/google/login");
             AllowAnonymous();
             DontAutoSendResponse();
+            Description(x => x
+                .WithTags("GoogleAuth"));
         }
-        public override async Task HandleAsync(LoginRequest req, CancellationToken ct)
+        public override async Task HandleAsync(GoogleLoginRequest req, CancellationToken ct)
         {
             var callbackUrl = _linkGenerator.GetPathByName(HttpContext, "GoogleLoginCallback");
 

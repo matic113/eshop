@@ -48,6 +48,9 @@ public class Login : Endpoint<LoginRequest, LoginResponse>
     {
         Post("/api/auth/login");
         AllowAnonymous();
+        Description(x => x.
+            WithTags("Auth").
+            Produces<LoginResponse>(200));
     }
 
     public override async Task HandleAsync(LoginRequest req, CancellationToken ct)

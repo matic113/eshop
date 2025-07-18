@@ -34,6 +34,9 @@ namespace Auth.API.Features.User
         {
             Post("/api/auth/refresh-token");
             AllowAnonymous();
+            Description(x => x.
+                WithTags("Auth").
+                Produces<RefreshTokenResponse>(200));
         }
         public override async Task HandleAsync(RefreshTokenRequest req, CancellationToken ct)
         {

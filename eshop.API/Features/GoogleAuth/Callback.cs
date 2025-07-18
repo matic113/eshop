@@ -25,7 +25,9 @@ namespace Auth.API.Features.Google
         {
             Get("/api/auth/google/callback");
             AllowAnonymous();
-            Description(x => x.WithName("GoogleLoginCallback"));
+            Description(x => x
+            .WithName("GoogleLoginCallback")
+            .WithTags("GoogleAuth"));
         }
         public override async Task HandleAsync(CallbackRequest req, CancellationToken ct)
         {
