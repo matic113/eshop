@@ -19,6 +19,8 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
+await app.ConfigurePersistence();
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
