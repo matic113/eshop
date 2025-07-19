@@ -9,6 +9,7 @@ namespace eshop.Application
         public static void AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<IOtpService, OtpService>();
+            services.AddScoped<IPublicCodeGenerator, PublicCodeGenerator>();
         }
     }
 }
