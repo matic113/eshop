@@ -2,21 +2,18 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using eshop.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace eshop.Infrastructure.Persistence.Migrations
+namespace eshop.Infrastructure.Persistence.Migrations.Postgres
 {
-    [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250718153349_FixProductPicturesTypo")]
-    partial class FixProductPicturesTypo
+    [DbContext(typeof(PostgresDbContext))]
+    partial class PostgresDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -253,12 +250,12 @@ namespace eshop.Infrastructure.Persistence.Migrations
                         .HasColumnName("user_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_address");
+                        .HasName("pk_addresses");
 
                     b.HasIndex("UserId")
-                        .HasDatabaseName("ix_address_user_id");
+                        .HasDatabaseName("ix_addresses_user_id");
 
-                    b.ToTable("address", (string)null);
+                    b.ToTable("addresses", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.Category", b =>
@@ -275,9 +272,9 @@ namespace eshop.Infrastructure.Persistence.Migrations
                         .HasColumnName("name");
 
                     b.HasKey("Id")
-                        .HasName("pk_category");
+                        .HasName("pk_categories");
 
-                    b.ToTable("category", (string)null);
+                    b.ToTable("categories", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.Offer", b =>
@@ -305,9 +302,9 @@ namespace eshop.Infrastructure.Persistence.Migrations
                         .HasColumnName("name");
 
                     b.HasKey("Id")
-                        .HasName("pk_offer");
+                        .HasName("pk_offers");
 
-                    b.ToTable("offer", (string)null);
+                    b.ToTable("offers", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.Order", b =>
@@ -344,15 +341,15 @@ namespace eshop.Infrastructure.Persistence.Migrations
                         .HasColumnName("user_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_order");
+                        .HasName("pk_orders");
 
                     b.HasIndex("OrderNumber")
-                        .HasDatabaseName("ix_order_order_number");
+                        .HasDatabaseName("ix_orders_order_number");
 
                     b.HasIndex("UserId")
-                        .HasDatabaseName("ix_order_user_id");
+                        .HasDatabaseName("ix_orders_user_id");
 
-                    b.ToTable("order", (string)null);
+                    b.ToTable("orders", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.OrderItem", b =>
@@ -385,18 +382,18 @@ namespace eshop.Infrastructure.Persistence.Migrations
                         .HasColumnName("seller_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_order_item");
+                        .HasName("pk_order_items");
 
                     b.HasIndex("OrderId")
-                        .HasDatabaseName("ix_order_item_order_id");
+                        .HasDatabaseName("ix_order_items_order_id");
 
                     b.HasIndex("ProductId")
-                        .HasDatabaseName("ix_order_item_product_id");
+                        .HasDatabaseName("ix_order_items_product_id");
 
                     b.HasIndex("SellerId")
-                        .HasDatabaseName("ix_order_item_seller_id");
+                        .HasDatabaseName("ix_order_items_seller_id");
 
-                    b.ToTable("order_item", (string)null);
+                    b.ToTable("order_items", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.Product", b =>
@@ -460,15 +457,15 @@ namespace eshop.Infrastructure.Persistence.Migrations
                         .HasColumnName("weight");
 
                     b.HasKey("Id")
-                        .HasName("pk_product");
+                        .HasName("pk_products");
 
                     b.HasIndex("ProductCode")
-                        .HasDatabaseName("ix_product_product_code");
+                        .HasDatabaseName("ix_products_product_code");
 
                     b.HasIndex("SellerId")
-                        .HasDatabaseName("ix_product_seller_id");
+                        .HasDatabaseName("ix_products_seller_id");
 
-                    b.ToTable("product", (string)null);
+                    b.ToTable("products", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.ProductPicture", b =>
@@ -488,12 +485,12 @@ namespace eshop.Infrastructure.Persistence.Migrations
                         .HasColumnName("product_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_product_picture");
+                        .HasName("pk_product_pictures");
 
                     b.HasIndex("ProductId")
-                        .HasDatabaseName("ix_product_picture_product_id");
+                        .HasDatabaseName("ix_product_pictures_product_id");
 
-                    b.ToTable("product_picture", (string)null);
+                    b.ToTable("product_pictures", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.Review", b =>
@@ -521,15 +518,15 @@ namespace eshop.Infrastructure.Persistence.Migrations
                         .HasColumnName("user_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_review");
+                        .HasName("pk_reviews");
 
                     b.HasIndex("ProductId")
-                        .HasDatabaseName("ix_review_product_id");
+                        .HasDatabaseName("ix_reviews_product_id");
 
                     b.HasIndex("UserId")
-                        .HasDatabaseName("ix_review_user_id");
+                        .HasDatabaseName("ix_reviews_user_id");
 
-                    b.ToTable("review", (string)null);
+                    b.ToTable("reviews", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.Seller", b =>
@@ -550,13 +547,13 @@ namespace eshop.Infrastructure.Persistence.Migrations
                         .HasColumnName("user_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_seller");
+                        .HasName("pk_sellers");
 
                     b.HasIndex("UserId")
                         .IsUnique()
-                        .HasDatabaseName("ix_seller_user_id");
+                        .HasDatabaseName("ix_sellers_user_id");
 
-                    b.ToTable("seller", (string)null);
+                    b.ToTable("sellers", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.VerificationToken", b =>
@@ -708,14 +705,14 @@ namespace eshop.Infrastructure.Persistence.Migrations
                         .HasForeignKey("CategoriesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_category_product_category_categories_id");
+                        .HasConstraintName("fk_category_product_categories_categories_id");
 
                     b.HasOne("eshop.Domain.Entities.Product", null)
                         .WithMany()
                         .HasForeignKey("ProductsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_category_product_product_products_id");
+                        .HasConstraintName("fk_category_product_products_products_id");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -782,7 +779,7 @@ namespace eshop.Infrastructure.Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_address_users_user_id");
+                        .HasConstraintName("fk_addresses_users_user_id");
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.OrderItem", b =>
@@ -792,21 +789,21 @@ namespace eshop.Infrastructure.Persistence.Migrations
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_order_item_order_order_id");
+                        .HasConstraintName("fk_order_items_orders_order_id");
 
                     b.HasOne("eshop.Domain.Entities.Product", "Product")
                         .WithMany("OrderItems")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_order_item_product_product_id");
+                        .HasConstraintName("fk_order_items_products_product_id");
 
                     b.HasOne("eshop.Infrastructure.Persistence.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("SellerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_order_item_users_seller_id");
+                        .HasConstraintName("fk_order_items_users_seller_id");
 
                     b.Navigation("Order");
 
@@ -820,7 +817,7 @@ namespace eshop.Infrastructure.Persistence.Migrations
                         .HasForeignKey("SellerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_product_users_seller_id");
+                        .HasConstraintName("fk_products_users_seller_id");
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.ProductPicture", b =>
@@ -830,7 +827,7 @@ namespace eshop.Infrastructure.Persistence.Migrations
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_product_picture_product_product_id");
+                        .HasConstraintName("fk_product_pictures_products_product_id");
 
                     b.Navigation("Product");
                 });
@@ -840,16 +837,16 @@ namespace eshop.Infrastructure.Persistence.Migrations
                     b.HasOne("eshop.Domain.Entities.Product", "Product")
                         .WithMany("Reviews")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_review_product_product_id");
+                        .HasConstraintName("fk_reviews_products_product_id");
 
                     b.HasOne("eshop.Infrastructure.Persistence.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_review_users_user_id");
+                        .HasConstraintName("fk_reviews_users_user_id");
 
                     b.Navigation("Product");
                 });
@@ -861,7 +858,7 @@ namespace eshop.Infrastructure.Persistence.Migrations
                         .HasForeignKey("eshop.Domain.Entities.Seller", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_seller_users_user_id");
+                        .HasConstraintName("fk_sellers_users_user_id");
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.VerificationToken", b =>

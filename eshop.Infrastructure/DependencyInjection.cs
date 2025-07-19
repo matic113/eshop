@@ -24,11 +24,7 @@ namespace eshop.Infrastructure
         {
             services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.JwtOptionsKey));
 
-            services.AddDbContext<ApplicationDbContext>(opt =>
-            {
-                opt.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
-                opt.UseSnakeCaseNamingConvention();
-            });
+            services.AddDatabase(configuration);
 
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -87,6 +83,28 @@ namespace eshop.Infrastructure
             // Repositories
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+        }
+
+        private static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
+        {
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Monster")
+            {
+                services.AddDbContext<ApplicationDbContext, SqlServerDbContext>(opt =>
+                {
+                    opt.UseSqlServer(configuration.GetConnectionString("Monster"),
+                        b => b.MigrationsAssembly("eshop.Infrastructure"));
+                });
+
+                return;
+            }
+
+            services.AddDbContext<ApplicationDbContext, PostgresDbContext>(opt =>
+            {
+                opt.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
+                    b => b.MigrationsAssembly("eshop.Infrastructure"));
+
+                opt.UseSnakeCaseNamingConvention();
+            });
         }
     }
 }

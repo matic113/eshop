@@ -7,7 +7,7 @@ namespace eshop.Infrastructure.Persistence
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        public ApplicationDbContext(DbContextOptions options) : base(options)
         {
         }
         protected override void OnModelCreating(ModelBuilder builder)
@@ -19,5 +19,15 @@ namespace eshop.Infrastructure.Persistence
 
         // Identity Tables are added by base class IdentityDbContext
         public DbSet<VerificationToken> VerificationTokens { get; set; } = null!;
+        public DbSet<Address> Addresses { get; set; } = null!;
+        public DbSet<Category> Categories { get; set; } = null!;
+        public DbSet<Offer> Offers { get; set; } = null!;
+        public DbSet<Order> Orders { get; set; } = null!;
+        public DbSet<OrderItem> OrderItems { get; set; } = null!;
+        public DbSet<Product> Products { get; set; } = null!;
+        public DbSet<ProductPicture> ProductPictures { get; set; } = null!;
+        public DbSet<Review> Reviews { get; set; } = null!;
+        public DbSet<Seller> Sellers { get; set; } = null!;
+
     }
 }
