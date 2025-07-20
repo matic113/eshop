@@ -25,6 +25,12 @@ namespace eshop.API.Features.User
             public override void Configure()
             {
                 Get("/api/auth/me");
+                Description(x => x
+                    .WithName("GetCurrentUserInfo")
+                    .WithTags("Auth")
+                    .Produces<CurrentUserInfoResponse>(200)
+                    .ProducesProblem(401)
+                    .ProducesProblem(404));
             }
 
             public override async Task HandleAsync(CancellationToken c)
