@@ -63,6 +63,11 @@ namespace eshop.API.Features.Addresses
             public override void Configure()
             {
                 Post("/api/addresses");
+                Description(x => x
+                    .WithName("CreateAddress")
+                    .WithTags("Addresses")
+                    .Produces<CreateAddressResponse>(200)
+                    .ProducesValidationProblem(400));
             }
 
             public override async Task HandleAsync(CreateAddressRequest r, CancellationToken c)
