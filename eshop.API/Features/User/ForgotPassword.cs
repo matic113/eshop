@@ -8,14 +8,14 @@ namespace eshop.API.Features.User
 {
     public class ForgotPassword
     {
-        sealed class ResetPasswordRequest
+        sealed class ForgotPasswordRequest
         {
             public required string Email { get; set; }
         }
 
-        sealed class ValidateResetPasswordRequest : Validator<ResetPasswordRequest>
+        sealed class ValidateForgotPasswordRequest : Validator<ForgotPasswordRequest>
         {
-            public ValidateResetPasswordRequest()
+            public ValidateForgotPasswordRequest()
             {
                 RuleFor(x => x.Email)
                     .NotEmpty().WithMessage("Email address is required.")
@@ -23,12 +23,12 @@ namespace eshop.API.Features.User
             }
         }
 
-        sealed class ResetPasswordEndpoint : Endpoint<ResetPasswordRequest>
+        sealed class ForgotPasswordEndpoint : Endpoint<ForgotPasswordRequest>
         {
             private readonly UserManager<ApplicationUser> _userManager;
             private readonly IOtpService _otpService;
 
-            public ResetPasswordEndpoint(IOtpService otpService, UserManager<ApplicationUser> userManager)
+            public ForgotPasswordEndpoint(IOtpService otpService, UserManager<ApplicationUser> userManager)
             {
                 _otpService = otpService;
                 _userManager = userManager;
@@ -40,7 +40,7 @@ namespace eshop.API.Features.User
                 AllowAnonymous();
             }
 
-            public override async Task HandleAsync(ResetPasswordRequest r, CancellationToken c)
+            public override async Task HandleAsync(ForgotPasswordRequest r, CancellationToken c)
             {
                 var user = await _userManager.FindByEmailAsync(r.Email);
 
