@@ -14,9 +14,7 @@ namespace eshop.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(50);
 
-            builder
-                .HasMany(c => c.Products)
-                .WithMany(p => p.Categories);
+            
         }
     }
 }
