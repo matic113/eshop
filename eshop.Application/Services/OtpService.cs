@@ -29,7 +29,7 @@ namespace eshop.Application.Services
         public async Task SendOtpEmailAsync(string otp, string email)
         {
             var message = "Thank you for registering with us! " +
-                          "Please use the following OTP to complete your registration: " + otp;
+                          "Please use the following OTP to complete your verify you email: " + otp;
 
             await _emailService.SendEmailAsync(email, "Email Verification: Eshop", message);
             return;
@@ -57,6 +57,19 @@ namespace eshop.Application.Services
         public async Task DeleteTokenByUserIdAsync(Guid userId)
         {
             await _tokensRepository.DeleteUserTokensAsync(userId);
+        }
+
+        public async Task GenerateAndSendNewOtpAsync(Guid userId, string email)
+        {
+            // 1. Delete Old Tokens
+            await DeleteTokenByUserIdAsync(userId);
+
+            // 2. Generate New OTP
+            var otp = await GenerateOtpAsync(userId);
+
+            // 3. Send OTP Email
+            await SendOtpEmailAsync(otp, email);
+            return;
         }
     }
 }

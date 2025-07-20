@@ -37,6 +37,7 @@ namespace eshop.API.Features.User
             {
                 Post("/api/auth/resend-otp");
                 AllowAnonymous();
+                Throttle(1, 60); // Limit to 1 request per minute
             }
 
             public override async Task HandleAsync(ResendOtpRequest r, CancellationToken c)
@@ -45,8 +46,7 @@ namespace eshop.API.Features.User
 
                 if (user is not null)
                 {
-                    var otp = await _otpService.GenerateOtpAsync(user.Id);
-                    await _otpService.SendOtpEmailAsync(otp, user.Email!);
+                    await _otpService.GenerateAndSendNewOtpAsync(user.Id ,user.Email!);
                 }
 
                 // Regardless of whether the user exists or not, we do not want to reveal if the email is registered.
