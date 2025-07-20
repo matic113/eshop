@@ -185,7 +185,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"fares@test.com\",\r\n    \"otp\": \"872227\"\r\n}",
+							"raw": "{\r\n    \"email\": \"faresma7moud1@gmail.com\",\r\n    \"otp\": \"358263\",\r\n    \"newPassword\" : \"P@ssword1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -201,6 +201,34 @@
 								"api",
 								"auth",
 								"reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ResendOtp",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"faresma7moud1@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/auth/resend-otp",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"resend-otp"
 							]
 						}
 					},
