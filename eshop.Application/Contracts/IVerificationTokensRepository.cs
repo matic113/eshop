@@ -1,0 +1,10 @@
+﻿using eshop.Domain.Entities;
+
+namespace eshop.Application.Contracts
+{
+    public interface IVerificationTokensRepository : IGenericRepository<VerificationToken>
+    {
+        Task<VerificationToken?> GetByUserIdAndCodeAsync(Guid userId, string code);
+        Task DeleteUserTokensAsync(Guid userId);
+    }
+}

@@ -7,7 +7,7 @@ namespace eshop.Infrastructure.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class, IBaseEntity
     {
-        private readonly ApplicationDbContext _context;
+        protected readonly ApplicationDbContext _context;
 
         public GenericRepository(ApplicationDbContext context)
         {
