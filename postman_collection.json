@@ -605,6 +605,179 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Addresses",
+			"item": [
+				{
+					"name": "CreateAddress",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"state\":\"gharbia\",\r\n    \"city\":\"samannoud\",\r\n    \"street\": \"market street\",\r\n    \"apartment\": \"infront of mosque\",\r\n    \"phoneNumber\": \"01012312312\",\r\n    \"notes\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/addresses",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAll",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/addresses",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAddress",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/addresses",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateAddress",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"state\":\"gharbia\",\r\n    \"city\":\"tanta\",\r\n    \"street\": \"market street\",\r\n    \"apartment\": \"infront of mosque\",\r\n    \"phoneNumber\": \"01012312312\",\r\n    \"notes\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/addresses/c722253e-f086-4a91-afa9-b179022e231f",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"addresses",
+								"c722253e-f086-4a91-afa9-b179022e231f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteAddress",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"state\":\"gharbia\",\r\n    \"city\":\"samannoud\",\r\n    \"street\": \"market street\",\r\n    \"apartment\": \"infront of mosque\",\r\n    \"phoneNumber\": \"01012312312\",\r\n    \"notes\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/addresses",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
