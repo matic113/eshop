@@ -38,6 +38,10 @@ namespace eshop.API.Features.User
             {
                 Post("/api/auth/forgot-password");
                 AllowAnonymous();
+                Description(x => x
+                    .WithName("ForgotPassword")
+                    .WithTags("Auth")
+                    .Produces(200));
             }
 
             public override async Task HandleAsync(ForgotPasswordRequest r, CancellationToken c)

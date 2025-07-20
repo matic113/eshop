@@ -47,7 +47,7 @@ namespace eshop.API.Features.User
                 // This endpoint is NOT anonymous. The user must be logged in.
                 Description(x => x
                     .WithName("ChangePassword")
-                    .WithTags("auth")
+                    .WithTags("Auth")
                     .Produces(200)
                     .Produces(401)
                     .Produces(400));

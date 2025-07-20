@@ -54,6 +54,12 @@ namespace eshop.API.Features.User
             {
                 Post("/api/auth/reset-password");
                 AllowAnonymous();
+                Description(x => x
+                    .WithName("ResetPassword")
+                    .WithTags("Auth")
+                    .Produces(200)
+                    .ProducesProblem(400)
+                    .ProducesProblem(404));
             }
 
             public override async Task HandleAsync(ResetPasswordRequest r, CancellationToken c)

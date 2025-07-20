@@ -38,6 +38,10 @@ namespace eshop.API.Features.User
                 Post("/api/auth/resend-otp");
                 AllowAnonymous();
                 Throttle(1, 60); // Limit to 1 request per minute
+                Description(x => x
+                    .WithName("ResendOtp")
+                    .WithTags("Auth")
+                    .Produces(200));
             }
 
             public override async Task HandleAsync(ResendOtpRequest r, CancellationToken c)

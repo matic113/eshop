@@ -38,6 +38,11 @@ namespace eshop.API.Features.User
             {
                 Post("/api/auth/validate-otp");
                 AllowAnonymous();
+                Description(x => x
+                    .WithName("ValidateOtp")
+                    .WithTags("Auth")
+                    .Produces(200)
+                    .Produces(400));
             }
             public override async Task HandleAsync(ValidateOtpRequest r, CancellationToken c)
             {
