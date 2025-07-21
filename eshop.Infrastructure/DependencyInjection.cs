@@ -85,6 +85,7 @@ namespace eshop.Infrastructure
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IVerificationTokensRepository, VerificationTokenRepository>();
             services.AddScoped<IAddressRepository, AddressRepository>();
+            services.AddScoped<ICartRepository, CartRepository>();
         }
 
         private static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
