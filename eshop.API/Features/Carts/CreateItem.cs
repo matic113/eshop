@@ -64,51 +64,21 @@ namespace eshop.API.Features.Carts
                     return;
                 }
 
-                var cart = await _cartRepository.GetCartByUserIdAsync(userId.Value);
+                var result = await _cartRepository.AddItemToCartAsync(userId.Value, r.ProductId, r.Quantity);
 
-                if (cart == null)
+                if (result == null)
                 {
-                    cart = await _cartRepository.CreateEmptyCartAsync(userId.Value);
-                }
-
-                var productExists = await _productRepository.GetByIdAsync(r.ProductId);
-
-                if (productExists == null)
-                {
-                    AddError(x => x.ProductId, "Product does not exist.");
+                    AddError(x=> x.ProductId, "Product doesn't exist.");
                     await SendErrorsAsync();
                     return;
                 }
-
-                var isItemInCart = cart.CartItems.Any(i => i.ProductId == r.ProductId);
-
-                if (isItemInCart)
-                {
-                    AddError(x => x.ProductId, "Item already exists in the cart.");
-                    await SendErrorsAsync();
-                    return;
-                }
-
-                var newItem = new CartItem
-                {
-                    Id = Guid.NewGuid(),
-                    CartId = cart.Id,
-                    ProductId = r.ProductId,
-                    Quantity = r.Quantity
-                };
-
-                // First save the cart item
-                await _cartItemRepository.AddAsync(newItem);
-
-                cart.CartItems.Add(newItem);
-                await _cartRepository.UpdateAsync(cart);
 
                 var response = new AddItemToCartResponse
                 {
                     Message = "Item added to cart successfully.",
-                    Id = newItem.Id,
-                    ProductId = newItem.ProductId,
-                    Quantity = newItem.Quantity
+                    Id = result.Id,
+                    ProductId = result.ProductId,
+                    Quantity = result.Quantity
                 };
 
                 await SendOkAsync(response, c);
