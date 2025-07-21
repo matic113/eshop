@@ -17,6 +17,9 @@ namespace eshop.Infrastructure.Persistence.Configurations
             builder.Property(o => o.Status)
                 .HasConversion<string>();
 
+            builder.Property(o => o.PaymentMethod)
+                .HasConversion<string>();
+
             builder.Property(o => o.TotalPrice)
                 .HasColumnType("decimal(18,2)");
 
