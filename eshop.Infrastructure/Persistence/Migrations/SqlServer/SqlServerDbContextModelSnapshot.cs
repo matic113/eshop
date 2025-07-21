@@ -689,7 +689,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
                     b.HasOne("eshop.Infrastructure.Persistence.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 

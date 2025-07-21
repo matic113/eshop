@@ -12,7 +12,7 @@ using eshop.Infrastructure.Persistence;
 namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 {
     [DbContext(typeof(SqlServerDbContext))]
-    [Migration("20250721133425_UpdateOrderTableForPaymentAddCartTables")]
+    [Migration("20250721155332_UpdateOrderTableForPaymentAddCartTables")]
     partial class UpdateOrderTableForPaymentAddCartTables
     {
         /// <inheritdoc />
@@ -230,7 +230,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Cart");
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.CartItem", b =>
@@ -254,7 +254,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItem");
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.Category", b =>
@@ -692,7 +692,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
                     b.HasOne("eshop.Infrastructure.Persistence.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 

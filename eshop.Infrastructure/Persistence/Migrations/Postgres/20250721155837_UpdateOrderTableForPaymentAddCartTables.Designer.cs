@@ -12,7 +12,7 @@ using eshop.Infrastructure.Persistence;
 namespace eshop.Infrastructure.Persistence.Migrations.Postgres
 {
     [DbContext(typeof(PostgresDbContext))]
-    [Migration("20250721133225_UpdateOrderTableForPaymentAddCartTables")]
+    [Migration("20250721155837_UpdateOrderTableForPaymentAddCartTables")]
     partial class UpdateOrderTableForPaymentAddCartTables
     {
         /// <inheritdoc />
@@ -273,13 +273,13 @@ namespace eshop.Infrastructure.Persistence.Migrations.Postgres
                         .HasColumnName("user_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_cart");
+                        .HasName("pk_carts");
 
                     b.HasIndex("UserId")
                         .IsUnique()
-                        .HasDatabaseName("ix_cart_user_id");
+                        .HasDatabaseName("ix_carts_user_id");
 
-                    b.ToTable("cart", (string)null);
+                    b.ToTable("carts", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.CartItem", b =>
@@ -302,15 +302,15 @@ namespace eshop.Infrastructure.Persistence.Migrations.Postgres
                         .HasColumnName("quantity");
 
                     b.HasKey("Id")
-                        .HasName("pk_cart_item");
+                        .HasName("pk_cart_items");
 
                     b.HasIndex("CartId")
-                        .HasDatabaseName("ix_cart_item_cart_id");
+                        .HasDatabaseName("ix_cart_items_cart_id");
 
                     b.HasIndex("ProductId")
-                        .HasDatabaseName("ix_cart_item_product_id");
+                        .HasDatabaseName("ix_cart_items_product_id");
 
-                    b.ToTable("cart_item", (string)null);
+                    b.ToTable("cart_items", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.Category", b =>
@@ -848,7 +848,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.Postgres
                     b.HasOne("eshop.Infrastructure.Persistence.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("fk_addresses_users_user_id");
                 });
@@ -860,14 +860,14 @@ namespace eshop.Infrastructure.Persistence.Migrations.Postgres
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_cart_item_cart_cart_id");
+                        .HasConstraintName("fk_cart_items_carts_cart_id");
 
                     b.HasOne("eshop.Domain.Entities.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_cart_item_products_product_id");
+                        .HasConstraintName("fk_cart_items_products_product_id");
 
                     b.Navigation("Cart");
 

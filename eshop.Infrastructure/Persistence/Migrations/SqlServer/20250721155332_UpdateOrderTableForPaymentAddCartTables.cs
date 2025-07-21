@@ -11,6 +11,10 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Addresses_AspNetUsers_UserId",
+                table: "Addresses");
+
             migrationBuilder.AddColumn<string>(
                 name: "PaymentMethod",
                 table: "Orders",
@@ -32,7 +36,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
                 defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
 
             migrationBuilder.CreateTable(
-                name: "Cart",
+                name: "Carts",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -40,11 +44,11 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cart", x => x.Id);
+                    table.PrimaryKey("PK_Carts", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "CartItem",
+                name: "CartItems",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -54,15 +58,15 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CartItem", x => x.Id);
+                    table.PrimaryKey("PK_CartItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CartItem_Cart_CartId",
+                        name: "FK_CartItems_Carts_CartId",
                         column: x => x.CartId,
-                        principalTable: "Cart",
+                        principalTable: "Carts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CartItem_Products_ProductId",
+                        name: "FK_CartItems_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -75,20 +79,28 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
                 column: "ShippingAddressId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cart_UserId",
-                table: "Cart",
-                column: "UserId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CartItem_CartId",
-                table: "CartItem",
+                name: "IX_CartItems_CartId",
+                table: "CartItems",
                 column: "CartId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartItem_ProductId",
-                table: "CartItem",
+                name: "IX_CartItems_ProductId",
+                table: "CartItems",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Carts_UserId",
+                table: "Carts",
+                column: "UserId",
+                unique: true);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Addresses_AspNetUsers_UserId",
+                table: "Addresses",
+                column: "UserId",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Orders_Addresses_ShippingAddressId",
@@ -103,14 +115,18 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
+                name: "FK_Addresses_AspNetUsers_UserId",
+                table: "Addresses");
+
+            migrationBuilder.DropForeignKey(
                 name: "FK_Orders_Addresses_ShippingAddressId",
                 table: "Orders");
 
             migrationBuilder.DropTable(
-                name: "CartItem");
+                name: "CartItems");
 
             migrationBuilder.DropTable(
-                name: "Cart");
+                name: "Carts");
 
             migrationBuilder.DropIndex(
                 name: "IX_Orders_ShippingAddressId",
@@ -127,6 +143,14 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
             migrationBuilder.DropColumn(
                 name: "ShippingAddressId",
                 table: "Orders");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Addresses_AspNetUsers_UserId",
+                table: "Addresses",
+                column: "UserId",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
         }
     }
 }

@@ -38,7 +38,7 @@ namespace eshop.Infrastructure.Persistence.Configurations
             builder.HasOne<ApplicationUser>()
                 .WithMany()
                 .HasForeignKey(a => a.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
