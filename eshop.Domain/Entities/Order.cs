@@ -12,12 +12,16 @@ namespace eshop.Domain.Entities
         public Guid Id { get; set; }
         public required string OrderNumber { get; set; }
         public Guid UserId { get; set; }
-        public OrderStatus Status { get; set; }
+        public OrderStatus Status { get; set; } = OrderStatus.Pending; // Default status
         public decimal TotalPrice { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public Guid ShippingAddressId { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
+        public string? PaymentToken { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigational properties
         public ICollection<OrderItem> OrderItems { get; set; } = new HashSet<OrderItem>();
+        public Address ShippingAddress { get; set; } = null!;
     }
 }
