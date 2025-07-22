@@ -4,6 +4,7 @@ using System.Text;
 using eshop.Application.Contracts;
 using eshop.Infrastructure.Authentication;
 using eshop.Infrastructure.Email;
+using eshop.Infrastructure.Payment;
 using eshop.Infrastructure.Persistence;
 using eshop.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -79,6 +80,16 @@ namespace eshop.Infrastructure
                 });
 
             services.AddScoped<IEmailService, EmailService>();
+
+            // Payments
+
+            services.Configure<PaymobOptions>(configuration.GetSection(PaymobOptions.PaymobOptionsKey));
+            services.AddScoped<PaymobService>();
+
+            services.AddHttpClient<PaymobService>(client =>
+            {
+                client.BaseAddress = new Uri("https://accept.paymob.com/");
+            });
 
             // Repositories
 
