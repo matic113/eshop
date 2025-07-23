@@ -14,14 +14,16 @@ namespace eshop.API.Features.Products
         private readonly IPublicCodeGenerator _publicCodeGenerator;
         private readonly IGenericRepository<Product> _productRepository;
         private readonly IGenericRepository<Category> _categoryRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public CreateProductEndpoint(IPublicCodeGenerator codeGenerator, IGenericRepository<Product> productRepository, IGenericRepository<Category> categoryRepository, UserManager<ApplicationUser> userManager)
+        public CreateProductEndpoint(IPublicCodeGenerator codeGenerator, IGenericRepository<Product> productRepository, IGenericRepository<Category> categoryRepository, UserManager<ApplicationUser> userManager, IUnitOfWork unitOfWork)
         {
             _publicCodeGenerator = codeGenerator;
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
             _userManager = userManager;
+            _unitOfWork = unitOfWork;
         }
 
         public override void Configure()
@@ -97,6 +99,7 @@ namespace eshop.API.Features.Products
             }
 
             var result = await _productRepository.AddAsync(product);
+            await _unitOfWork.SaveChangesAsync(c);
 
             if (result is not null)
             {

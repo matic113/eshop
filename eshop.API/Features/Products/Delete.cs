@@ -9,10 +9,12 @@ namespace eshop.API.Features.Products
         sealed class DeleteProductEndpoint : EndpointWithoutRequest
         {
             private readonly IGenericRepository<Product> _productRepository;
+            private readonly IUnitOfWork _unitOfWork;
 
-            public DeleteProductEndpoint(IGenericRepository<Product> productRepository)
+            public DeleteProductEndpoint(IGenericRepository<Product> productRepository, IUnitOfWork unitOfWork)
             {
                 _productRepository = productRepository;
+                _unitOfWork = unitOfWork;
             }
 
             public override void Configure()
@@ -34,11 +36,12 @@ namespace eshop.API.Features.Products
 
                 if (isDeleted)
                 {
-                    await SendOkAsync();
+                    await _unitOfWork.SaveChangesAsync(c);
+                    await SendOkAsync(c);
                 }
                 else
                 {
-                    await SendNotFoundAsync();
+                    await SendNotFoundAsync(c);
                 }
             }
         }

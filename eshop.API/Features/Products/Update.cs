@@ -11,11 +11,13 @@ namespace eshop.API.Features.Products
         {
             private readonly IGenericRepository<Product> _productRepository;
             private readonly IGenericRepository<Category> _categoryRepository;
+            private readonly IUnitOfWork _unitOfWork;
 
-            public UpdateProductEndpoint(IGenericRepository<Product> productRepository, IGenericRepository<Category> categoryRepository)
+            public UpdateProductEndpoint(IGenericRepository<Product> productRepository, IGenericRepository<Category> categoryRepository, IUnitOfWork unitOfWork)
             {
                 _productRepository = productRepository;
                 _categoryRepository = categoryRepository;
+                _unitOfWork = unitOfWork;
             }
 
             public override void Configure()
@@ -34,7 +36,7 @@ namespace eshop.API.Features.Products
                 if (product is null)
                 {
                     AddError("Product not found.");
-                    await SendErrorsAsync();
+                    await SendErrorsAsync(c);
                     return;
                 }
 
@@ -63,7 +65,7 @@ namespace eshop.API.Features.Products
                         else
                         {
                             AddError($"Category with ID {categoryId} does not exist.");
-                            await SendErrorsAsync();
+                            await SendErrorsAsync(c);
                             return;
                         }
                     }
@@ -89,36 +91,29 @@ namespace eshop.API.Features.Products
                     }
                 }
 
-                var result = await _productRepository.UpdateAsync(product);
+                await _productRepository.UpdateAsync(product);
+                await _unitOfWork.SaveChangesAsync(c);
 
-                if (result is not null)
+                var response = new UpdateProductResponse
                 {
-                    var response = new UpdateProductResponse
-                    {
-                        Id = result.Id,
-                        SellerId = result.SellerId,
-                        ProductCode = result.ProductCode,
-                        Name = result.Name,
-                        Description = result.Description,
-                        CoverPictureUrl = result.CoverPictureUrl,
-                        Price = result.Price,
-                        Stock = result.Stock,
-                        Weight = result.Weight,
-                        Color = result.Color,
-                        DiscountPercentage = result.DiscountPercentage,
-                        Categories = result.Categories
-                                    .Select(c => new CategoryResponse { Id = c.Id, Name = c.Name }).ToList(),
-                        Pictures = result.ProductPictures
-                                    .Select(p => new ProductPictureResponse { Id = p.Id, PictureUrl = p.PictureUrl }).ToList()
-                    };
+                    Id = product.Id,
+                    SellerId = product.SellerId,
+                    ProductCode = product.ProductCode,
+                    Name = product.Name,
+                    Description = product.Description,
+                    CoverPictureUrl = product.CoverPictureUrl,
+                    Price = product.Price,
+                    Stock = product.Stock,
+                    Weight = product.Weight,
+                    Color = product.Color,
+                    DiscountPercentage = product.DiscountPercentage,
+                    Categories = product.Categories
+                                .Select(c => new CategoryResponse { Id = c.Id, Name = c.Name }).ToList(),
+                    Pictures = product.ProductPictures
+                                .Select(p => new ProductPictureResponse { Id = p.Id, PictureUrl = p.PictureUrl }).ToList()
+                };
 
-                    await SendOkAsync(response);
-                }
-                else
-                {
-                    AddError("Failed to create product.");
-                    await SendErrorsAsync();
-                }
+                await SendOkAsync(response, c);
             }
         }
         sealed class UpdateProductRequest
