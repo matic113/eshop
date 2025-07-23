@@ -2,15 +2,14 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+using eshop.Application.Contracts;
 using eshop.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace eshop.Infrastructure.Payment
 {
-    public record CreatePaymentIntentResponse(string ClientSecret, string PaymentKey);
-    public class PaymobService
+    public class PaymobService : IPaymobService
     {
         private readonly HttpClient _httpClient;
         private readonly PaymobOptions _paymobOptions;

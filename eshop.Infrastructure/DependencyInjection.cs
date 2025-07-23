@@ -84,9 +84,9 @@ namespace eshop.Infrastructure
             // Payments
 
             services.Configure<PaymobOptions>(configuration.GetSection(PaymobOptions.PaymobOptionsKey));
-            services.AddScoped<PaymobService>();
+            services.AddScoped<IPaymobService, PaymobService>();
 
-            services.AddHttpClient<PaymobService>(client =>
+            services.AddHttpClient<IPaymobService, PaymobService>(client =>
             {
                 client.BaseAddress = new Uri("https://accept.paymob.com/");
             });
