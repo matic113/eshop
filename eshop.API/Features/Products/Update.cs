@@ -36,7 +36,7 @@ namespace eshop.API.Features.Products
                 if (product is null)
                 {
                     AddError("Product not found.");
-                    await SendErrorsAsync(c);
+                    await SendErrorsAsync();
                     return;
                 }
 
@@ -65,7 +65,7 @@ namespace eshop.API.Features.Products
                         else
                         {
                             AddError($"Category with ID {categoryId} does not exist.");
-                            await SendErrorsAsync(c);
+                            await SendErrorsAsync();
                             return;
                         }
                     }
