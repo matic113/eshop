@@ -18,6 +18,15 @@ namespace eshop.Infrastructure.Repositories
 
             return cart;
         }
+        public async Task<Cart?> GetCartWithProductsByUserIdAsync(Guid userId)
+        {
+            var cart = await _context.Carts
+                .Include(c => c.CartItems)
+                    .ThenInclude(ci => ci.Product)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            return cart;
+        }
         public async Task<CartItem?> AddItemToCartAsync(Guid userId, Guid productId, int quantity)
         {
             bool productExists = await _context.Products.AnyAsync(p => p.Id == productId);
@@ -35,7 +44,10 @@ namespace eshop.Infrastructure.Repositories
             {
                 var newQuantity = existingItem.Quantity + quantity;
                 existingItem.Quantity = newQuantity;
-                await UpdateAsync(cart);
+
+                _context.Carts.Update(cart);
+                await _context.SaveChangesAsync();
+
                 return existingItem;
             }
 
@@ -54,6 +66,18 @@ namespace eshop.Infrastructure.Repositories
             await _context.SaveChangesAsync();
 
             return newItem;
+        }
+        public async Task ClearUserCartAsync(Guid userId)
+        {
+            var cart = await _context.Carts
+                .Include(c => c.CartItems)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+            if (cart != null)
+            {
+                cart.CartItems.Clear();
+                _context.Carts.Update(cart);
+                await _context.SaveChangesAsync();
+            }
         }
         public async Task<bool> RemoveItemFromCartAsync(Guid userId, Guid itemId)
         {
@@ -78,7 +102,6 @@ namespace eshop.Infrastructure.Repositories
 
             return true;
         }
-
         public async Task<CartItem?> UpdateItemQuantityAsync(Guid userId, Guid itemId, int quantity)
         {
             var cart = await GetCartByUserIdAsync(userId);
@@ -100,7 +123,6 @@ namespace eshop.Infrastructure.Repositories
 
             return item;
         }
-
         public async Task<Cart> CreateEmptyCartAsync(Guid userId)
         {
             var cart = new Cart

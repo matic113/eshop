@@ -23,14 +23,12 @@ namespace eshop.Infrastructure.Repositories
         public async Task<T> AddAsync(T entity)
         {
             await _context.Set<T>().AddAsync(entity);
-            await _context.SaveChangesAsync();
             return entity;
         }
 
         public async Task<T> UpdateAsync(T entity)
         {
             _context.Set<T>().Update(entity);
-            await _context.SaveChangesAsync();
             return entity;
         }
 
@@ -44,7 +42,6 @@ namespace eshop.Infrastructure.Repositories
             }
 
             _context.Set<T>().Remove(entity);
-            await _context.SaveChangesAsync();
             return true;
         }
     }

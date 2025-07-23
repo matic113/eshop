@@ -93,10 +93,15 @@ namespace eshop.Infrastructure
 
             // Repositories
 
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IVerificationTokensRepository, VerificationTokenRepository>();
             services.AddScoped<IAddressRepository, AddressRepository>();
             services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IOrderItemRepository, OrderItemRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
         }
 
         private static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
