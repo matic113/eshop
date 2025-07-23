@@ -20,9 +20,12 @@ namespace eshop.API.Features.Categories
     public class Create : Endpoint<CreateCategoryRequest, CreateCategoryResponse>
     {
         private readonly IGenericRepository<Category> _categoryRepository;
-        public Create(IGenericRepository<Category> categoryRepository)
+        private readonly IUnitOfWork _unitOfWork;
+
+        public Create(IGenericRepository<Category> categoryRepository, IUnitOfWork unitOfWork)
         {
             _categoryRepository = categoryRepository;
+            _unitOfWork = unitOfWork;
         }
         public override void Configure()
         {
@@ -42,17 +45,11 @@ namespace eshop.API.Features.Categories
                 Name = req.Name
             };
 
-            var createdCategory = await _categoryRepository.AddAsync(category);
-            if (createdCategory is not null)
-            {
-                var response = new CreateCategoryResponse(createdCategory.Id, createdCategory.Name);
-                await SendAsync(response, StatusCodes.Status201Created);
-            }
-            else
-            {
-                AddError("Failed to create category.");
-                await SendErrorsAsync();
-            }
+            await _categoryRepository.AddAsync(category);
+            await _unitOfWork.SaveChangesAsync(ct);
+
+            var response = new CreateCategoryResponse(category.Id, category.Name);
+            await SendAsync(response, StatusCodes.Status201Created, ct);
         }
     }
 }

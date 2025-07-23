@@ -8,9 +8,12 @@ namespace eshop.API.Features.Categories
     public class Delete : EndpointWithoutRequest
     {
         private readonly IGenericRepository<Category> _categoryRepository;
-        public Delete(IGenericRepository<Category> categoryRepository)
+        private readonly IUnitOfWork _unitOfWork;
+
+        public Delete(IGenericRepository<Category> categoryRepository, IUnitOfWork unitOfWork)
         {
             _categoryRepository = categoryRepository;
+            _unitOfWork = unitOfWork;
         }
         public override void Configure()
         {
@@ -30,12 +33,12 @@ namespace eshop.API.Features.Categories
 
             if (isDeleted)
             {
-                await SendOkAsync();
+                await _unitOfWork.SaveChangesAsync(ct);
+                await SendOkAsync(ct);
             }
             else
-            {
-                AddError("Category not found or could not be deleted.");
-                await SendNotFoundAsync();
+            { 
+                await SendNotFoundAsync(ct);
             }
         }
     }

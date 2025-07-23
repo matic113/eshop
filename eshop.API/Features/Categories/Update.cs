@@ -19,9 +19,12 @@ namespace eshop.API.Features.Categories
     public class Update : Endpoint<UpdateCategoryRequest, UpdateCategoryResponse>
     {
         private readonly IGenericRepository<Category> _categoryRepository;
-        public Update(IGenericRepository<Category> categoryRepository)
+        private readonly IUnitOfWork _unitOfWork;
+
+        public Update(IGenericRepository<Category> categoryRepository, IUnitOfWork unitOfWork)
         {
             _categoryRepository = categoryRepository;
+            _unitOfWork = unitOfWork;
         }
         public override void Configure()
         {
@@ -40,23 +43,16 @@ namespace eshop.API.Features.Categories
 
             if (category is null)
             {
-                await SendNotFoundAsync();
+                await SendNotFoundAsync(ct);
                 return;
             }
 
             category.Name = req.newName;
-            var updatedCategory = await _categoryRepository.UpdateAsync(category);
+            await _categoryRepository.UpdateAsync(category);
+            await _unitOfWork.SaveChangesAsync(ct);
 
-            if (updatedCategory is not null)
-            {
-                var response = new UpdateCategoryResponse(updatedCategory.Id, updatedCategory.Name);
-                await SendOkAsync(response);
-            }
-            else
-            {
-                AddError("Failed to update category.");
-                await SendErrorsAsync();
-            }
+            var response = new UpdateCategoryResponse(category.Id, category.Name);
+            await SendOkAsync(response, ct);
         }
     }
 }
