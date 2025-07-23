@@ -9,9 +9,9 @@
 
         // Navigational properties
         public Guid OrderId { get; set; }
-        public required Order Order { get; set; }
+        public Order Order { get; set; } = null!;
         // Product
         public Guid ProductId { get; set; }
-        public required Product Product { get; set; }
+        public Product Product { get; set; } = null!;
     }
 }
