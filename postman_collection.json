@@ -81,6 +81,7 @@
 									"    console.log(jsonData)\r",
 									"    // 3. Set the value to an environment variable named \"access_token\"\r",
 									"    pm.environment.set(\"access_token\", jsonData.accessToken);\r",
+									"    pm.environment.set(\"refresh_token\", jsonData.refreshToken);\r",
 									"    console.log(\"Access token saved to environment.\");\r",
 									"}"
 								],
@@ -94,7 +95,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"fares@test.com\",\r\n    \"password\":\"P@ssword2\"\r\n}",
+							"raw": "{\r\n    \"email\": \"fares@test.com\",\r\n    \"password\":\"P@ssword1\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -284,7 +285,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"faresma7moud1@gmail.com\"\r\n}",
+							"raw": "{\r\n    \"email\": \"fares@test.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -387,7 +388,7 @@
 					"response": []
 				},
 				{
-					"name": "GetProduct",
+					"name": "GetCategory",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -850,6 +851,45 @@
 					"response": []
 				},
 				{
+					"name": "DecrementItem",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"itemId\": \"647b7fe7-d9b9-452a-9403-a7c1b3a0aa06\",\r\n    \"quantity\": \"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/cart/items/decrement",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"cart",
+								"items",
+								"decrement"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "DeleteItem",
 					"request": {
 						"auth": {
@@ -913,6 +953,49 @@
 								"cart",
 								"items",
 								"10fd617e-e330-4868-8bce-412da88e0e1b"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Checkout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"shippingAddressId\": \"8faabcc6-6375-4a8d-962d-cd065e2597f8\",\r\n    \"paymentMethod\": \"Paymob\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/orders/checkout",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								"checkout"
 							]
 						}
 					},
