@@ -52,10 +52,12 @@ namespace eshop.API.Features.Addresses
         sealed class UpdateAddressEndpoint : Endpoint<UpdateAddressRequest, UpdateAddressResponse>
         {
             private readonly IAddressRepository _addressRepository;
+            private readonly IUnitOfWork _unitOfWork;
 
-            public UpdateAddressEndpoint(IAddressRepository addressRepository)
+            public UpdateAddressEndpoint(IAddressRepository addressRepository, IUnitOfWork unitOfWork)
             {
                 _addressRepository = addressRepository;
+                _unitOfWork = unitOfWork;
             }
 
             public override void Configure()
@@ -95,6 +97,7 @@ namespace eshop.API.Features.Addresses
                 if (r.Notes is not null) address.Notes = r.Notes;
 
                 await _addressRepository.UpdateAsync(address);
+                await _unitOfWork.SaveChangesAsync(c);
 
                 var response = new UpdateAddressResponse
                 {

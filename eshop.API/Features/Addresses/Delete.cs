@@ -9,10 +9,12 @@ namespace eshop.API.Features.Addresses
         sealed class DeleteAddressEndpoint : EndpointWithoutRequest
         {
             private readonly IAddressRepository _addressRepository;
+            private readonly IUnitOfWork _unitOfWork;
 
-            public DeleteAddressEndpoint(IAddressRepository addressRepository)
+            public DeleteAddressEndpoint(IAddressRepository addressRepository, IUnitOfWork unitOfWork)
             {
                 _addressRepository = addressRepository;
+                _unitOfWork = unitOfWork;
             }
 
             public override void Configure()
@@ -54,6 +56,7 @@ namespace eshop.API.Features.Addresses
                 }
 
                 var result = await _addressRepository.DeleteAsync(addressId);
+                await _unitOfWork.SaveChangesAsync(c);
 
                 if(!result)
                 {

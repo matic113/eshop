@@ -54,10 +54,12 @@ namespace eshop.API.Features.Addresses
         sealed class CreateAddressEndpoint : Endpoint<CreateAddressRequest, CreateAddressResponse>
         {
             private readonly IAddressRepository _addressRepository;
+            private readonly IUnitOfWork _unitOfWork;
 
-            public CreateAddressEndpoint(IAddressRepository addressRepository)
+            public CreateAddressEndpoint(IAddressRepository addressRepository, IUnitOfWork unitOfWork)
             {
                 _addressRepository = addressRepository;
+                _unitOfWork = unitOfWork;
             }
 
             public override void Configure()
@@ -93,6 +95,7 @@ namespace eshop.API.Features.Addresses
                 };
 
                 await _addressRepository.AddAsync(address);
+                await _unitOfWork.SaveChangesAsync(c);
 
                 var response = new CreateAddressResponse
                 {
