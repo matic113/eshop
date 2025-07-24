@@ -10,19 +10,19 @@ namespace eshop.API.Features.User
     {
         sealed class ValidateOtpRequest
         {
-            public required string Email { get; set; }
-            public required string Otp { get; set; }
+            public string Email { get; set; } = string.Empty;
+            public string Otp { get; set; } = string.Empty;
         }
         sealed class ValidateOtpValidator : Validator<ValidateOtpRequest>
         {
             public ValidateOtpValidator()
             {
-                RuleFor(x => x.Otp)
-                    .NotEmpty().WithMessage("OTP is required.")
-                    .Length(6).WithMessage("OTP must be 6 digits long.");
                 RuleFor(x => x.Email)
                     .NotEmpty().WithMessage("Email address is required.")
                     .EmailAddress().WithMessage("Invalid email address format.");
+                RuleFor(x => x.Otp)
+                    .NotEmpty().WithMessage("OTP is required.")
+                    .Length(6).WithMessage("OTP must be 6 digits long.");
             }
         }
         sealed class ValidateOtpEndpoint : Endpoint<ValidateOtpRequest>

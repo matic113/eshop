@@ -26,7 +26,6 @@ namespace eshop.Infrastructure.Repositories
             if (tokens.Any())
             {
                 _context.VerificationTokens.RemoveRange(tokens);
-                await _context.SaveChangesAsync();
             }
         }
     }

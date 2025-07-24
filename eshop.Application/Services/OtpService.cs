@@ -7,12 +7,14 @@ namespace eshop.Application.Services
     public class OtpService : IOtpService
     {
         private readonly IVerificationTokensRepository _tokensRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailService _emailService;
 
-        public OtpService(IVerificationTokensRepository tokensRepository, IEmailService emailService)
+        public OtpService(IVerificationTokensRepository tokensRepository, IEmailService emailService, IUnitOfWork unitOfWork)
         {
             _tokensRepository = tokensRepository;
             _emailService = emailService;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<string> GenerateOtpAsync(Guid userId)
@@ -23,6 +25,7 @@ namespace eshop.Application.Services
             var verificationToken = VerificationToken.Create(userId, otpString, 10);
 
             await _tokensRepository.AddAsync(verificationToken);
+            await _unitOfWork.SaveChangesAsync();
 
             return otpString;
         }
@@ -57,6 +60,7 @@ namespace eshop.Application.Services
         public async Task DeleteTokenByUserIdAsync(Guid userId)
         {
             await _tokensRepository.DeleteUserTokensAsync(userId);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task GenerateAndSendNewOtpAsync(Guid userId, string email)
@@ -66,6 +70,7 @@ namespace eshop.Application.Services
 
             // 2. Generate New OTP
             var otp = await GenerateOtpAsync(userId);
+            await _unitOfWork.SaveChangesAsync();
 
             // 3. Send OTP Email
             await SendOtpEmailAsync(otp, email);
