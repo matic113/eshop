@@ -33,10 +33,12 @@ namespace eshop.API.Features.Carts
         sealed class UpdateItemEndpoint : Endpoint<UpdateItemRequest, UpdateItemResponse>
         {
             private readonly ICartRepository _cartRepository;
+            private readonly IUnitOfWork _unitOfWork;
 
-            public UpdateItemEndpoint(ICartRepository cartRepository)
+            public UpdateItemEndpoint(ICartRepository cartRepository, IUnitOfWork unitOfWork)
             {
                 _cartRepository = cartRepository;
+                _unitOfWork = unitOfWork;
             }
 
             public override void Configure()
@@ -62,6 +64,7 @@ namespace eshop.API.Features.Carts
                 }
 
                 var result = await _cartRepository.UpdateItemQuantityAsync(userId.Value, r.Id, r.Quantity);
+                await _unitOfWork.SaveChangesAsync(c);
 
                 if (result is null)
                 {

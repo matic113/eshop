@@ -16,10 +16,12 @@ namespace eshop.API.Features.Carts
         sealed class DeleteItemFromCartEndpoint : Endpoint<DeleteItemFromCartRequest>
         {
             private readonly ICartRepository _cartRepository;
+            private readonly IUnitOfWork _unitOfWork;
 
-            public DeleteItemFromCartEndpoint(ICartRepository cartRepository)
+            public DeleteItemFromCartEndpoint(ICartRepository cartRepository, IUnitOfWork unitOfWork)
             {
                 _cartRepository = cartRepository;
+                _unitOfWork = unitOfWork;
             }
 
             public override void Configure()
@@ -44,6 +46,7 @@ namespace eshop.API.Features.Carts
                     return;
                 }
                 bool result = await _cartRepository.RemoveItemFromCartAsync(userId.Value, r.Id);
+                await _unitOfWork.SaveChangesAsync(c);
 
                 if (result)
                 {
