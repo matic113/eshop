@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using eshop.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using eshop.Infrastructure.Persistence;
 namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 {
     [DbContext(typeof(SqlServerDbContext))]
-    partial class SqlServerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250724094018_ManualNotesCTypeFixSqlServer")]
+    partial class ManualNotesCTypeFixSqlServer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +37,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasIndex("ProductsId");
 
-                    b.ToTable("CategoryProduct", (string)null);
+                    b.ToTable("CategoryProduct");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -210,7 +213,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Addresses", (string)null);
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.Cart", b =>
@@ -227,7 +230,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Carts", (string)null);
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.CartItem", b =>
@@ -251,7 +254,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItems", (string)null);
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.Category", b =>
@@ -267,7 +270,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.Offer", b =>
@@ -292,7 +295,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasKey("Id");
 
-                    b.ToTable("Offers", (string)null);
+                    b.ToTable("Offers");
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.Order", b =>
@@ -339,7 +342,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.OrderItem", b =>
@@ -373,7 +376,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.Product", b =>
@@ -431,7 +434,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.ProductPicture", b =>
@@ -451,7 +454,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductPictures", (string)null);
+                    b.ToTable("ProductPictures");
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.Review", b =>
@@ -479,7 +482,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.Seller", b =>
@@ -501,7 +504,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Sellers", (string)null);
+                    b.ToTable("Sellers");
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.VerificationToken", b =>
@@ -528,7 +531,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("VerificationTokens", (string)null);
+                    b.ToTable("VerificationTokens");
                 });
 
             modelBuilder.Entity("eshop.Infrastructure.Persistence.ApplicationUser", b =>
