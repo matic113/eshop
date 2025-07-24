@@ -1,8 +1,10 @@
-﻿using eshop.Application.Contracts;
+﻿using ErrorOr;
+using eshop.Application.Contracts;
 using eshop.Domain.Entities;
 using eshop.Infrastructure.Extensions;
 using FastEndpoints;
 using FluentValidation;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace eshop.API.Features.Carts
 {
@@ -24,23 +26,18 @@ namespace eshop.API.Features.Carts
         sealed class AddItemToCartResponse
         {
             public string Message { get; set; } = string.Empty;
-            public Guid Id { get; set; }
-            public Guid ProductId { get; set; }
+            public Guid? Id { get; set; }
+            public Guid? ProductId { get; set; }
             public int Quantity { get; set; }
         }
         sealed class AddItemToCartEndpoint : Endpoint<AddItemToCartRequest, AddItemToCartResponse>
         {
-            private readonly ICartRepository _cartRepository;
-            private readonly IGenericRepository<Product> _productRepository;
-            private readonly IGenericRepository<CartItem> _cartItemRepository;
+            private readonly ICartService _cartService;
 
-            public AddItemToCartEndpoint(ICartRepository cartRepository, IGenericRepository<Product> productRepository, IGenericRepository<CartItem> cartItemRepository)
+            public AddItemToCartEndpoint(ICartService cartService)
             {
-                _cartRepository = cartRepository;
-                _productRepository = productRepository;
-                _cartItemRepository = cartItemRepository;
+                _cartService = cartService;
             }
-
             public override void Configure()
             {
                 Post("/api/cart/items");
@@ -63,21 +60,25 @@ namespace eshop.API.Features.Carts
                     return;
                 }
 
-                var result = await _cartRepository.AddItemToCartAsync(userId.Value, r.ProductId, r.Quantity);
+                var result = await _cartService.AddItemToUserCartAsync(userId.Value, r.ProductId, r.Quantity);
 
-                if (result == null)
+                if (result.IsError)
                 {
-                    AddError(x => x.ProductId, "Product doesn't exist.");
-                    await SendErrorsAsync();
-                    return;
+                    var message = result.FirstError.Description;
+                    var badResponse = new AddItemToCartResponse
+                    {
+                        Message = message
+                    };
+
+                    await SendAsync(badResponse, 400);
                 }
 
                 var response = new AddItemToCartResponse
                 {
                     Message = "Item added to cart successfully.",
-                    Id = result.Id,
-                    ProductId = result.ProductId,
-                    Quantity = result.Quantity
+                    Id = result.Value.Id,
+                    ProductId = result.Value.ProductId,
+                    Quantity = result.Value.Quantity
                 };
 
                 await SendOkAsync(response, c);

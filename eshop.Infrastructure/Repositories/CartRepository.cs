@@ -27,46 +27,7 @@ namespace eshop.Infrastructure.Repositories
 
             return cart;
         }
-        public async Task<CartItem?> AddItemToCartAsync(Guid userId, Guid productId, int quantity)
-        {
-            bool productExists = await _context.Products.AnyAsync(p => p.Id == productId);
-
-            if (!productExists)
-            {
-                return null;
-            }
-
-            var cart = await GetCartByUserIdAsync(userId) ?? await CreateEmptyCartAsync(userId);
-
-            var existingItem = cart.CartItems.FirstOrDefault(i => i.ProductId == productId);
-
-            if (existingItem is not null)
-            {
-                var newQuantity = existingItem.Quantity + quantity;
-                existingItem.Quantity = newQuantity;
-
-                _context.Carts.Update(cart);
-                await _context.SaveChangesAsync();
-
-                return existingItem;
-            }
-
-            var newItem = new CartItem
-            {
-                Id = Guid.NewGuid(),
-                CartId = cart.Id,
-                ProductId = productId,
-                Quantity = quantity
-            };
-
-            // Save cartItem to the database
-            await _context.CartItems.AddAsync(newItem);
-            cart.CartItems.Add(newItem);
-
-            await _context.SaveChangesAsync();
-
-            return newItem;
-        }
+        
         public async Task ClearUserCartAsync(Guid userId)
         {
             var cart = await _context.Carts
