@@ -5,7 +5,7 @@
 namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 {
     /// <inheritdoc />
-    public partial class ManualNotesCTypeFixSqlServer : Migration
+    public partial class UpdateAddressNotesType : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

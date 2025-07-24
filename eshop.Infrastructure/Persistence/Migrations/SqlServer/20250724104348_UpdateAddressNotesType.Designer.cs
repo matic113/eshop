@@ -12,8 +12,8 @@ using eshop.Infrastructure.Persistence;
 namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 {
     [DbContext(typeof(SqlServerDbContext))]
-    [Migration("20250724094018_ManualNotesCTypeFixSqlServer")]
-    partial class ManualNotesCTypeFixSqlServer
+    [Migration("20250724104348_UpdateAddressNotesType")]
+    partial class UpdateAddressNotesType
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -189,7 +189,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.Property<string>("Notes")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()

@@ -32,9 +32,6 @@ namespace eshop.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(15);
 
-            builder.Property(a => a.Notes)
-                .HasColumnType("text");
-
             builder.HasOne<ApplicationUser>()
                 .WithMany()
                 .HasForeignKey(a => a.UserId)
