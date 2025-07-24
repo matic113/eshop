@@ -4,6 +4,8 @@ using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using eshop.Application.Contracts;
 using eshop.Domain.Entities;
+using eshop.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -13,15 +15,18 @@ namespace eshop.Infrastructure.Payment
     {
         private readonly HttpClient _httpClient;
         private readonly PaymobOptions _paymobOptions;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<PaymobService> _logger;
 
         public PaymobService(HttpClient httpClient,
             IOptions<PaymobOptions> options,
-            ILogger<PaymobService> logger)
+            ILogger<PaymobService> logger,
+            UserManager<ApplicationUser> userManager)
         {
             _httpClient = httpClient;
             _paymobOptions = options.Value;
             _logger = logger;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -33,6 +38,8 @@ namespace eshop.Infrastructure.Payment
         public async Task<CreatePaymentIntentResponse?> CreatePaymentIntentAsync(Order order)
         {
             const string endpoint = "v1/intention/";
+
+            var user = await _userManager.FindByIdAsync(order.UserId.ToString());
 
             // 1. Create the request payload from your order data.
             var request = new PaymentIntentRequest
@@ -52,9 +59,9 @@ namespace eshop.Infrastructure.Payment
 
                 BillingData = new BillingDataDto
                 {
-                    FirstName = "john",
-                    LastName = "doe",
-                    Email = "johndoe@example.com",
+                    FirstName = user?.FirstName ?? "NA",
+                    LastName = user?.LastName ?? "NA",
+                    Email = user?.Email ?? "NA",
                     PhoneNumber = order.ShippingAddress.PhoneNumber,
                     Street = order.ShippingAddress.Street,
                     Building = "NA",
