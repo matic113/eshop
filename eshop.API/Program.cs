@@ -25,7 +25,7 @@ app.MapScalarApiReference();
 
 await app.ConfigurePersistence();
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
