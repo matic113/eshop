@@ -15,7 +15,13 @@ namespace eshop.API.Features.Carts
         {
             public Guid ItemId { get; set; }
             public Guid ProductId { get; set; }
+            public string ProductName { get; set; } = "";
+            public string ProductCoverUrl { get; set; } = "";
+            public int ProductStock { get; set; }
+            public decimal WeightInGrams { get; set; }
+            public decimal PricePerUnit { get; set; }
             public int Quantity { get; set; }
+            public decimal TotalPrice { get; set; }
         }
 
         sealed class GetCartEndpoint : EndpointWithoutRequest<GetCartResponse>
@@ -48,7 +54,7 @@ namespace eshop.API.Features.Carts
                     return;
                 }
 
-                var cart = await _cartRepository.GetCartByUserIdAsync(userId.Value);
+                var cart = await _cartRepository.GetCartWithProductsByUserIdAsync(userId.Value);
 
                 if (cart == null)
                 {
@@ -62,7 +68,13 @@ namespace eshop.API.Features.Carts
                     {
                         ItemId = item.Id,
                         ProductId = item.ProductId,
-                        Quantity = item.Quantity
+                        ProductName = item.Product.Name,
+                        ProductCoverUrl = item.Product.CoverPictureUrl,
+                        ProductStock = item.Product.Stock,
+                        WeightInGrams = item.Product.Weight,
+                        Quantity = item.Quantity,
+                        PricePerUnit = item.Product.Price,
+                        TotalPrice = item.Quantity * item.Product.Price
                     }).ToList()
                 };
 
