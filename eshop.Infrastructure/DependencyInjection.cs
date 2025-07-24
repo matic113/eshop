@@ -85,6 +85,7 @@ namespace eshop.Infrastructure
 
             services.Configure<PaymobOptions>(configuration.GetSection(PaymobOptions.PaymobOptionsKey));
             services.AddScoped<IPaymobService, PaymobService>();
+            services.AddScoped<IPaymobHmacValidator, PaymobHmacValidator>();
 
             services.AddHttpClient<IPaymobService, PaymobService>(client =>
             {

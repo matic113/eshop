@@ -1,6 +1,7 @@
 ﻿using eshop.Application.Contracts;
 using eshop.Domain.Entities;
 using eshop.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace eshop.Infrastructure.Repositories
 {
@@ -8,6 +9,16 @@ namespace eshop.Infrastructure.Repositories
     {
         public OrderRepository(ApplicationDbContext context) : base(context)
         {
+        }
+
+        public async Task<Order?> GetOrderWithProductsByIdAsync(Guid orderId)
+        {
+            var order = await _context.Orders
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Product)
+                .FirstOrDefaultAsync(o => o.Id == orderId);
+
+            return order;
         }
     }
 }

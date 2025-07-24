@@ -49,6 +49,10 @@ namespace eshop.API.Features.Orders
             public override void Configure()
             {
                 Post("/api/orders/checkout");
+                Description(x =>
+                {
+                    x.WithTags("Orders");
+                });
             }
 
             public override async Task HandleAsync(OrderCheckoutRequest r, CancellationToken c)
