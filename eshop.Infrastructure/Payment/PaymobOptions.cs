@@ -6,6 +6,7 @@
         public required string ApiKey { get; set; }
         public required string SecretKey { get; set; }
         public required string PublicKey { get; set; }
+        public required string HMAC { get; set; }
         public required int CardIntegrationId { get; set; }
     }
 }
