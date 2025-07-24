@@ -1,7 +1,6 @@
 ﻿using eshop.Application.Contracts;
 using eshop.Domain.Entities;
 using FastEndpoints;
-using FluentValidation;
 
 namespace eshop.API.Features.Categories
 {
@@ -37,7 +36,7 @@ namespace eshop.API.Features.Categories
                 await SendOkAsync(ct);
             }
             else
-            { 
+            {
                 await SendNotFoundAsync(ct);
             }
         }

@@ -3,7 +3,6 @@ using eshop.Domain.Entities;
 using eshop.Infrastructure.Extensions;
 using FastEndpoints;
 using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
 
 namespace eshop.API.Features.Carts
 {

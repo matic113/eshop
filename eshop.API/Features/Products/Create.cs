@@ -1,11 +1,9 @@
 ﻿using eshop.Application.Contracts;
-using eshop.Application.Services;
 using eshop.Domain.Entities;
 using eshop.Infrastructure.Persistence;
 using FastEndpoints;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace eshop.API.Features.Products
 {

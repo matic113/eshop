@@ -9,7 +9,7 @@ namespace eshop.API.Features.User
     public record VerifyEmailRequest(string Email, string Otp);
     public class VerifyEmailRequestValidator : Validator<VerifyEmailRequest>
     {
-        public VerifyEmailRequestValidator() 
+        public VerifyEmailRequestValidator()
         {
             RuleFor(x => x.Email)
                 .EmailAddress()

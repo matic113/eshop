@@ -1,8 +1,6 @@
 ﻿using eshop.Application.Contracts;
 using eshop.Domain.Entities;
 using FastEndpoints;
-using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
 
 namespace eshop.API.Features.Categories
 {

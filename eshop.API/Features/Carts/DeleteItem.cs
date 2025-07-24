@@ -39,7 +39,7 @@ namespace eshop.API.Features.Carts
             public override async Task HandleAsync(DeleteItemFromCartRequest r, CancellationToken c)
             {
                 var userId = User.GetUserId();
-                
+
                 if (userId is null)
                 {
                     await SendUnauthorizedAsync(c);

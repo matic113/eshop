@@ -50,7 +50,7 @@ namespace eshop.API.Features.User
 
                 if (user is not null)
                 {
-                    await _otpService.GenerateAndSendNewOtpAsync(user.Id ,user.Email!);
+                    await _otpService.GenerateAndSendNewOtpAsync(user.Id, user.Email!);
                 }
 
                 // Regardless of whether the user exists or not, we do not want to reveal if the email is registered.

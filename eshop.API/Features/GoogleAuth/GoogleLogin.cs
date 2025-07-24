@@ -1,7 +1,6 @@
 ﻿using eshop.Infrastructure.Persistence;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 
 namespace Auth.API.Features.Google

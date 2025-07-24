@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.Eventing.Reader;
-using eshop.Application.Contracts;
+﻿using eshop.Application.Contracts;
 using eshop.Domain.Entities;
 using eshop.Infrastructure.Extensions;
 using FastEndpoints;
@@ -68,7 +67,7 @@ namespace eshop.API.Features.Carts
 
                 if (result == null)
                 {
-                    AddError(x=> x.ProductId, "Product doesn't exist.");
+                    AddError(x => x.ProductId, "Product doesn't exist.");
                     await SendErrorsAsync();
                     return;
                 }

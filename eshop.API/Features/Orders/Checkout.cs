@@ -68,7 +68,7 @@ namespace eshop.API.Features.Orders
                     var error = checkoutDto.FirstError;
                     await SendAsync(new()
                     {
-                       Message = error.Description ?? "Something went wrong while placing the order."
+                        Message = error.Description ?? "Something went wrong while placing the order."
                     }, StatusCodes.Status400BadRequest);
                     return;
                 }

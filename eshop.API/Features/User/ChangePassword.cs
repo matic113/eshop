@@ -1,5 +1,5 @@
-﻿using eshop.Infrastructure.Persistence;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+using eshop.Infrastructure.Persistence;
 using FastEndpoints;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;

@@ -58,7 +58,7 @@ namespace eshop.API.Features.Addresses
                 var result = await _addressRepository.DeleteAsync(addressId);
                 await _unitOfWork.SaveChangesAsync(c);
 
-                if(!result)
+                if (!result)
                 {
                     AddError("Failed to delete the address.");
                     await SendErrorsAsync(cancellation: c);
