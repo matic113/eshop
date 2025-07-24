@@ -1,4 +1,4 @@
-﻿using eshop.Application.Contracts;
+﻿using eshop.Application.Contracts.Services;
 using eshop.Infrastructure.Persistence;
 using FastEndpoints;
 using FluentValidation;

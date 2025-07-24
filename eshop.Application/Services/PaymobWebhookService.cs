@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography;
 using ErrorOr;
 using eshop.Application.Contracts;
+using eshop.Application.Contracts.Repositories;
 using eshop.Application.Dtos.Paymob;
 using eshop.Domain.Enums;
 using Microsoft.Extensions.Logging;

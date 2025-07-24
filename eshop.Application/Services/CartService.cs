@@ -1,6 +1,8 @@
 ﻿using System.IO.Pipes;
 using ErrorOr;
 using eshop.Application.Contracts;
+using eshop.Application.Contracts.Repositories;
+using eshop.Application.Contracts.Services;
 using eshop.Application.Errors;
 using eshop.Domain.Entities;
 

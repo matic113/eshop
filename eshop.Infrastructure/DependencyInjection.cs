@@ -2,6 +2,8 @@
 using System.Net.Mail;
 using System.Text;
 using eshop.Application.Contracts;
+using eshop.Application.Contracts.Repositories;
+using eshop.Application.Contracts.Services;
 using eshop.Infrastructure.Authentication;
 using eshop.Infrastructure.Email;
 using eshop.Infrastructure.Payment;

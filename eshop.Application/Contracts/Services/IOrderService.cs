@@ -1,7 +1,7 @@
 ﻿using ErrorOr;
 using eshop.Application.Dtos;
 
-namespace eshop.Application.Contracts
+namespace eshop.Application.Contracts.Services
 {
     public interface IOrderService
     {

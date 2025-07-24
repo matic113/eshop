@@ -1,5 +1,4 @@
-﻿
-using eshop.Application.Contracts;
+﻿using eshop.Application.Contracts.Repositories;
 using eshop.Domain.Entities;
 using FastEndpoints;
 

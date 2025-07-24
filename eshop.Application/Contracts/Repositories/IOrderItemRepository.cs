@@ -1,6 +1,6 @@
 ﻿using eshop.Domain.Entities;
 
-namespace eshop.Application.Contracts
+namespace eshop.Application.Contracts.Repositories
 {
     public interface IOrderItemRepository : IGenericRepository<OrderItem>
     {

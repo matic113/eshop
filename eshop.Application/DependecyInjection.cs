@@ -1,4 +1,5 @@
 ﻿using eshop.Application.Contracts;
+using eshop.Application.Contracts.Services;
 using eshop.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 

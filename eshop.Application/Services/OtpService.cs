@@ -1,5 +1,7 @@
 ﻿using System.Security.Cryptography;
 using eshop.Application.Contracts;
+using eshop.Application.Contracts.Repositories;
+using eshop.Application.Contracts.Services;
 using eshop.Domain.Entities;
 
 namespace eshop.Application.Services

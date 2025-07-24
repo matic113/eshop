@@ -1,5 +1,5 @@
 ﻿using ErrorOr;
-using eshop.Application.Contracts;
+using eshop.Application.Contracts.Services;
 using eshop.Domain.Entities;
 using eshop.Infrastructure.Extensions;
 using FastEndpoints;

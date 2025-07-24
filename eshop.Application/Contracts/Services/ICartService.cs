@@ -1,7 +1,7 @@
 ﻿using ErrorOr;
 using eshop.Domain.Entities;
 
-namespace eshop.Application.Contracts
+namespace eshop.Application.Contracts.Services
 {
     public interface ICartService
     {

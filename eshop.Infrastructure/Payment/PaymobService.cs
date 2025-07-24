@@ -2,7 +2,7 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
-using eshop.Application.Contracts;
+using eshop.Application.Contracts.Services;
 using eshop.Domain.Entities;
 using eshop.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;

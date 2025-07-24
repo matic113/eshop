@@ -1,4 +1,4 @@
-﻿using eshop.Application.Contracts;
+﻿using eshop.Application.Contracts.Services;
 using FluentEmail.Core;
 
 namespace eshop.Infrastructure.Email

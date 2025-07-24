@@ -5,6 +5,8 @@ using eshop.Domain.Enums;
 using System.Collections.Concurrent;
 using ErrorOr;
 using eshop.Application.Errors;
+using eshop.Application.Contracts.Repositories;
+using eshop.Application.Contracts.Services;
 
 namespace eshop.Application.Services
 {
