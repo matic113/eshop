@@ -1,5 +1,6 @@
 ﻿using eshop.Application.Contracts;
 using eshop.Application.Contracts.Repositories;
+using eshop.Application.Contracts.Services;
 using eshop.Domain.Entities;
 using eshop.Infrastructure.Extensions;
 using FastEndpoints;
@@ -27,22 +28,18 @@ namespace eshop.API.Features.Carts
         sealed class DecrementItemResponse
         {
             public string Message { get; set; } = string.Empty;
-            public Guid ItemId { get; set; }
-            public Guid ProductId { get; set; }
-            public int Quantity { get; set; }
+            public Guid? ItemId { get; set; }
+            public Guid? ProductId { get; set; }
+            public int Quantity { get; set; } = 0;
         }
 
         sealed class DecrementItemEndpoint : Endpoint<DecrementItemRequest, DecrementItemResponse>
         {
-            private readonly ICartRepository _cartRepository;
-            private readonly IGenericRepository<CartItem> _cartItemRepository;
-            private readonly IUnitOfWork _unitOfWork;
+            private readonly ICartService _cartService;
 
-            public DecrementItemEndpoint(ICartRepository cartRepository, IUnitOfWork unitOfWork, IGenericRepository<CartItem> cartItemRepository)
+            public DecrementItemEndpoint(ICartService cartService)
             {
-                _cartRepository = cartRepository;
-                _unitOfWork = unitOfWork;
-                _cartItemRepository = cartItemRepository;
+                _cartService = cartService;
             }
 
             public override void Configure()
@@ -67,52 +64,31 @@ namespace eshop.API.Features.Carts
                     return;
                 }
 
-                var cart = await _cartRepository.GetCartByUserIdAsync(userId.Value);
+                var result = await _cartService.DecrementItemQuantityInUserCartAsync(userId.Value, r.ItemId, r.Quantity);
 
-                if (cart is null)
+                if (result.IsError)
                 {
-                    await SendNotFoundAsync(c);
+                    await SendAsync(new DecrementItemResponse
+                    {
+                        Message = result.FirstError.Description
+                    }, 400);
+
                     return;
                 }
 
-                var existingItem = cart.CartItems.FirstOrDefault(i => i.Id == r.ItemId);
+                var message = result.Value.WasRemoved ? "Item removed from cart."
+                    : "Item quantity decremented successfully.";
 
-                if (existingItem is null)
+                var response = new DecrementItemResponse
                 {
-                    await SendNotFoundAsync(c);
-                    return;
-                }
+                    Message = message,
+                    ItemId = result.Value.CartItem!.Id,
+                    ProductId = result.Value.CartItem.ProductId,
+                    Quantity = result.Value.CartItem.Quantity
+                };
 
-                if (existingItem.Quantity <= r.Quantity)
-                {
-                    bool result = await _cartRepository.RemoveItemFromCartAsync(userId.Value, existingItem.Id);
-                    await _unitOfWork.SaveChangesAsync(c);
-
-                    if (result)
-                    {
-                        await SendOkAsync(c);
-                    }
-                    else
-                    {
-                        await SendNotFoundAsync(c);
-                    }
-                }
-                else
-                {
-                    // Decrement the quantity of the existing item
-                    existingItem.Quantity -= r.Quantity;
-                    await _cartItemRepository.UpdateAsync(existingItem);
-                    await _unitOfWork.SaveChangesAsync(c);
-
-                    var response = new DecrementItemResponse
-                    {
-                        Message = "Item quantity decremented successfully.",
-                        ItemId = existingItem.Id,
-                        ProductId = existingItem.ProductId,
-                        Quantity = existingItem.Quantity
-                    };
-                    await SendOkAsync(response, c);
-                }
+                await SendOkAsync(response, c);
+                return;
             }
         }
     }

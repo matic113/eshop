@@ -20,5 +20,9 @@ namespace eshop.Application.Errors
         public static Error NotEnoughStock(int requested, int available) => Error.Validation(
             code: "Cart.NotEnoughStock",
             description: $"Not enough stock for product, requested: {requested}, available: {available}.");
+
+        public static Error ItemNotFound => Error.NotFound(
+            code: "Cart.ItemNotFound",
+            description: "Item was not found in cart.");
     }
 }
