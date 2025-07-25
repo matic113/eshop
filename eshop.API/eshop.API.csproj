@@ -4,6 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+	<PreserveCompilationContext>true</PreserveCompilationContext>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,5 +22,5 @@
     <ProjectReference Include="..\eshop.Application\eshop.Application.csproj" />
     <ProjectReference Include="..\eshop.Infrastructure\eshop.Infrastructure.csproj" />
   </ItemGroup>
-
+	
 </Project>

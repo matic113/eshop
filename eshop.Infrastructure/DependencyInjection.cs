@@ -71,6 +71,7 @@ namespace eshop.Infrastructure
             // Email
 
             services.AddFluentEmail(configuration["Email:FromAddress"]!)
+                .AddRazorRenderer()
                 .AddSmtpSender(new SmtpClient
                 {
                     Host = configuration["Email:SmtpHost"]!,
