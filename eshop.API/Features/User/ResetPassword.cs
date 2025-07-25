@@ -105,9 +105,7 @@ namespace eshop.API.Features.User
                 }
 
                 // 3. Send confirmation email
-                var emailMessage = "Your password has been reset successfully. If you did not request this change, please contact support immediately.";
-
-                await _emailService.SendEmailAsync(user.Email!, "Password Reset Successful", emailMessage);
+                await _emailService.SendPasswordResetConfirmationEmailAsync(user.Email!, user.FirstName);
 
                 // 4. Clean up the OTP
                 await _otpService.DeleteTokenByUserIdAsync(user.Id);

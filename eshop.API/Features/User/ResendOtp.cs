@@ -26,11 +26,13 @@ namespace eshop.API.Features.User
         {
             private readonly UserManager<ApplicationUser> _userManager;
             private readonly IOtpService _otpService;
+            private readonly IEmailService _emailService;
 
-            public ResendOtpEndpoint(UserManager<ApplicationUser> userManager, IOtpService otpService)
+            public ResendOtpEndpoint(UserManager<ApplicationUser> userManager, IOtpService otpService, IEmailService emailService)
             {
                 _userManager = userManager;
                 _otpService = otpService;
+                _emailService = emailService;
             }
 
             public override void Configure()
@@ -50,7 +52,8 @@ namespace eshop.API.Features.User
 
                 if (user is not null)
                 {
-                    await _otpService.GenerateAndSendNewOtpAsync(user.Id, user.Email!);
+                    var otp = await _otpService.GenerateNewOtpAsync(user.Id);
+                    await _emailService.SendOtpEmailAsync(user.Email!, otp, user.FirstName);
                 }
 
                 // Regardless of whether the user exists or not, we do not want to reveal if the email is registered.

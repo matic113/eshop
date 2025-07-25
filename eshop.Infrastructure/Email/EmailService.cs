@@ -36,13 +36,35 @@ namespace eshop.Infrastructure.Email
 
         public async Task SendOtpEmailAsync(string email, string otp, string userName)
         {
-            var viewModel = new OtpViewModel
+            var viewModel = new UserNotificationViewModel
             {
                 FirstName = userName,
                 Otp = otp
             };
 
             await SendEmailUsingTemplateAsync(email, "Email Verification: Eshop", "SignUpOtp.cshtml", viewModel);
+        }
+
+        public async Task SendResetPasswordOtpEmailAsync(string email, string otp, string userName)
+        {
+            var viewModel = new UserNotificationViewModel
+            {
+                FirstName = userName,
+                Otp = otp
+            };
+
+            await SendEmailUsingTemplateAsync(email, "Password Reset: Eshop", "ResetPasswordOtp.cshtml", viewModel);
+        }
+
+        public async Task SendPasswordResetConfirmationEmailAsync(string email, string userName)
+        {
+            var viewModel = new UserNotificationViewModel
+            {
+                FirstName = userName
+                // Otp is null for confirmation emails
+            };
+
+            await SendEmailUsingTemplateAsync(email, "Password Reset Successful", "PasswordResetConfirmation.cshtml", viewModel);
         }
     }
 }

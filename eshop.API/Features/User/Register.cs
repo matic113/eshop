@@ -47,12 +47,14 @@ public class Register : Endpoint<RegisterRequest>
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IOtpService _otpService;
+    private readonly IEmailService _emailService;
 
-    public Register(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IOtpService otpService)
+    public Register(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IOtpService otpService, IEmailService emailService)
     {
         _context = context;
         _userManager = userManager;
         _otpService = otpService;
+        _emailService = emailService;
     }
 
     public override void Configure()
@@ -90,7 +92,7 @@ public class Register : Endpoint<RegisterRequest>
 
         var otp = await _otpService.GenerateOtpAsync(user.Id);
 
-        await _otpService.SendOtpEmailAsync(otp, req.Email);
+        await _emailService.SendOtpEmailAsync(req.Email, otp, user.FirstName);
 
         await SendOkAsync(new
         {

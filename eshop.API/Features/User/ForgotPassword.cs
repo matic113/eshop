@@ -27,11 +27,13 @@ namespace eshop.API.Features.User
         {
             private readonly UserManager<ApplicationUser> _userManager;
             private readonly IOtpService _otpService;
+            private readonly IEmailService _emailService;
 
-            public ForgotPasswordEndpoint(IOtpService otpService, UserManager<ApplicationUser> userManager)
+            public ForgotPasswordEndpoint(IOtpService otpService, UserManager<ApplicationUser> userManager, IEmailService emailService)
             {
                 _otpService = otpService;
                 _userManager = userManager;
+                _emailService = emailService;
             }
 
             public override void Configure()
@@ -52,7 +54,7 @@ namespace eshop.API.Features.User
                 {
                     var otp = await _otpService.GenerateOtpAsync(user.Id);
 
-                    await _otpService.SendResetPasswordOtpEmailAsync(otp, user.Email!);
+                    await _emailService.SendResetPasswordOtpEmailAsync(user.Email!, otp, user.FirstName);
                 }
 
                 // Regardless of whether the user exists or not, we do not want to reveal if the email is registered.
