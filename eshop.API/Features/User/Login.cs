@@ -64,6 +64,13 @@ public class Login : Endpoint<LoginRequest, LoginResponse>
             return;
         }
 
+        if (!user.EmailConfirmed)
+        {
+            AddError(x => x.Email, "Email not verified, please verify your email first.");
+            await SendErrorsAsync();
+            return;
+        }
+
         var (jwtToken, expirationDateInUtc) = _jwtService.GenerateJwtToken(user);
 
         var refreshTokenValue = _jwtService.GenerateRefreshToken();
