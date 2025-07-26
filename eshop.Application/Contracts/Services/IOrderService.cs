@@ -8,5 +8,6 @@ namespace eshop.Application.Contracts.Services
     {
         Task<ErrorOr<OrderCheckoutDto>> CheckoutAsync(Guid userId, Guid shippingAddressId, string paymentMethod);
         Task<OrderHistoryLookupDto> GetOrdersHistoryAsync(Guid orderId);
+        Task<IEnumerable<Order>> GetOrdersByUserIdAsync(Guid userId, int limit);
     }
 }

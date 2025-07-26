@@ -6,5 +6,6 @@ namespace eshop.Application.Contracts.Repositories
     {
         Task<Order?> GetOrderWithProductsByIdAsync(Guid orderId);
         Task<Order?> GetOrderWithHistoryByIdAsync(Guid orderId);
+        Task<IEnumerable<Order>> GetOrdersByUserIdAsync(Guid userId, int limit);
     }
 }

@@ -199,5 +199,11 @@ namespace eshop.Application.Services
                 OrderStatusHistories = order.OrderStatusHistories
             };
         }
+
+        public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(Guid userId, int limit)
+        {
+            var orders = await _orderRepository.GetOrdersByUserIdAsync(userId, limit);
+            return orders;
+        }
     }
 }

@@ -47,6 +47,10 @@ namespace eshop.API.Features.Orders
             public override void Configure()
             {
                 Get("/api/orders/history/{orderId}");
+                Description(x =>
+                {
+                    x.WithTags("Orders");
+                });
             }
 
             public override async Task HandleAsync(GetOrdersHistoryRequest r, CancellationToken c)
@@ -69,7 +73,8 @@ namespace eshop.API.Features.Orders
                 {
                     Message = "Order history retrieved successfully.",
                     OrderId = r.OrderId,
-                    OrderCode = result.OrderCode.Substring(result.OrderCode.Length - 6),
+                    // Take the last 6 characters of the OrderCode for display
+                    OrderCode = result.OrderCode[^6..],
                     History = result.OrderStatusHistories
                         .Select(h => new OrderHistorySingleEntry
                         {

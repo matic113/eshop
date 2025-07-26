@@ -28,5 +28,14 @@ namespace eshop.Infrastructure.Repositories
 
             return order;
         }
+
+        public async Task<IEnumerable<Order>> GetOrdersByUserIdAsync(Guid userId, int limit)
+        {
+            return await _context.Orders
+                .Where(o => o.UserId == userId)
+                .Take(limit)
+                .OrderByDescending(o => o.CreatedAt)
+                .ToListAsync();
+        }
     }
 }
