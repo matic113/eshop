@@ -33,17 +33,27 @@ namespace eshop.API.Features.Products
             {
                 var productId = Route<Guid>("Id");
 
-                bool isDeleted = await _productRepository.DeleteAsync(productId);
+                var product = await _productRepository.GetByIdAsync(productId);
 
-                if (isDeleted)
+                if (product is null)
                 {
-                    await _unitOfWork.SaveChangesAsync(c);
-                    await SendOkAsync(c);
+                    await SendNotFoundAsync();
+                    return;
                 }
-                else
+
+                if (product.IsDeleted)
                 {
-                    await SendNotFoundAsync(c);
+                    AddError("Product already deleted.");
+                    await SendErrorsAsync();
+                    return;
                 }
+
+                product.IsDeleted = true;
+                product.DeletedAt = DateTime.UtcNow;
+
+                await _unitOfWork.SaveChangesAsync(c);
+                await SendOkAsync(new { Message = "Product deleted successfully." }, c);
+                return;
             }
         }
     }

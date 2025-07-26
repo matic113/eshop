@@ -32,7 +32,8 @@ namespace eshop.Application.Services
 
             if (cart is null)
             {
-                return CartErrors.NotFound;
+                cart = await _cartRepository.CreateEmptyCartAsync(userId);
+                await _unitOfWork.SaveChangesAsync();
             }
 
             var product = await _productRepository.GetByIdAsync(productId);

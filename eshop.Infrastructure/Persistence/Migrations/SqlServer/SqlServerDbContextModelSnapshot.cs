@@ -34,7 +34,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasIndex("ProductsId");
 
-                    b.ToTable("CategoryProduct");
+                    b.ToTable("CategoryProduct", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
@@ -210,7 +210,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Addresses");
+                    b.ToTable("Addresses", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.Cart", b =>
@@ -227,7 +227,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Carts");
+                    b.ToTable("Carts", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.CartItem", b =>
@@ -251,7 +251,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItems");
+                    b.ToTable("CartItems", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.Category", b =>
@@ -267,7 +267,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.Offer", b =>
@@ -292,7 +292,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasKey("Id");
 
-                    b.ToTable("Offers");
+                    b.ToTable("Offers", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.Order", b =>
@@ -336,7 +336,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.OrderItem", b =>
@@ -370,7 +370,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.OrderStatusHistory", b =>
@@ -402,7 +402,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderStatusHistories");
+                    b.ToTable("OrderStatusHistories", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.Product", b =>
@@ -460,7 +460,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.ProductPicture", b =>
@@ -480,7 +480,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductPictures");
+                    b.ToTable("ProductPictures", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.Review", b =>
@@ -508,7 +508,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.Seller", b =>
@@ -530,7 +530,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Sellers");
+                    b.ToTable("Sellers", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Domain.Entities.VerificationToken", b =>
@@ -557,7 +557,7 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("VerificationTokens");
+                    b.ToTable("VerificationTokens", (string)null);
                 });
 
             modelBuilder.Entity("eshop.Infrastructure.Persistence.ApplicationUser", b =>

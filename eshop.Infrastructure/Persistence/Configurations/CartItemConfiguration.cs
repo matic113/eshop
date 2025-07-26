@@ -14,7 +14,8 @@ namespace eshop.Infrastructure.Persistence.Configurations
 
             builder.HasOne(ci => ci.Product)
                 .WithMany()
-                .HasForeignKey(ci => ci.ProductId);
+                .HasForeignKey(ci => ci.ProductId)
+                .IsRequired(false);
         }
     }
 }

@@ -18,6 +18,8 @@ namespace eshop.Domain.Entities
         public decimal Weight { get; set; }
         public string Color { get; set; }
         public short DiscountPercentage { get; set; } = 0;
+        public bool IsDeleted { get; set; } = false;
+        public DateTime? DeletedAt { get; set; }
 
         // Navigational properties
         public ICollection<Category> Categories{ get; set; } = new HashSet<Category>();

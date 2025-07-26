@@ -14,13 +14,15 @@ namespace eshop.Infrastructure.Persistence.Configurations
 
             builder.HasIndex(p => p.SellerId);
 
+            builder.Property(p => p.ProductCode)
+                .HasMaxLength(50);
+
             builder.Property(p => p.Name)
                 .IsRequired()
                 .HasMaxLength(100);
 
             builder.Property(p => p.Description)
-                .IsRequired()
-                .HasColumnType("text");
+                .IsRequired();
 
             builder.Property(p => p.Price)
                 .IsRequired()
@@ -44,6 +46,12 @@ namespace eshop.Infrastructure.Persistence.Configurations
                 .HasDefaultValue(0)
                 .HasColumnType("smallint");
 
+            // Filter
+
+            builder.HasIndex(p => p.IsDeleted);
+
+            builder.HasQueryFilter(p => !p.IsDeleted);
+
             // Relationships
             builder
                 .HasMany(p => p.Categories)
@@ -52,16 +60,19 @@ namespace eshop.Infrastructure.Persistence.Configurations
             builder.HasMany(p => p.ProductPictures)
                 .WithOne(pp => pp.Product)
                 .HasForeignKey(pp => pp.ProductId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(p => p.Reviews)
                 .WithOne(r => r.Product)
                 .HasForeignKey(r => r.ProductId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(p => p.OrderItems)
                 .WithOne(oi => oi.Product)
                 .HasForeignKey(oi => oi.ProductId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne<ApplicationUser>()

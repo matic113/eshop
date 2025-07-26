@@ -71,6 +71,7 @@ namespace eshop.API.Features.Carts
                     };
 
                     await SendAsync(badResponse, 400);
+                    return;
                 }
 
                 var response = new AddItemToCartResponse
