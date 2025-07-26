@@ -80,12 +80,29 @@ namespace eshop.Application.Services
                 ? OrderStatus.Processing
                 : OrderStatus.Pending;
 
-            await _unitOfWork.SaveChangesAsync();
+            order.OrderStatusHistories.Add(new OrderStatusHistory
+            {
+                Id = Guid.NewGuid(),
+                OrderId = order.Id,
+                OrderCode = order.OrderNumber,
+                OrderStatus = OrderStatus.Pending,
+                ChangeDate = DateTime.UtcNow
+            });
 
 
             // Handle Payment
             if (order.PaymentMethod == PaymentMethod.CashOnDelivery)
             {
+
+                order.OrderStatusHistories.Add(new OrderStatusHistory
+                {
+                    Id = Guid.NewGuid(),
+                    OrderId = order.Id,
+                    OrderCode = order.OrderNumber,
+                    OrderStatus = OrderStatus.Processing,
+                    ChangeDate = DateTime.UtcNow
+                });
+
                 await _cartRepository.ClearUserCartAsync(userId);
                 await _unitOfWork.SaveChangesAsync();
 
@@ -93,6 +110,8 @@ namespace eshop.Application.Services
             }
             else
             {
+                await _unitOfWork.SaveChangesAsync();
+
                 var paymentIntent = await _paymobService.CreatePaymentIntentAsync(order);
                 if (paymentIntent is null)
                 {
@@ -160,6 +179,10 @@ namespace eshop.Application.Services
             }
 
             return Result.Success;
+        }
+
+        public async Task<IEnumerable<OrderStatusHistory>> GetOrdersHistoryAsync(Guid orderId)
+        {
         }
     }
 }

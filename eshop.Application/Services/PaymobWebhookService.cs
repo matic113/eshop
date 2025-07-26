@@ -3,6 +3,7 @@ using ErrorOr;
 using eshop.Application.Contracts;
 using eshop.Application.Contracts.Repositories;
 using eshop.Application.Dtos.Paymob;
+using eshop.Domain.Entities;
 using eshop.Domain.Enums;
 using Microsoft.Extensions.Logging;
 
@@ -67,6 +68,17 @@ namespace eshop.Application.Services
 
                 // 5. Update the order status.
                 order.Status = OrderStatus.Processing;
+
+                var orderStatusHistory = new OrderStatusHistory
+                {
+                    Id = Guid.NewGuid(),
+                    OrderId = order.Id,
+                    OrderCode = order.OrderNumber,
+                    OrderStatus = OrderStatus.Processing,
+                    ChangeDate = DateTime.UtcNow
+                };
+
+                order.OrderStatusHistories.Add(orderStatusHistory);
 
                 // 6. Decrement product stock.
                 foreach (var item in order.OrderItems)
