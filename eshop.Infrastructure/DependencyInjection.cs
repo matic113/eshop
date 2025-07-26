@@ -105,6 +105,7 @@ namespace eshop.Infrastructure
             services.AddScoped<ICartRepository, CartRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderItemRepository, OrderItemRepository>();
+            services.AddScoped<IOrderHistoryRepository, OrderHistoryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
         }
 

@@ -181,8 +181,23 @@ namespace eshop.Application.Services
             return Result.Success;
         }
 
-        public async Task<IEnumerable<OrderStatusHistory>> GetOrdersHistoryAsync(Guid orderId)
+        public async Task<OrderHistoryLookupDto> GetOrdersHistoryAsync(Guid orderId)
         {
+            var order = await _orderRepository.GetOrderWithHistoryByIdAsync(orderId);
+
+            if (order == null)
+            {
+                return new OrderHistoryLookupDto
+                {
+                    OrderStatusHistories = []
+                };
+            }
+
+            return new OrderHistoryLookupDto
+            {
+                OrderCode = order.OrderNumber,
+                OrderStatusHistories = order.OrderStatusHistories
+            };
         }
     }
 }

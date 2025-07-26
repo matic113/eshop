@@ -20,5 +20,13 @@ namespace eshop.Infrastructure.Repositories
 
             return order;
         }
+        public async Task<Order?> GetOrderWithHistoryByIdAsync(Guid orderId)
+        {
+            var order = await _context.Orders
+                .Include(o => o.OrderStatusHistories)
+                .FirstOrDefaultAsync(o => o.Id == orderId);
+
+            return order;
+        }
     }
 }
