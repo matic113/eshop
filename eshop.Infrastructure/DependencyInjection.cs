@@ -122,13 +122,20 @@ namespace eshop.Infrastructure
                 return;
             }
 
-            services.AddDbContext<ApplicationDbContext, PostgresDbContext>(opt =>
+            // Default to SQL Server, uncomment Postgres if needed
+            services.AddDbContext<ApplicationDbContext, SqlServerDbContext>(opt =>
             {
-                opt.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
+                opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly("eshop.Infrastructure"));
-
-                opt.UseSnakeCaseNamingConvention();
             });
+
+            //services.AddDbContext<ApplicationDbContext, PostgresDbContext>(opt =>
+            //{
+            //    opt.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
+            //        b => b.MigrationsAssembly("eshop.Infrastructure"));
+
+            //    opt.UseSnakeCaseNamingConvention();
+            //});
         }
     }
 }
