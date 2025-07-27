@@ -13,9 +13,9 @@ namespace eshop.Infrastructure.Persistence
                 .SetBasePath(Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "/eshop.API")
                 .AddJsonFile("appsettings.Development.json")
                 .Build();
-
+                
             var optionsBuilder = new DbContextOptionsBuilder<SqlServerDbContext>();
-            var connectionString = configuration.GetConnectionString("Monster");
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
 
             optionsBuilder.UseSqlServer(connectionString,
                 b => b.MigrationsAssembly(typeof(SqlServerDbContext).Assembly.FullName));
