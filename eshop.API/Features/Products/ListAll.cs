@@ -54,6 +54,8 @@ namespace eshop.API.Features.Products
             public string ProductCode { get; set; }
             public string Name { get; set; }
             public string Description { get; set; }
+            public string NameArabic { get; set; }
+            public string DescriptionArabic { get; set; }
             public string CoverPictureUrl { get; set; }
             public decimal Price { get; set; }
             public int Stock { get; set; }
