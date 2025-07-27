@@ -12,6 +12,8 @@ namespace eshop.Domain.Entities
         public required string ProductCode { get; set; }
         public required string Name { get; set; }
         public required string Description { get; set; }
+        public required string NameArabic { get; set; }
+        public required string DescriptionArabic { get; set; }
         public required decimal Price { get; set; }
         public int Stock { get; set; }
         public required string CoverPictureUrl { get; set; }

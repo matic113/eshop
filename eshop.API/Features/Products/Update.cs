@@ -120,7 +120,9 @@ namespace eshop.API.Features.Products
         sealed class UpdateProductRequest
         {
             public string? Name { get; set; }
+            public string? NameArabic { get; set; }
             public string? Description { get; set; }
+            public string? DescriptionArabic { get; set; }
             public string? CoverPictureUrl { get; set; }
             public decimal? Price { get; set; }
             public int? Stock { get; set; }
@@ -136,7 +138,9 @@ namespace eshop.API.Features.Products
             public Guid SellerId { get; set; }
             public string ProductCode { get; set; }
             public string Name { get; set; }
+            public string NameArabic { get; set; }
             public string Description { get; set; }
+            public string DescriptionArabic { get; set; }
             public string CoverPictureUrl { get; set; }
             public decimal Price { get; set; }
             public int Stock { get; set; }
@@ -164,9 +168,17 @@ namespace eshop.API.Features.Products
                     .MaximumLength(100).WithMessage("Product name cannot exceed 100 characters.")
                     .When(x => x.Name is not null);
 
+                RuleFor(x => x.NameArabic)
+                    .MaximumLength(100).WithMessage("Product arabic name cannot exceed 100 characters.")
+                    .When(x => x.NameArabic is not null);
+
                 RuleFor(x => x.Description)
                     .MaximumLength(1000).WithMessage("Product description cannot exceed 1000 characters.")
                     .When(x => x.Description is not null);
+
+                RuleFor(x => x.DescriptionArabic)
+                    .MaximumLength(1000).WithMessage("Product arabic description cannot exceed 1000 characters.")
+                    .When(x => x.DescriptionArabic is not null);
 
                 RuleFor(x => x.CoverPictureUrl)
                     .Must(url => Uri.IsWellFormedUriString(url, UriKind.Absolute))

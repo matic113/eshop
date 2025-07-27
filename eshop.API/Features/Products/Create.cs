@@ -57,6 +57,8 @@ namespace eshop.API.Features.Products
                 ProductCode = productCode,
                 Name = r.Name,
                 Description = r.Description,
+                NameArabic = r.NameArabic,
+                DescriptionArabic = r.DescriptionArabic,
                 CoverPictureUrl = r.CoverPictureUrl,
                 Price = r.Price,
                 Stock = r.Stock,
@@ -109,6 +111,8 @@ namespace eshop.API.Features.Products
                     ProductCode = result.ProductCode,
                     Name = result.Name,
                     Description = result.Description,
+                    NameArabic = result.NameArabic,
+                    DescriptionArabic = result.DescriptionArabic,
                     CoverPictureUrl = result.CoverPictureUrl,
                     Price = result.Price,
                     Stock = result.Stock,
@@ -137,6 +141,8 @@ namespace eshop.API.Features.Products
         public Guid SellerId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public string NameArabic { get; set; }
+        public string DescriptionArabic { get; set; }
         public string CoverPictureUrl { get; set; }
         public decimal Price { get; set; }
         public int Stock { get; set; }
@@ -154,6 +160,8 @@ namespace eshop.API.Features.Products
         public string ProductCode { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public string NameArabic { get; set; }
+        public string DescriptionArabic { get; set; }
         public string CoverPictureUrl { get; set; }
         public decimal Price { get; set; }
         public int Stock { get; set; }
@@ -186,6 +194,14 @@ namespace eshop.API.Features.Products
             RuleFor(x => x.Description)
                 .NotEmpty().WithMessage("Product description is required.")
                 .MaximumLength(1000).WithMessage("Product description cannot exceed 1000 characters.");
+
+            RuleFor(x => x.NameArabic)
+                .NotEmpty().WithMessage("Product arabic name is required.")
+                .MaximumLength(100).WithMessage("Product arabic name cannot exceed 100 characters.");
+
+            RuleFor(x => x.DescriptionArabic)
+                .NotEmpty().WithMessage("Product arabic description is required.")
+                .MaximumLength(1000).WithMessage("Product arabic description cannot exceed 1000 characters.");
 
             RuleFor(x => x.CoverPictureUrl)
                 .NotEmpty().WithMessage("Cover picture URL is required.")

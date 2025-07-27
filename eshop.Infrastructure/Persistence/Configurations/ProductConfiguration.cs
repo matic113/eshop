@@ -24,6 +24,13 @@ namespace eshop.Infrastructure.Persistence.Configurations
             builder.Property(p => p.Description)
                 .IsRequired();
 
+            builder.Property(p => p.NameArabic)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            builder.Property(p => p.DescriptionArabic)
+                .IsRequired();
+
             builder.Property(p => p.Price)
                 .IsRequired()
                 .HasDefaultValue(0)
