@@ -39,7 +39,8 @@ namespace Auth.API.Features.Google
             try
             {
                 var validAudiences = new[] {
-                    _configuration["Authentication:Google:AndroidClientId"]
+                    _configuration["Google:AndroidClientId"],
+                    _configuration["Google:ClientId"]
                 };
 
                 var validationSettings = new GoogleJsonWebSignature.ValidationSettings
