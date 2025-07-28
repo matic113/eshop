@@ -121,8 +121,8 @@ namespace eshop.Application.Services
                 return new OrderCheckoutDto
                 {
                     Order = order,
-                    PaymentClientSecret = paymentIntent.ClientSecret,
-                    PaymentKey = paymentIntent.PaymentKey
+                    UnifiedCheckoutUrl = paymentIntent.UnifiedChechoutUrl,
+                    PaymentClientSecret = paymentIntent.ClientSecret
                 };
             }
         }

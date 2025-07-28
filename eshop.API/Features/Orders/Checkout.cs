@@ -33,7 +33,7 @@ namespace eshop.API.Features.Orders
             public required string Message { get; set; }
 
             // Can be empty in case of CashOnDeliveryPayment
-            public string PaymentKey { get; set; } = "";
+            public string UnifiedCheckoutUrl { get; set; } = "";
             public string PaymentClientSecret { get; set; } = "";
         }
 
@@ -84,7 +84,7 @@ namespace eshop.API.Features.Orders
                 var response = new OrderCheckoutResponse
                 {
                     Message = message,
-                    PaymentKey = checkoutDto.Value.PaymentKey,
+                    UnifiedCheckoutUrl = checkoutDto.Value.UnifiedCheckoutUrl,
                     PaymentClientSecret = checkoutDto.Value.PaymentClientSecret
                 };
 

@@ -2,7 +2,7 @@
 
 namespace eshop.Application.Contracts.Services
 {
-    public record CreatePaymentIntentResponse(string ClientSecret, string PaymentKey);
+    public record CreatePaymentIntentResponse(string ClientSecret, string UnifiedChechoutUrl);
     public interface IPaymobService
     {
         Task<CreatePaymentIntentResponse?> CreatePaymentIntentAsync(Order order);

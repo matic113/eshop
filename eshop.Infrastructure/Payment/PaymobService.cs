@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
 using eshop.Application.Contracts.Services;
 using eshop.Domain.Entities;
@@ -102,7 +103,9 @@ namespace eshop.Infrastructure.Payment
                 _logger.LogInformation("Paymob payment intent created successfully for OrderNumber: {OrderNumber}", order.OrderNumber);
 
                 // 4. Return the new response object with both keys.
-                return new CreatePaymentIntentResponse(clientSecret, paymentKey);
+                var unifiedCheckoutUrl = $"https://accept.paymob.com/unifiedcheckout/?publicKey={_paymobOptions.PublicKey}&clientSecret={clientSecret}";
+
+                return new CreatePaymentIntentResponse(clientSecret, unifiedCheckoutUrl);
             }
             catch (HttpRequestException ex)
             {
