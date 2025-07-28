@@ -93,6 +93,9 @@ namespace Auth.API.Features.Google
                 user = newUser;
             }
 
+            // Ensure the email is confirmed, as Google provides this information.
+            user.EmailConfirmed = payload.EmailVerified; 
+
             // Check if this external login is already associated with the user.
             var existingLogin = await _userManager.FindByLoginAsync("Google", payload.Subject);
 
