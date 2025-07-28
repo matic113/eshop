@@ -29,8 +29,8 @@ namespace eshop.Infrastructure.Persistence.Migrations.SqlServer
                         (
                             NameArabic LANGUAGE 1025,
                             DescriptionArabic LANGUAGE 1025,
-                            NameEnglish LANGUAGE 1033,
-                            DescriptionEnglish LANGUAGE 1033
+                            Name LANGUAGE 1033,
+                            Description LANGUAGE 1033
                         )
                         KEY INDEX PK_Products
                         ON ProductCatalog;
