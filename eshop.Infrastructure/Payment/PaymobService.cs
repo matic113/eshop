@@ -46,15 +46,16 @@ namespace eshop.Infrastructure.Payment
             {
                 Amount = (int)(order.TotalPrice * 100), // Convert to cents/piasters
                 Currency = "EGP",
-                PaymentMethods = [_paymobOptions.CardIntegrationId],
+                PaymentMethods = [_paymobOptions.CardIntegrationId, _paymobOptions.WalletIntegrationId],
                 SpecialReference = order.Id.ToString(), // Use the OrderId as the special reference
 
                 Items = order.OrderItems.Select(oi => new ItemDto
                 {
-                    Name = oi.Product.ProductCode,
+                    Name = oi.Product.Name,
                     Amount = (int)(oi.Price * 100),
-                    Description = oi.Product.Name,
-                    Quantity = oi.Quantity
+                    Description = oi.Product.ProductCode,
+                    Quantity = oi.Quantity,
+                    Image = oi.Product.CoverPictureUrl
                 }).ToList(),
 
                 BillingData = new BillingDataDto
@@ -146,6 +147,8 @@ namespace eshop.Infrastructure.Payment
 
             [JsonPropertyName("quantity")]
             public int Quantity { get; set; }
+            [JsonPropertyName("image")]
+            public string Image { get; set; }
         }
 
         private record BillingDataDto

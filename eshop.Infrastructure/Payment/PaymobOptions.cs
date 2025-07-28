@@ -8,5 +8,6 @@
         public required string PublicKey { get; set; }
         public required string HMAC { get; set; }
         public required int CardIntegrationId { get; set; }
+        public required int WalletIntegrationId { get; set; }
     }
 }
