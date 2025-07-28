@@ -13,6 +13,7 @@ namespace eshop.Application
             services.AddScoped<IPublicCodeGenerator, PublicCodeGenerator>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ICartService, CartService>();
+            services.AddScoped<IProductService, ProductService>();
 
             services.AddScoped<IPaymobWebhookService, PaymobWebhookService>();
         }

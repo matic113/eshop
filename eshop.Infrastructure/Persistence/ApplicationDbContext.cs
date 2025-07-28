@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using eshop.Domain.Entities;
+using eshop.Domain.NonKeyed;
+using System.Reflection.Emit;
 
 namespace eshop.Infrastructure.Persistence
 {
@@ -12,9 +14,10 @@ namespace eshop.Infrastructure.Persistence
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+
             // Apply Configurations for models
             builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-            base.OnModelCreating(builder);
         }
 
         // Identity Tables are added by base class IdentityDbContext
@@ -32,5 +35,7 @@ namespace eshop.Infrastructure.Persistence
         public DbSet<Review> Reviews { get; set; } = null!;
         public DbSet<Seller> Sellers { get; set; } = null!;
 
+        // No Key
+        public DbSet<ProductFtsResult> ProductFtsResults { get; set; } = null!;
     }
 }
