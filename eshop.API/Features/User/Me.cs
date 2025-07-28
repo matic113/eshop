@@ -12,6 +12,7 @@ namespace eshop.API.Features.User
             public Guid UserId { get; set; }
             public string Email { get; set; }
             public string FullName { get; set; }
+            public string? ProfilePicture { get; set; }
         }
         sealed class CurrentUserInfoEndpoint : EndpointWithoutRequest<CurrentUserInfoResponse>
         {
@@ -55,7 +56,8 @@ namespace eshop.API.Features.User
                 {
                     UserId = user.Id,
                     Email = user.Email ?? string.Empty,
-                    FullName = user.ToString() ?? string.Empty
+                    FullName = user.ToString() ?? string.Empty,
+                    ProfilePicture = user.ProfilePicture
                 };
 
                 await SendOkAsync(response, c);

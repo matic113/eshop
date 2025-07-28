@@ -31,7 +31,8 @@ namespace eshop.Infrastructure.Authentication
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Email, user.Email!),
-            new Claim(JwtRegisteredClaimNames.Name, user.ToString())
+            new Claim(JwtRegisteredClaimNames.Name, user.ToString()),
+            new Claim("picture", user.ProfilePicture ?? ""),
         };
 
             var expires = DateTime.UtcNow.AddMinutes(_jwtOptions.ExpiresInMinutes);

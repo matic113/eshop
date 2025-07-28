@@ -77,7 +77,8 @@ namespace Auth.API.Features.Google
                     Email = payload.Email,
                     FirstName = payload.GivenName ?? string.Empty,
                     LastName = payload.FamilyName ?? string.Empty,
-                    EmailConfirmed = payload.EmailVerified // Use the value from Google's token
+                    EmailConfirmed = payload.EmailVerified, // Use the value from Google's token
+                    ProfilePicture = payload.Picture,
                 };
 
                 var result = await _userManager.CreateAsync(newUser);
