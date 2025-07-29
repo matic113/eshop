@@ -33,8 +33,8 @@ namespace eshop.Infrastructure.Repositories
         {
             return await _context.Orders
                 .Where(o => o.UserId == userId)
-                .Take(limit)
                 .OrderByDescending(o => o.CreatedAt)
+                .Take(limit)
                 .ToListAsync();
         }
     }

@@ -37,7 +37,6 @@ namespace eshop.Infrastructure.Repositories
             {
                 cart.CartItems.Clear();
                 _context.Carts.Update(cart);
-                await _context.SaveChangesAsync();
             }
         }
         public async Task<bool> RemoveItemFromCartAsync(Guid userId, Guid itemId)

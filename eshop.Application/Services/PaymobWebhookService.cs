@@ -14,6 +14,7 @@ namespace eshop.Application.Services
         private readonly IPaymobHmacValidator _hmacValidator;
         private readonly ILogger<PaymobWebhookService> _logger;
         private readonly IOrderRepository _orderRepository;
+        private readonly IOrderHistoryRepository _orderHistoryRepository;
         private readonly ICartRepository _cartRepository;
         private readonly IUnitOfWork _unitOfWork;
 
@@ -21,13 +22,15 @@ namespace eshop.Application.Services
             ILogger<PaymobWebhookService> logger,
             IOrderRepository orderRepository,
             IUnitOfWork unitOfWork,
-            ICartRepository cartRepository)
+            ICartRepository cartRepository,
+            IOrderHistoryRepository orderHistoryRepository)
         {
             _hmacValidator = hmacValidator;
             _logger = logger;
             _orderRepository = orderRepository;
             _unitOfWork = unitOfWork;
             _cartRepository = cartRepository;
+            _orderHistoryRepository = orderHistoryRepository;
         }
 
         public async Task<ErrorOr<Success>> ProcessTransactionAsync(TransactionProcessedCallbackDto transactionDto, string recievedHmac)
@@ -69,16 +72,14 @@ namespace eshop.Application.Services
                 // 5. Update the order status.
                 order.Status = OrderStatus.Processing;
 
-                var orderStatusHistory = new OrderStatusHistory
+                await _orderHistoryRepository.AddAsync(new OrderStatusHistory
                 {
                     Id = Guid.NewGuid(),
                     OrderId = order.Id,
                     OrderCode = order.OrderNumber,
                     OrderStatus = OrderStatus.Processing,
                     ChangeDate = DateTime.UtcNow
-                };
-
-                order.OrderStatusHistories.Add(orderStatusHistory);
+                });
 
                 // 6. Decrement product stock.
                 foreach (var item in order.OrderItems)
