@@ -97,6 +97,9 @@ namespace Auth.API.Features.Google
             // Ensure the email is confirmed, as Google provides this information.
             user.EmailConfirmed = payload.EmailVerified; 
 
+            // Update profile picture
+            user.ProfilePicture = payload.Picture;
+
             // Check if this external login is already associated with the user.
             var existingLogin = await _userManager.FindByLoginAsync("Google", payload.Subject);
 
