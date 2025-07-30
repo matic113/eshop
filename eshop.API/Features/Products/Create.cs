@@ -31,11 +31,8 @@ namespace eshop.API.Features.Products
             AllowAnonymous();
             Description(x => x
                 .WithTags("Products")
-                .Accepts<CreateProductRequest>("application/json")
-                .Produces<CreateProductResponse>(StatusCodes.Status201Created)
-                .ProducesProblem(StatusCodes.Status400BadRequest)
-                .WithName("CreateProduct")
-                .WithSummary("Creates a new product."));
+                .Produces<CreateProductResponse>(StatusCodes.Status200OK)
+                .ProducesProblem(StatusCodes.Status400BadRequest));
         }
 
         public override async Task HandleAsync(CreateProductRequest r, CancellationToken c)

@@ -46,6 +46,13 @@ namespace eshop.API.Features.Reviews
             public override void Configure()
             {
                 Post("/api/reviews/{productId}");
+                Description(x =>
+                {
+                    x.WithTags("Reviews");
+                    x.Produces<CreateReviewResponse>(StatusCodes.Status200OK);
+                    x.Produces<CreateReviewResponse>(StatusCodes.Status400BadRequest);
+                    x.Produces(StatusCodes.Status401Unauthorized);
+                });
             }
 
             public override async Task HandleAsync(CreateReviewRequest r, CancellationToken c)

@@ -29,8 +29,7 @@ namespace Auth.API.Features.Google
             Post("/api/auth/google/mobile");
             AllowAnonymous();
             Description(x => x
-                .WithTags("GoogleAuth")
-                .WithSummary("Handles google login from a mobile device using an Id Token."));
+                .WithTags("GoogleAuth"));
         }
 
         public override async Task HandleAsync(MobileLoginRequest req, CancellationToken ct)
