@@ -5,6 +5,7 @@ using eshop.Application.Contracts.Services;
 using eshop.Application.Dtos;
 using eshop.Application.Errors;
 using eshop.Domain.Entities;
+using System.Text;
 
 namespace eshop.Application.Services
 {
@@ -65,6 +66,21 @@ namespace eshop.Application.Services
                 Comment = review.Comment,
                 Rating = review.Rating
             };
+        }
+
+        public async Task<ErrorOr<PagedList<UserReviewDto>>> GetProductReviewsAsync(Guid productId, int page, int pageSize)
+        {
+            var productExists = await _productRepository.CheckExistsByIdAsync(productId);
+
+            if (!productExists)
+            {
+                return ReviewErrors.ProductNotFound;
+            }
+
+            return await _reviewRepository.GetReviewsByProductIdAsync(
+                productId,
+                page,
+                pageSize);
         }
     }
 }

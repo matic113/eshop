@@ -1,5 +1,7 @@
 ﻿using eshop.Application.Contracts.Repositories;
+using eshop.Application.Dtos;
 using eshop.Domain.Entities;
+using eshop.Infrastructure.Extensions;
 using eshop.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,6 +33,29 @@ namespace eshop.Infrastructure.Repositories
                 .Where(r => r.ProductId == productId)
                 .Select(r => r.Rating)
                 .ToListAsync();
+        }
+        public async Task<PagedList<UserReviewDto>> GetReviewsByProductIdAsync(Guid productId, int page, int pageSize)
+        {
+            var reviewsQuery = _context.Reviews
+                .Where(r => r.ProductId == productId);
+
+            var reviewsWithUsersQuery = reviewsQuery.Join(
+                _context.Users,
+                review => review.UserId,
+                user => user.Id,
+                (review, user) => new UserReviewDto
+                {
+                    UserName = $"{user.FirstName} {user.LastName}",
+                    UserPicture = user.ProfilePicture,
+                    Comment = review.Comment,
+                    Rating = review.Rating,
+                    CreatedAt = review.CreatedAt
+                });
+
+            var sortedQuery = reviewsWithUsersQuery
+                .OrderByDescending(x => x.CreatedAt);
+
+            return await sortedQuery.ToPagedListAsync(page, pageSize);
         }
     }
 }

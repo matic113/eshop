@@ -1,4 +1,5 @@
-﻿using eshop.Domain.Entities;
+﻿using eshop.Application.Dtos;
+using eshop.Domain.Entities;
 
 namespace eshop.Application.Contracts.Repositories
 {
@@ -7,5 +8,6 @@ namespace eshop.Application.Contracts.Repositories
         Task<Review> AddReviewToProductAsync(Review review);
         Task<Review?> GetReviewByProductIdAndUserIdAsync(Guid productId, Guid userId);
         Task<IEnumerable<short>> GetReviewsRatingByProductIdAsync(Guid productId);
+        Task<PagedList<UserReviewDto>> GetReviewsByProductIdAsync(Guid productId, int page, int pageSize);
     }
 }

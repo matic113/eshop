@@ -14,6 +14,8 @@ namespace eshop.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<bool> CheckExistsByIdAsync(Guid id) =>
+            await _context.Set<T>().AnyAsync(x => x.Id == id);
         public async Task<IEnumerable<T>> GetAllAsync()
             => await _context.Set<T>().ToListAsync();
 
