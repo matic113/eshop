@@ -13,6 +13,8 @@
         public int Stock { get; set; }
         public decimal Weight { get; set; }
         public required string Color { get; set; }
+        public float Rating { get; set; }
+        public int ReviewsCount { get; set; }
         public short DiscountPercentage { get; set; }
         public Guid SellerId { get; set; }
     }

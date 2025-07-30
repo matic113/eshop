@@ -67,6 +67,7 @@ namespace eshop.Infrastructure.Repositories
                     {
                         "price" => isDescending ? orderedQuery.ThenByDescending(x => x.product.Price) : orderedQuery.ThenBy(x => x.product.Price),
                         "name" => isDescending ? orderedQuery.ThenByDescending(x => x.product.Name) : orderedQuery.ThenBy(x => x.product.Name),
+                        "rating" => isDescending ? orderedQuery.ThenByDescending(x => x.product.Rating) : orderedQuery.ThenBy(x => x.product.Rating),
                         _ => orderedQuery // Keep original Rank sorting if key is invalid
                     };
                 }
@@ -107,6 +108,7 @@ namespace eshop.Infrastructure.Repositories
                     {
                         "price" => isDescending ? productsQuery.OrderByDescending(p => p.Price) : productsQuery.OrderBy(p => p.Price),
                         "name" => isDescending ? productsQuery.OrderByDescending(p => p.Name) : productsQuery.OrderBy(p => p.Name),
+                        "rating" => isDescending ? productsQuery.OrderByDescending(p => p.Rating) : productsQuery.OrderBy(p => p.Rating),
                         // TODO: switch to creation date --> add CreatedAt To Model
                         _ => productsQuery.OrderByDescending(p => p.Id) // Default sort
                     };
@@ -136,6 +138,8 @@ namespace eshop.Infrastructure.Repositories
                     Stock = p.Stock,
                     Weight = p.Weight,
                     Color = p.Color,
+                    Rating = p.Rating,
+                    ReviewsCount = p.ReviewsCount,
                     DiscountPercentage = p.DiscountPercentage,
                     SellerId = p.SellerId
                 }).ToPagedListAsync(request.Page, request.PageSize);
