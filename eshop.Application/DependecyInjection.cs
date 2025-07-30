@@ -14,6 +14,7 @@ namespace eshop.Application
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IReviewService, ReviewService>();
 
             services.AddScoped<IPaymobWebhookService, PaymobWebhookService>();
         }

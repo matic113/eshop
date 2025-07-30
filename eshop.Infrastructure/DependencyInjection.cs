@@ -107,6 +107,7 @@ namespace eshop.Infrastructure
             services.AddScoped<IOrderItemRepository, OrderItemRepository>();
             services.AddScoped<IOrderHistoryRepository, OrderHistoryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IReviewRepository, ReviewRepository>();
         }
 
         private static void AddDatabase(this IServiceCollection services, IConfiguration configuration)

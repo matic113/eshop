@@ -15,6 +15,6 @@ namespace eshop.Domain.Entities
 
         // Navigational properties
         public Guid ProductId { get; set; }
-        public required Product Product { get; set; }
+        public Product Product { get; set; } = null!;
     }
 }
