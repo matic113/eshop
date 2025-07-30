@@ -27,7 +27,7 @@ namespace eshop.Infrastructure.Repositories
 
             return cart;
         }
-        
+
         public async Task ClearUserCartAsync(Guid userId)
         {
             var cart = await _context.Carts

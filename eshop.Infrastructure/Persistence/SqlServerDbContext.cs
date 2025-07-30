@@ -1,5 +1,4 @@
-﻿using eshop.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace eshop.Infrastructure.Persistence
 {

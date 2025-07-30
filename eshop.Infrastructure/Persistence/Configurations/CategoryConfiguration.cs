@@ -14,7 +14,7 @@ namespace eshop.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(50);
 
-            
+
         }
     }
 }

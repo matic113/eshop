@@ -1,7 +1,6 @@
 ﻿using eshop.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace eshop.Infrastructure.Persistence.Configurations
 {

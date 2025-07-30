@@ -1,5 +1,4 @@
 ﻿using eshop.Application.Contracts.Services;
-using eshop.Domain.Enums;
 using FastEndpoints;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;

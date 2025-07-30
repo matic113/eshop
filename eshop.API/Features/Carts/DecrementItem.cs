@@ -1,7 +1,4 @@
-﻿using eshop.Application.Contracts;
-using eshop.Application.Contracts.Repositories;
-using eshop.Application.Contracts.Services;
-using eshop.Domain.Entities;
+﻿using eshop.Application.Contracts.Services;
 using eshop.Infrastructure.Extensions;
 using FastEndpoints;
 using FluentValidation;

@@ -1,10 +1,7 @@
-﻿using ErrorOr;
-using eshop.Application.Contracts.Services;
-using eshop.Domain.Entities;
+﻿using eshop.Application.Contracts.Services;
 using eshop.Infrastructure.Extensions;
 using FastEndpoints;
 using FluentValidation;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace eshop.API.Features.Carts
 {

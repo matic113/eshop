@@ -1,7 +1,6 @@
 ﻿using eshop.Application.Contracts;
 using eshop.Application.Dtos.Paymob;
 using FastEndpoints;
-using static FastEndpoints.Ep;
 
 namespace eshop.API.Features.Webhooks
 {

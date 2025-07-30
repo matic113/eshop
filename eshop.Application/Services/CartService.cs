@@ -1,5 +1,4 @@
-﻿using System.IO.Pipes;
-using ErrorOr;
+﻿using ErrorOr;
 using eshop.Application.Contracts;
 using eshop.Application.Contracts.Repositories;
 using eshop.Application.Contracts.Services;

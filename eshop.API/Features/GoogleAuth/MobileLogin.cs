@@ -95,7 +95,7 @@ namespace Auth.API.Features.Google
             }
 
             // Ensure the email is confirmed, as Google provides this information.
-            user.EmailConfirmed = payload.EmailVerified; 
+            user.EmailConfirmed = payload.EmailVerified;
 
             // Update profile picture
             user.ProfilePicture = payload.Picture;

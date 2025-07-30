@@ -1,12 +1,12 @@
-﻿using eshop.Application.Contracts;
-using eshop.Application.Dtos;
-using eshop.Domain.Entities;
-using eshop.Domain.Enums;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using ErrorOr;
-using eshop.Application.Errors;
+using eshop.Application.Contracts;
 using eshop.Application.Contracts.Repositories;
 using eshop.Application.Contracts.Services;
+using eshop.Application.Dtos;
+using eshop.Application.Errors;
+using eshop.Domain.Entities;
+using eshop.Domain.Enums;
 
 namespace eshop.Application.Services
 {

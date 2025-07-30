@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 
 namespace eshop.Infrastructure.Persistence
@@ -13,7 +13,7 @@ namespace eshop.Infrastructure.Persistence
                 .SetBasePath(Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "/eshop.API")
                 .AddJsonFile("appsettings.Development.json")
                 .Build();
-                
+
             var optionsBuilder = new DbContextOptionsBuilder<SqlServerDbContext>();
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 

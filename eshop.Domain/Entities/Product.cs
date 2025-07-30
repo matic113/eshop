@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace eshop.Domain.Entities
+﻿namespace eshop.Domain.Entities
 {
     public class Product : IBaseEntity
     {
@@ -26,7 +20,7 @@ namespace eshop.Domain.Entities
         public DateTime? DeletedAt { get; set; }
 
         // Navigational properties
-        public ICollection<Category> Categories{ get; set; } = new HashSet<Category>();
+        public ICollection<Category> Categories { get; set; } = new HashSet<Category>();
         // Pictures
         public ICollection<ProductPicture> ProductPictures { get; set; } = new HashSet<ProductPicture>();
         // Reviews
