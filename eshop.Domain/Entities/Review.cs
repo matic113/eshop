@@ -6,6 +6,8 @@
         public Guid UserId { get; set; }
         public string Comment { get; set; } = string.Empty;
         public short Rating { get; set; } = 0;
+        public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
+        public DateTime? ModifiedAt { get; set; }
 
         // Navigational properties
         public Guid ProductId { get; set; }

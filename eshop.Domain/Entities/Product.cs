@@ -16,6 +16,8 @@
         public short DiscountPercentage { get; set; } = 0;
         public float Rating { get; set; }
         public int ReviewsCount { get; set; }
+        public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
+        public DateTime? ModifiedAt { get; set; }
         public bool IsDeleted { get; set; } = false;
         public DateTime? DeletedAt { get; set; }
 
