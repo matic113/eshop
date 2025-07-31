@@ -1,22 +1,28 @@
-﻿using System.Net;
-using System.Net.Mail;
-using System.Text;
+﻿using Amazon;
+using Amazon.Runtime;
+using Amazon.S3;
 using eshop.Application.Contracts;
 using eshop.Application.Contracts.Repositories;
 using eshop.Application.Contracts.Services;
 using eshop.Infrastructure.Authentication;
 using eshop.Infrastructure.Email;
+using eshop.Infrastructure.ObjectStorage;
 using eshop.Infrastructure.Payment;
 using eshop.Infrastructure.Persistence;
 using eshop.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.Net;
+using System.Net.Mail;
+using System.Text;
 
 namespace eshop.Infrastructure
 {
@@ -67,6 +73,28 @@ namespace eshop.Infrastructure
             services.AddScoped<JwtService>();
 
             services.AddAuthorization();
+
+            // CloudFlare R2 Object Storage
+
+            // 1. Bind the R2Options class from the "CloudflareR2" section of your config.
+            var r2Options = new R2Options();
+            configuration.GetSection(R2Options.SectionName).Bind(r2Options);
+            services.AddSingleton(Options.Create(r2Options)); // Make IOptions<R2Options> available
+
+            // 2. Manually create the credentials for R2.
+            var r2Credentials = new BasicAWSCredentials(r2Options.AccessKeyId, r2Options.SecretAccessKey);
+
+            // 3. Manually create the S3-compatible config pointing to the R2 endpoint.
+            var r2Config = new AmazonS3Config
+            {
+                ServiceURL = $"https://{r2Options.AccountId}.r2.cloudflarestorage.com",
+                AuthenticationRegion = "auto",
+            };
+
+            // 4. Register the IAmazonS3 client as a singleton with the custom credentials and config.
+            services.AddSingleton<IAmazonS3>(new AmazonS3Client(r2Credentials, r2Config));
+
+            services.AddScoped<IFileService, CloudflareFileService>();
 
             // Email
 
