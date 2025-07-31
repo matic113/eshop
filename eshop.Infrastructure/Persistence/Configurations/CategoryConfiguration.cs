@@ -10,11 +10,15 @@ namespace eshop.Infrastructure.Persistence.Configurations
         {
             builder.HasKey(c => c.Id);
 
+            builder.HasIndex(c => c.Name)
+                .IsUnique();
+
             builder.Property(c => c.Name)
                 .IsRequired()
                 .HasMaxLength(50);
 
-
+            builder.Property(c => c.Description)
+                .HasMaxLength(500);
         }
     }
 }
