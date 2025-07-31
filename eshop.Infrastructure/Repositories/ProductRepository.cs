@@ -32,7 +32,7 @@ namespace eshop.Infrastructure.Repositories
                 """);
 
                 // A. Join products with search results to get { Product, Rank }
-                var searchQuery = 
+                var searchQuery =
                     from product in _context.Products.Include(p => p.Categories)
                     join fts in ftsResults on product.Id equals fts.ProductId
                     select new { product, fts.Rank };
@@ -154,6 +154,13 @@ namespace eshop.Infrastructure.Repositories
         {
             _context.Products.UpdateRange(products);
             return;
+        }
+
+        public async Task<Product?> GetProductWithPicturesAsync(Guid productId)
+        {
+            return await _context.Products
+                .Include(p => p.ProductPictures)
+                .FirstOrDefaultAsync(p => p.Id == productId);
         }
     }
 }
