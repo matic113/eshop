@@ -4,35 +4,52 @@ using FastEndpoints;
 
 namespace eshop.API.Features.Categories
 {
-    //public record ListAllCategories();
-    //public class ListAllCategoriesValidator : Validator<ListAllCategories>
-    //{
-    //    public ListAllCategoriesValidator()
-    //    {
-    //    }
-    //}
-    public class ListAll : EndpointWithoutRequest<IEnumerable<GetCategoryResponse>>
+    public class ListAll
     {
-        private readonly IGenericRepository<Category> _categoryRepository;
-        public ListAll(IGenericRepository<Category> categoryRepository)
+        sealed class GetAllCategoriesResponse
         {
-            _categoryRepository = categoryRepository;
+            public List<CategoryItem> Categories { get; set; } = [];
         }
-        public override void Configure()
+        sealed class CategoryItem
         {
-            Get("/api/categories");
-            AllowAnonymous();
-            Description(x => x
-                .WithTags("Categories")
-                .Produces<IEnumerable<GetCategoryResponse>>(200));
+            public Guid Id { get; set; }
+            public string Name { get; set; } = string.Empty;
+            public string Description { get; set; } = string.Empty;
+            public string CoverPictureUrl { get; set; } = string.Empty;
         }
 
-        public override async Task HandleAsync(CancellationToken ct)
+        sealed class GetAllCategoriesEndpoint : EndpointWithoutRequest<GetAllCategoriesResponse>
         {
-            var categories = await _categoryRepository.GetAllAsync();
-            var response = categories.Select(c => new GetCategoryResponse(c.Id, c.Name)).ToList();
+            private readonly IGenericRepository<Category> _categoryRepository;
 
-            await SendOkAsync(response);
+            public GetAllCategoriesEndpoint(IGenericRepository<Category> categoryRepository)
+            {
+                _categoryRepository = categoryRepository;
+            }
+
+            public override void Configure()
+            {
+                Get("/api/categories");
+                Description(x => x
+                    .WithTags("Categories")
+                    .Produces<IEnumerable<GetAllCategoriesResponse>>(200));
+            }
+
+            public override async Task HandleAsync(CancellationToken c)
+            {
+                var categories = await _categoryRepository.GetAllAsync();
+                var response = new GetAllCategoriesResponse
+                {
+                    Categories = categories.Select(c => new CategoryItem
+                    {
+                        Id = c.Id,
+                        Name = c.Name,
+                        Description = c.Description ?? "",
+                        CoverPictureUrl = c.CoverPictureUrl ?? ""
+                    }).ToList()
+                };
+                await SendOkAsync(response, c);
+            }
         }
     }
 }

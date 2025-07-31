@@ -6,19 +6,33 @@ using FluentValidation;
 
 namespace eshop.API.Features.Categories
 {
-    public record CreateCategoryRequest(string Name);
-    public record CreateCategoryResponse(Guid Id, string Name);
-    public class CreateCategoryRequestValidator : Validator<CreateCategoryRequest>
+    sealed class CreateCategoryRequest
+    {
+        public required string Name { get; set; }
+        public string Description { get; set; } = string.Empty;
+        public string CoverPictureUrl { get; set; } = string.Empty;
+    }
+    sealed class CreateCategoryResponse
+    {
+        public string Message { get; set; } = string.Empty;
+        public Guid? Id { get; set; }
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public string? CoverPictureUrl { get; set; }
+    }
+    sealed class CreateCategoryRequestValidator : Validator<CreateCategoryRequest>
     {
         public CreateCategoryRequestValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Category name is required.")
                 .MaximumLength(50).WithMessage("Category name cannot exceed 50 characters.");
+            RuleFor(x => x.Description)
+                .MaximumLength(500).WithMessage("Description cannot exceed 500 characters.");
         }
     }
 
-    public class Create : Endpoint<CreateCategoryRequest, CreateCategoryResponse>
+    sealed class Create : Endpoint<CreateCategoryRequest, CreateCategoryResponse>
     {
         private readonly IGenericRepository<Category> _categoryRepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -40,17 +54,37 @@ namespace eshop.API.Features.Categories
 
         public override async Task HandleAsync(CreateCategoryRequest req, CancellationToken ct)
         {
+            var exists = await _categoryRepository.CheckExistsAsync(x => x.Name == req.Name);
+
+            if (exists)
+            {
+                await SendAsync(new CreateCategoryResponse
+                {
+                    Message = "Category with this name already exists."
+                }, statusCode: 400, ct);
+                return;
+            }
+
             var category = new Category
             {
                 Id = Guid.NewGuid(),
-                Name = req.Name
+                Name = req.Name.ToLower(),
+                Description = req.Description,
+                CoverPictureUrl = req.CoverPictureUrl
             };
 
             await _categoryRepository.AddAsync(category);
             await _unitOfWork.SaveChangesAsync(ct);
 
-            var response = new CreateCategoryResponse(category.Id, category.Name);
-            await SendAsync(response, StatusCodes.Status201Created, ct);
+            var response = new CreateCategoryResponse
+            {
+                Message = "Category created successfully.",
+                Id = category.Id,
+                Name = category.Name,
+                Description = category.Description,
+                CoverPictureUrl = category.CoverPictureUrl
+            };
+            await SendOkAsync(response, ct);
         }
     }
 }
