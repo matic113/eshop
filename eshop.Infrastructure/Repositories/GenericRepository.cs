@@ -2,6 +2,7 @@
 using eshop.Domain.Entities;
 using eshop.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace eshop.Infrastructure.Repositories
 {
@@ -14,6 +15,8 @@ namespace eshop.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<bool> CheckExistsAsync(Expression<Func<T, bool>> predicate) =>
+            await _context.Set<T>().AnyAsync(predicate);
         public async Task<bool> CheckExistsByIdAsync(Guid id) =>
             await _context.Set<T>().AnyAsync(x => x.Id == id);
         public async Task<IEnumerable<T>> GetAllAsync()
