@@ -33,7 +33,7 @@ namespace eshop.Infrastructure.Repositories
 
                 // A. Join products with search results to get { Product, Rank }
                 var searchQuery =
-                    from product in _context.Products.Include(p => p.Categories)
+                    from product in _context.Products
                     join fts in ftsResults on product.Id equals fts.ProductId
                     select new { product, fts.Rank };
 
@@ -126,7 +126,7 @@ namespace eshop.Infrastructure.Repositories
             }
 
             // FINAL STEP: Create the paged list from the prepared finalQuery
-            var pagedList = await finalQuery
+            var pagedProducts = await finalQuery
                 .Select(p => new ProductDto
                 {
                     Id = p.Id,
@@ -143,11 +143,35 @@ namespace eshop.Infrastructure.Repositories
                     Rating = p.Rating,
                     ReviewsCount = p.ReviewsCount,
                     DiscountPercentage = p.DiscountPercentage,
-                    Categories = p.Categories.Select(c => c.Name).ToList(),
                     SellerId = p.SellerId
-                }).ToPagedListAsync(request.Page, request.PageSize);
+                    // Note: The 'Categories' property is still an empty list at this point.
+                })
+                .ToPagedListAsync(request.Page, request.PageSize);
 
-            return pagedList;
+            // run a second, very fast query to get ONLY their categories.
+            var productIdsOnPage = pagedProducts.Items.Select(p => p.Id).ToList();
+
+            var categoriesForProducts = await _context.Products
+                .Where(p => productIdsOnPage.Contains(p.Id))
+                .Select(p => new
+                {
+                    p.Id,
+                    Categories = p.Categories.Select(c => c.Name).ToList()
+                })
+                .ToListAsync();
+
+            // STEP 3: Stitch the categories onto the products in memory. This is very fast.
+            var categoriesLookup = categoriesForProducts.ToDictionary(x => x.Id, x => x.Categories);
+
+            foreach (var productDto in pagedProducts.Items)
+            {
+                if (categoriesLookup.TryGetValue(productDto.Id, out var categories))
+                {
+                    productDto.Categories = categories;
+                }
+            }
+
+            return pagedProducts;
         }
 
         public async Task UpdateProductsBulkAsync(IEnumerable<Product> products)
