@@ -13,7 +13,7 @@ namespace eshop.Infrastructure.Persistence.Configurations
             builder.HasIndex(x => x.ProductId);
 
             builder.Property(x => x.Comment)
-                .HasColumnType("text");
+                .HasMaxLength(500);
 
             builder.Property(x => x.Rating)
                 .IsRequired();
