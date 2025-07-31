@@ -7,7 +7,7 @@ namespace eshop.API.Features.Products
     public class ListAllProductsRequest
     {
         public string? SearchTerm { get; set; }
-        public Guid? CategoryId { get; set; }
+        public string? Category { get; set; }
         public int? MinPrice { get; set; }
         public int? MaxPrice { get; set; }
         public bool? IsInStock { get; set; }
@@ -39,7 +39,7 @@ namespace eshop.API.Features.Products
             var searchRequest = new SearchAndFilterProductsRequest
             {
                 SearchTerm = r.SearchTerm,
-                CategoryId = r.CategoryId,
+                CategoryName = r.Category,
                 MinPrice = r.MinPrice,
                 MaxPrice = r.MaxPrice,
                 IsInStock = r.IsInStock,

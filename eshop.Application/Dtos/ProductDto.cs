@@ -17,5 +17,6 @@
         public int ReviewsCount { get; set; }
         public short DiscountPercentage { get; set; }
         public Guid SellerId { get; set; }
+        public List<string> Categories { get; set; } = [];
     }
 }

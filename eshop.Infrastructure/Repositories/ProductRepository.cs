@@ -32,17 +32,18 @@ namespace eshop.Infrastructure.Repositories
                 """);
 
                 // A. Join products with search results to get { Product, Rank }
-                var searchQuery = from product in _context.Products
-                                  join fts in ftsResults on product.Id equals fts.ProductId
-                                  select new { product, fts.Rank };
+                var searchQuery = 
+                    from product in _context.Products.Include(p => p.Categories)
+                    join fts in ftsResults on product.Id equals fts.ProductId
+                    select new { product, fts.Rank };
 
                 // B. Apply FILTERS to the search results (accessing product via 'x.product')
 
-                // TODO: Look into category filtering
-                //if (request.CategoryId.HasValue)
-                //{
-                //    searchQuery = searchQuery.Where(x => x.product.CategoryId == request.CategoryId.Value);
-                //}
+                if (!string.IsNullOrWhiteSpace(request.CategoryName))
+                {
+                    searchQuery = searchQuery
+                        .Where(x => x.product.Categories.Any(c => c.Name == request.CategoryName));
+                }
                 if (request.MinPrice.HasValue)
                 {
                     searchQuery = searchQuery.Where(x => x.product.Price >= request.MinPrice.Value);
@@ -83,11 +84,11 @@ namespace eshop.Infrastructure.Repositories
 
                 // A. Apply FILTERS directly to products
 
-                // TODO: look into category filtering
-                //if (request.CategoryId.HasValue)
-                //{
-                //    productsQuery = productsQuery.Where(p => p.CategoryId == request.CategoryId.Value);
-                //}
+                if (!string.IsNullOrWhiteSpace(request.CategoryName))
+                {
+                    productsQuery = productsQuery
+                        .Where(p => p.Categories.Any(c => c.Name == request.CategoryName));
+                }
                 if (request.MinPrice.HasValue)
                 {
                     productsQuery = productsQuery.Where(p => p.Price >= request.MinPrice.Value);
@@ -117,9 +118,8 @@ namespace eshop.Infrastructure.Repositories
                 }
                 else
                 {
-                    // TODO: switch to creation date --> add CreatedAt To Model
                     // Default sort when no search or sort criteria are provided
-                    productsQuery = productsQuery.OrderByDescending(p => p.Id);
+                    productsQuery = productsQuery.OrderByDescending(p => p.CreatedAt);
                 }
 
                 finalQuery = productsQuery;
@@ -143,6 +143,7 @@ namespace eshop.Infrastructure.Repositories
                     Rating = p.Rating,
                     ReviewsCount = p.ReviewsCount,
                     DiscountPercentage = p.DiscountPercentage,
+                    Categories = p.Categories.Select(c => c.Name).ToList(),
                     SellerId = p.SellerId
                 }).ToPagedListAsync(request.Page, request.PageSize);
 

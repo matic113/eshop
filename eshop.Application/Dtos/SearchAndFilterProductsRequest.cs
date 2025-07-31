@@ -6,7 +6,7 @@ namespace eshop.Application.Dtos
         public string? SearchTerm { get; set; }
 
         // Filtering
-        public Guid? CategoryId { get; set; }
+        public string? CategoryName { get; set; }
         public int? MinPrice { get; set; }
         public int? MaxPrice { get; set; }
         public bool? IsInStock { get; set; }
