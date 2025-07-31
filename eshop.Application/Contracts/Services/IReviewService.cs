@@ -9,6 +9,6 @@ namespace eshop.Application.Contracts.Services
             Guid productId,
             string? comment,
             int rating);
-        Task<ErrorOr<PagedList<UserReviewDto>>> GetProductReviewsAsync(Guid productId, int page, int pageSize);
+        Task<ErrorOr<ProductReviewsDto>> GetProductReviewsAsync(Guid productId, int page, int pageSize);
     }
 }

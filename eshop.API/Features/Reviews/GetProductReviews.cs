@@ -16,6 +16,8 @@ namespace eshop.API.Features.Reviews
         sealed class GetProductReviewsResponse
         {
             public string? Message { get; set; }
+            public float? AverageRating { get; set; }
+            public int? ReviewsCount { get; set; }
             public PagedList<UserReviewDto> Reviews { get; set; } = null!;
         }
 
@@ -56,7 +58,9 @@ namespace eshop.API.Features.Reviews
                 var response = new GetProductReviewsResponse
                 {
                     Message = "Reviews Retrieved Succesfully",
-                    Reviews = result.Value
+                    AverageRating = result.Value.AverageRating,
+                    ReviewsCount = result.Value.ReviewsCount,
+                    Reviews = result.Value.Reviews,
                 };
 
                 await SendOkAsync(response);

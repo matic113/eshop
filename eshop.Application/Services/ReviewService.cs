@@ -68,19 +68,28 @@ namespace eshop.Application.Services
             };
         }
 
-        public async Task<ErrorOr<PagedList<UserReviewDto>>> GetProductReviewsAsync(Guid productId, int page, int pageSize)
+        public async Task<ErrorOr<ProductReviewsDto>> GetProductReviewsAsync(Guid productId, int page, int pageSize)
         {
-            var productExists = await _productRepository.CheckExistsByIdAsync(productId);
+            var product = await _productRepository.GetByIdAsync(productId);
 
-            if (!productExists)
+            if (product is null)
             {
                 return ReviewErrors.ProductNotFound;
             }
 
-            return await _reviewRepository.GetReviewsByProductIdAsync(
+            var reviews = await _reviewRepository.GetReviewsByProductIdAsync(
                 productId,
                 page,
                 pageSize);
+
+            var result = new ProductReviewsDto
+            {
+                AverageRating = product.Rating,
+                ReviewsCount = product.ReviewsCount,
+                Reviews = reviews
+            };
+
+            return result;
         }
     }
 }
