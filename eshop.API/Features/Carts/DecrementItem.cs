@@ -65,11 +65,8 @@ namespace eshop.API.Features.Carts
 
                 if (result.IsError)
                 {
-                    await SendAsync(new DecrementItemResponse
-                    {
-                        Message = result.FirstError.Description
-                    }, 400);
-
+                    AddError($"{result.FirstError.Code}: {result.FirstError.Description}");
+                    await SendErrorsAsync(cancellation: c);
                     return;
                 }
 

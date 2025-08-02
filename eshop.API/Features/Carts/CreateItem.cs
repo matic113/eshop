@@ -61,13 +61,8 @@ namespace eshop.API.Features.Carts
 
                 if (result.IsError)
                 {
-                    var message = result.FirstError.Description;
-                    var badResponse = new AddItemToCartResponse
-                    {
-                        Message = message
-                    };
-
-                    await SendAsync(badResponse, 400);
+                    AddError($"{result.FirstError.Code}: {result.FirstError.Description}");
+                    await SendErrorsAsync(cancellation: c);
                     return;
                 }
 

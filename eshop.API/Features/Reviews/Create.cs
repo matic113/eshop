@@ -73,12 +73,8 @@ namespace eshop.API.Features.Reviews
 
                 if (result.IsError)
                 {
-                    var error = result.FirstError.Description;
-                    var badResponse = new CreateReviewResponse
-                    {
-                        Message = error
-                    };
-                    await SendAsync(badResponse, StatusCodes.Status400BadRequest);
+                    AddError($"{result.FirstError.Code}: {result.FirstError.Description}");
+                    await SendErrorsAsync(cancellation: c);
                     return;
                 }
 

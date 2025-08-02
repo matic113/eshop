@@ -46,12 +46,8 @@ namespace eshop.API.Features.Reviews
 
                 if (result.IsError)
                 {
-                    var message = result.FirstError.Description;
-                    await SendAsync(new GetProductReviewsResponse
-                    {
-                        Message = message
-                    }, 400);
-
+                    AddError($"{result.FirstError.Code}: {result.FirstError.Description}");
+                    await SendErrorsAsync(cancellation: c);
                     return;
                 }
 

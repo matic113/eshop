@@ -58,10 +58,8 @@ namespace eshop.API.Features.Categories
 
             if (exists)
             {
-                await SendAsync(new CreateCategoryResponse
-                {
-                    Message = "Category with this name already exists."
-                }, statusCode: 400, ct);
+                AddError(x => x.Name, "Category with this name already exists.");
+                await SendErrorsAsync(cancellation: ct);
                 return;
             }
 

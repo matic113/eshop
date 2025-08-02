@@ -62,10 +62,7 @@ namespace eshop.API.Features.Categories
 
                 if (category is null)
                 {
-                    await SendAsync(new UpdateCategoryResponse
-                    {
-                        Message = "Category to be updated was not found."
-                    },400);
+                    await SendNotFoundAsync(ct);
                     return;
                 }
 

@@ -58,13 +58,8 @@ namespace eshop.API.Features.Orders
 
                 if (string.IsNullOrEmpty(result.OrderCode))
                 {
-                    var badResponse = new GetOrdersHistoryResponse
-                    {
-                        Message = "Order not found or history not available.",
-                        OrderId = r.OrderId
-                    };
-
-                    await SendAsync(badResponse, StatusCodes.Status400BadRequest);
+                    AddError("Order not found or history not available.");
+                    await SendErrorsAsync(cancellation: c);
                     return;
                 }
 
