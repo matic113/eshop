@@ -1,6 +1,8 @@
 using eshop.Application;
 using eshop.Infrastructure;
 using FastEndpoints;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Scalar.AspNetCore;
 using Serilog;
 
@@ -14,6 +16,22 @@ builder.Services.AddFastEndpoints();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplicationServices();
+
+builder.Services
+    .AddOpenTelemetry()
+    .ConfigureResource(r => r.AddService("eshop.API"))
+    .WithTracing(t =>
+    {
+        t
+         .AddAspNetCoreInstrumentation()
+         .AddHttpClientInstrumentation()
+         .AddEntityFrameworkCoreInstrumentation();
+
+        t.AddOtlpExporter(config => {
+            config.Endpoint = new Uri(builder.Configuration["OpenTelemetry:Endpoint"]!);
+            config.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.HttpProtobuf;
+            });
+    });
 
 var app = builder.Build();
 
