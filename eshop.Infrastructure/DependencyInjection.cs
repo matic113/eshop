@@ -10,11 +10,13 @@ using eshop.Infrastructure.ObjectStorage;
 using eshop.Infrastructure.Payment;
 using eshop.Infrastructure.Persistence;
 using eshop.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +24,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Net;
 using System.Net.Mail;
+using System.Security.Claims;
 using System.Text;
 
 namespace eshop.Infrastructure
@@ -52,6 +55,7 @@ namespace eshop.Infrastructure
                 opt.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 opt.Scope.Add("email");
                 opt.Scope.Add("profile");
+                opt.ClaimActions.MapJsonKey("picture", "picture");
             })
             .AddJwtBearer(options =>
             {

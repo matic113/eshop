@@ -56,6 +56,8 @@ namespace Auth.API.Features.Google
             }
             var user = await _userManager.FindByEmailAsync(email);
 
+            var profilePicture = claimsPrincipal.FindFirstValue("picture");
+
             if (user == null)
             {
                 var newUser = new ApplicationUser
@@ -64,7 +66,8 @@ namespace Auth.API.Features.Google
                     Email = email,
                     FirstName = claimsPrincipal.FindFirstValue(ClaimTypes.GivenName) ?? string.Empty,
                     LastName = claimsPrincipal.FindFirstValue(ClaimTypes.Surname) ?? string.Empty,
-                    EmailConfirmed = true
+                    EmailConfirmed = true,
+                    ProfilePicture = profilePicture,
                 };
 
                 var result = await _userManager.CreateAsync(newUser);
@@ -79,6 +82,9 @@ namespace Auth.API.Features.Google
 
                 user = newUser;
             }
+
+            // Update user picture if it has changed
+            user.ProfilePicture = user.ProfilePicture != profilePicture ? profilePicture : user.ProfilePicture;
 
             // Check if the external login already exists
             var existingLogin = await _userManager.FindByLoginAsync("Google", claimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier) ?? email);
