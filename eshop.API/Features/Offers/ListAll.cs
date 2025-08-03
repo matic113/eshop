@@ -9,8 +9,8 @@ namespace eshop.API.Features.Offers
     {
         sealed class GetAllOffersRequest
         {
-            public int Page { get; set; }
-            public int PageSize { get; set; }
+            public int Page { get; set; } = 1;
+            public int PageSize { get; set; } = 6;
         }
         sealed class GetAllOffersResponse
         {
@@ -28,6 +28,12 @@ namespace eshop.API.Features.Offers
             {
                 Get("/api/offers/");
                 AllowAnonymous();
+                Description(x => x
+                    .WithTags("Offers")
+                    .WithDescription("Get all offers")
+                    .WithName("GetAllOffers")
+                    .Produces<GetAllOffersResponse>()
+                    .ProducesValidationProblem());
             }
 
             public override async Task HandleAsync(GetAllOffersRequest r, CancellationToken c)

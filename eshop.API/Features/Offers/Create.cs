@@ -52,6 +52,12 @@ namespace eshop.API.Features.Offers
             public override void Configure()
             {
                 Post("/api/offers/");
+                Description(x => x
+                    .WithTags("Offers")
+                    .WithDescription("Create a new offer")
+                    .WithName("CreateOffer")
+                    .Produces<CreateOfferResponse>()
+                    .ProducesValidationProblem());
             }
 
             public override async Task HandleAsync(CreateOfferRequest r, CancellationToken c)
