@@ -33,6 +33,8 @@ namespace eshop.Infrastructure.Persistence
         public DbSet<ProductPicture> ProductPictures { get; set; } = null!;
         public DbSet<Review> Reviews { get; set; } = null!;
         public DbSet<Seller> Sellers { get; set; } = null!;
+        public DbSet<Notification> Notifications { get; set; } = null!;
+        public DbSet<UserNotification> UserNotifications { get; set; } = null!;
 
         // No Key
         public DbSet<ProductFtsResult> ProductFtsResults { get; set; } = null!;
