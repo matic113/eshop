@@ -6,5 +6,6 @@
         public required string Name { get; set; }
         public string Description { get; set; } = string.Empty;
         public required string CoverUrl { get; set; }
+        public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     }
 }

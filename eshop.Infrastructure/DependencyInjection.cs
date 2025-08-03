@@ -1,5 +1,4 @@
-﻿using Amazon;
-using Amazon.Runtime;
+﻿using Amazon.Runtime;
 using Amazon.S3;
 using eshop.Application.Contracts;
 using eshop.Application.Contracts.Repositories;
@@ -14,9 +13,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,7 +21,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Net;
 using System.Net.Mail;
-using System.Security.Claims;
 using System.Text;
 
 namespace eshop.Infrastructure
@@ -140,6 +136,7 @@ namespace eshop.Infrastructure
             services.AddScoped<IOrderHistoryRepository, OrderHistoryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IReviewRepository, ReviewRepository>();
+            services.AddScoped<IOfferRepository, OfferRepository>();
         }
 
         private static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
