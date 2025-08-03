@@ -27,6 +27,11 @@ namespace eshop.API.Features.Files
             public override void Configure()
             {
                 Get("/api/files/image");
+                Description(x => x
+                    .WithTags("Files")
+                    .WithDescription("Get a presigned URL for image upload")
+                    .WithName("GetImageUploadUrl")
+                    .Produces<GetImageUploadUrlResponse>());
             }
 
             public override async Task HandleAsync(CancellationToken c)
