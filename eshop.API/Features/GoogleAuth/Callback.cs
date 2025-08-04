@@ -112,9 +112,30 @@ namespace Auth.API.Features.Google
             user.RefreshToken = refreshTokenValue.HashedToken();
             user.RefreshTokenExpiresAtUtc = refreshTokenExpirationDateInUtc;
 
-            await _userManager.UpdateAsync(user); var response = new LoginResponse(jwtToken, expirationDateInUtc, refreshTokenValue);
+            await _userManager.UpdateAsync(user);
+            
+            var httpResponse = HttpContext.Response;
 
-            await SendOkAsync(response, cancellation: ct);
+            var accessTokenCookieOptions = new CookieOptions
+            {
+                HttpOnly = true, // Makes the cookie inaccessible to client-side script
+                Expires = expirationDateInUtc,
+                Secure = true, // Transmit the cookie only over HTTPS
+                SameSite = SameSiteMode.Lax
+            };
+            httpResponse.Cookies.Append("access_token", jwtToken, accessTokenCookieOptions);
+
+            // Cookie options for the Refresh Token
+            var refreshTokenCookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = refreshTokenExpirationDateInUtc,
+                Secure = true,
+                SameSite = SameSiteMode.Lax,
+            };
+            httpResponse.Cookies.Append("refresh_token", refreshTokenValue, refreshTokenCookieOptions);
+
+            await SendRedirectAsync(req.returnUrl, allowRemoteRedirects: true);
         }
     }
 }
