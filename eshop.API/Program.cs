@@ -17,6 +17,17 @@ builder.Services.AddFastEndpoints();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplicationServices();
 
+builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowDashboard", policy =>
+        {
+            policy.WithOrigins("http://localhost:3000")
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials();
+        });
+    });
+
 builder.Services
     .AddOpenTelemetry()
     .ConfigureResource(r => r.AddService("eshop.API"))
@@ -44,6 +55,8 @@ app.MapScalarApiReference();
 await app.ConfigurePersistence();
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowDashboard");
 
 app.UseAuthentication();
 app.UseAuthorization();
