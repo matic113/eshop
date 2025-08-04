@@ -121,7 +121,7 @@ namespace Auth.API.Features.Google
                 HttpOnly = true, // Makes the cookie inaccessible to client-side script
                 Expires = expirationDateInUtc,
                 Secure = true, // Transmit the cookie only over HTTPS
-                SameSite = SameSiteMode.Lax
+                SameSite = SameSiteMode.None
             };
             httpResponse.Cookies.Append("access_token", jwtToken, accessTokenCookieOptions);
 
@@ -131,7 +131,7 @@ namespace Auth.API.Features.Google
                 HttpOnly = true,
                 Expires = refreshTokenExpirationDateInUtc,
                 Secure = true,
-                SameSite = SameSiteMode.Lax,
+                SameSite = SameSiteMode.None,
             };
             httpResponse.Cookies.Append("refresh_token", refreshTokenValue, refreshTokenCookieOptions);
 
