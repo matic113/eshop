@@ -128,5 +128,46 @@ namespace eshop.Infrastructure.Repositories
 
             return true;
         }
+
+        public async Task<bool> MarkBulkUserNotificationsAsReadAsync(Guid userId, List<Guid> notificationIds)
+        {
+            // 1. Bulk Update All UserNotifications Directly
+            await _context.UserNotifications
+                .Where(un => un.UserId == userId && notificationIds.Contains(un.NotificationId))
+                .ExecuteUpdateAsync(un => un
+                .SetProperty(u => u.IsRead, true)
+                .SetProperty(u => u.ReadAt, DateTime.UtcNow));
+
+            // 2. Get All Notifications Ids that have a record in UserNotifications
+            // Then we can create new UserNotifications for those that don't exist
+
+            var existingUserNotificationRecordsIds = await _context.UserNotifications
+                .Where(un => un.UserId == userId && notificationIds.Contains(un.NotificationId))
+                .Select(un => un.NotificationId)
+                .ToListAsync();
+
+            var newNotificationIds = notificationIds
+                .Where(id => !existingUserNotificationRecordsIds.Contains(id))
+                .ToList();
+
+            // 3. Create New UserNotifications for those that don't exist
+
+            var newUserNotifications = newNotificationIds.Select(id => new UserNotification
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                NotificationId = id,
+                IsRead = true,
+                ReadAt = DateTime.UtcNow
+            });
+
+            if (newUserNotifications.Any())
+            {
+                await _context.UserNotifications.AddRangeAsync(newUserNotifications);
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

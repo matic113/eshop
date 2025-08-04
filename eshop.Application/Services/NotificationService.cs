@@ -41,5 +41,10 @@ namespace eshop.Application.Services
         {
             return await _notificationRepository.MarkUserNotificationAsReadAsync(UserId, notificationId);
         }
+
+        public async Task<bool> MarkBulkUserNotificationsAsReadAsync(Guid userId, List<Guid> notificationIds)
+        {
+            return await _notificationRepository.MarkBulkUserNotificationsAsReadAsync(userId, notificationIds);
+        }
     }
 }

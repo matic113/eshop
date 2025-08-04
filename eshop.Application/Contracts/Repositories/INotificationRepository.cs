@@ -12,5 +12,6 @@ namespace eshop.Application.Contracts.Repositories
             int pageNumber = 1, 
             int pageSize = 10);
         Task<bool> MarkUserNotificationAsReadAsync(Guid UserId, Guid notificationId);
+        Task<bool> MarkBulkUserNotificationsAsReadAsync(Guid userId, List<Guid> notificationIds);
     }
 }
