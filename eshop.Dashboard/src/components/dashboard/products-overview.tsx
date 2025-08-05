@@ -1,6 +1,7 @@
 'use client'
 
 import { useProductsList } from '@/hooks/use-api'
+import { type Product } from '@/lib/api'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Loader2, Plus, Package } from 'lucide-react'
@@ -54,35 +55,49 @@ export function ProductsOverview() {
         </Button>
       </CardHeader>
       <CardContent>
-        {products && products.length > 0 ? (
+        {products && products.items && products.items.length > 0 ? (
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <Package className="h-5 w-5 text-primary" />
-              <span className="text-lg font-semibold">{products.length}</span>
+              <span className="text-lg font-semibold">{products.totalCount}</span>
               <span className="text-sm text-muted-foreground">
-                {products.length === 1 ? 'product' : 'products'} available
+                {products.totalCount === 1 ? 'product' : 'products'} total
               </span>
             </div>
             <div className="grid gap-2">
-              {products.slice(0, 3).map((product: any, index: number) => (
+              {products.items.slice(0, 3).map((product: Product) => (
                 <div
-                  key={product.id || index}
+                  key={product.id}
                   className="flex items-center justify-between p-2 border rounded-md"
                 >
                   <div>
-                    <p className="font-medium">{product.name || 'Unnamed Product'}</p>
+                    <p className="font-medium">{product.name}</p>
                     <p className="text-sm text-muted-foreground">
-                      ${product.price || '0.00'}
+                      ${product.price.toFixed(2)}
                     </p>
                   </div>
-                  <span className="text-xs bg-secondary px-2 py-1 rounded-full">
-                    {product.category || 'Uncategorized'}
-                  </span>
+                  <div className="flex gap-1">
+                    {product.categories.slice(0, 2).map((category, index) => (
+                      <span key={index} className="text-xs bg-secondary px-2 py-1 rounded-full">
+                        {category}
+                      </span>
+                    ))}
+                    {product.categories.length > 2 && (
+                      <span className="text-xs bg-muted px-2 py-1 rounded-full">
+                        +{product.categories.length - 2}
+                      </span>
+                    )}
+                    {product.categories.length === 0 && (
+                      <span className="text-xs bg-muted px-2 py-1 rounded-full">
+                        No category
+                      </span>
+                    )}
+                  </div>
                 </div>
               ))}
-              {products.length > 3 && (
+              {products.totalCount > 3 && (
                 <Button variant="ghost" size="sm" className="justify-start">
-                  View all {products.length} products
+                  View all {products.totalCount} products
                 </Button>
               )}
             </div>

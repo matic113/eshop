@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useProducts } from '@/hooks/use-api'
-import { type ProductSearchParams } from '@/lib/api'
+import { type ProductSearchParams, type Product } from '@/lib/api'
 import {
   Table,
   TableBody,
@@ -19,24 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Loader2, Search, Filter, ChevronLeft, ChevronRight, Edit, Package } from 'lucide-react'
 
-interface Product {
-  id: string
-  productCode: string
-  name: string
-  description: string
-  arabicName: string
-  arabicDescription: string
-  coverPictureUrl: string
-  price: number
-  stock: number
-  weight: number
-  color: string
-  rating: number
-  reviewsCount: number
-  discountPercentage: number
-  sellerId: string
-  categories: string[]
-}
+
 
 export function ProductsDataTable() {
   const [searchParams, setSearchParams] = useState<ProductSearchParams>({

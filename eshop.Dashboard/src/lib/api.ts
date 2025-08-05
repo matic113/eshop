@@ -1,7 +1,35 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000'
 
+export interface Product {
+  id: string
+  productCode: string
+  name: string
+  description: string
+  arabicName: string
+  arabicDescription: string
+  coverPictureUrl: string
+  price: number
+  stock: number
+  weight: number
+  color: string
+  rating: number
+  reviewsCount: number
+  discountPercentage: number
+  sellerId: string
+  categories: string[]
+}
+
+export interface PaginatedResponse<T> {
+  items: T[]
+  page: number
+  pageSize: number
+  totalCount: number
+  hasNextPage: boolean
+  hasPreviousPage: boolean
+}
+
 interface ApiResponse<T = any> {
-  data?: T
+  data: T
   message?: string
   errors?: Record<string, string[]>
 }
@@ -73,12 +101,23 @@ async function apiCall<T>(
 // Authentication API functions
 export const authApi = {
   // Regular email/password login
-  login: async (credentials: LoginCredentials) => {
-    const response = await apiCall('/api/auth/login', {
+  login: async (credentials: LoginCredentials): Promise<{
+    userId: string;
+    email: string;
+    fullName: string;
+    profilePicture?: string;
+  }> => {
+    const response = await apiCall<{
+      userId: string;
+      email: string;
+      fullName: string;
+      profilePicture?: string;
+    }>('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify(credentials),
     })
-    return response
+    if (!response || !response.data) throw new Error('Login failed')
+    return response.data
   },
 
   // Google OAuth login - redirect to server endpoint
@@ -89,9 +128,20 @@ export const authApi = {
   },
 
   // Get current user profile
-  me: async () => {
-    const response = await apiCall('/api/auth/me')
-    return response
+  me: async (): Promise<{
+    userId: string;
+    email: string;
+    fullName: string;
+    profilePicture?: string;
+  }> => {
+    const response = await apiCall<{
+      userId: string;
+      email: string;
+      fullName: string;
+      profilePicture?: string;
+    }>('/api/auth/me')
+    if (!response || !response.data) throw new Error('Failed to get user profile')
+    return response.data
   },
 
   // Refresh token
@@ -125,7 +175,7 @@ export interface ProductSearchParams {
 
 // Products API functions
 export const productsApi = {
-  getAll: async (params: ProductSearchParams = {}) => {
+  getAll: async (params: ProductSearchParams = {}): Promise<PaginatedResponse<Product>> => {
     // Build query string with only non-null values
     const queryString = new URLSearchParams()
     
@@ -158,8 +208,9 @@ export const productsApi = {
       queryString.append('sortOrder', params.sortOrder)
     }
 
-    const response = await apiCall(`/api/products?${queryString.toString()}`)
-    return response
+    const response = await apiCall<PaginatedResponse<Product>>(`/api/products?${queryString.toString()}`)
+    if (!response || !response.data) throw new Error('Failed to fetch products')
+    return response.data
   },
 
   create: async (productData: any) => {

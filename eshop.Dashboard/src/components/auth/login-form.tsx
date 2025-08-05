@@ -28,7 +28,7 @@ export function LoginForm() {
     mutationFn: authApi.login,
     onSuccess: (data) => {
       // With HTTP-only cookies, just pass the user data
-      login(data.user)
+      login(data)
     },
     onError: (error: any) => {
       if (error.errors) {

@@ -1,11 +1,11 @@
 'use client'
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { productsApi, ordersApi, categoriesApi, type ProductSearchParams } from '@/lib/api'
+import { productsApi, ordersApi, categoriesApi, type ProductSearchParams, type Product, type PaginatedResponse } from '@/lib/api'
 
 // Products hooks
 export function useProducts(params: ProductSearchParams = {}) {
-  return useQuery({
+  return useQuery<PaginatedResponse<Product>>({
     queryKey: ['products', params],
     queryFn: () => productsApi.getAll(params),
     staleTime: 5 * 60 * 1000, // 5 minutes

@@ -12,10 +12,12 @@ interface User {
   profilePicture?: string
 }
 
+type LoginResponse = User
+
 interface AuthContextType {
   user: User | null
   isLoading: boolean
-  login: (user: User) => void
+  login: (user: LoginResponse) => void
   logout: () => void
   refetchUser: () => void
   isAuthenticated: boolean
