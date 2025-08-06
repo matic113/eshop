@@ -17,16 +17,18 @@ builder.Services.AddFastEndpoints();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplicationServices();
 
+var dashboardOrigins = builder.Configuration.GetSection("Cors:DashboardOrigins").Get<string[]>();
+
 builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowDashboard", policy =>
     {
-        options.AddPolicy("AllowDashboard", policy =>
-        {
-            policy.WithOrigins("http://localhost:3000")
-                  .AllowAnyMethod()
-                  .AllowAnyHeader()
-                  .AllowCredentials();
-        });
+        policy.WithOrigins(dashboardOrigins!)
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
+});
 
 builder.Services
     .AddOpenTelemetry()
