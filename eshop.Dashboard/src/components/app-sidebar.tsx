@@ -45,7 +45,6 @@ const data = {
       title: 'Products',
       url: '/dashboard/products',
       icon: Package,
-      isActive: true,
       items: [
         {
           title: 'All Products',

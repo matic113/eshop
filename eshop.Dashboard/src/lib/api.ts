@@ -1,37 +1,55 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || ''
+
+interface ApiResponse<T> {
+  data: T
+}
 
 export interface Product {
   id: string
   productCode: string
+  sellerId: string
   name: string
   description: string
-  arabicName: string
-  arabicDescription: string
+  nameArabic: string
+  descriptionArabic: string
   coverPictureUrl: string
   price: number
   stock: number
   weight: number
   color: string
-  rating: number
-  reviewsCount: number
   discountPercentage: number
-  sellerId: string
+  categoryIds: string[]
   categories: string[]
+  productPictureUrls: string[]
+  createdAt: string
+  updatedAt: string
 }
 
 export interface PaginatedResponse<T> {
   items: T[]
-  page: number
-  pageSize: number
   totalCount: number
-  hasNextPage: boolean
+  page: number
+  pageNumber: number
+  pageSize: number
+  totalPages: number
   hasPreviousPage: boolean
+  hasNextPage: boolean
 }
 
-interface ApiResponse<T = any> {
-  data: T
-  message?: string
-  errors?: Record<string, string[]>
+export interface Category {
+  id: string
+  name: string
+  description: string
+  coverPictureUrl: string
+}
+
+export interface CategoriesResponse {
+  categories: Category[]
+}
+
+export interface ImageUploadResponse {
+  uploadUrl: string
+  publicImageUrl: string
 }
 
 interface LoginCredentials {
@@ -39,14 +57,8 @@ interface LoginCredentials {
   password: string
 }
 
-interface GoogleLoginData {
-  token: string
-}
-
 interface AuthResponse {
-  token: string
-  refreshToken: string
-  user: {
+  data: {
     userId: string
     email: string
     fullName: string
@@ -227,7 +239,7 @@ export const productsApi = {
   },
 
   create: async (productData: any) => {
-    const response = await apiCall('/products/create', {
+    const response = await apiCall('/api/products', {
       method: 'POST',
       body: JSON.stringify(productData),
     })
@@ -260,9 +272,10 @@ export const ordersApi = {
 
 // Categories API functions
 export const categoriesApi = {
-  getAll: async () => {
-    const response = await apiCall('/categories/list-all-categories')
-    return response
+  getAll: async (): Promise<CategoriesResponse> => {
+    const response = await apiCall<CategoriesResponse>('/api/categories/')
+    if (!response || !response.data) throw new Error('Failed to fetch categories')
+    return response.data
   },
 
   create: async (categoryData: any) => {
@@ -271,5 +284,28 @@ export const categoriesApi = {
       body: JSON.stringify(categoryData),
     })
     return response
+  },
+}
+
+// Files API functions
+export const filesApi = {
+  getImageUploadUrl: async (): Promise<ImageUploadResponse> => {
+    const response = await apiCall<ImageUploadResponse>('/api/files/image')
+    if (!response || !response.data) throw new Error('Failed to get image upload URL')
+    return response.data
+  },
+
+  uploadImage: async (uploadUrl: string, file: File): Promise<void> => {
+    const response = await fetch(uploadUrl, {
+      method: 'PUT',
+      body: file,
+      headers: {
+        'Content-Type': file.type,
+      },
+    })
+    
+    if (!response.ok) {
+      throw new Error('Failed to upload image')
+    }
   },
 }

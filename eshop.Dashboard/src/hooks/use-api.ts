@@ -1,7 +1,16 @@
 'use client'
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { productsApi, ordersApi, categoriesApi, type ProductSearchParams, type Product, type PaginatedResponse } from '@/lib/api'
+import { 
+  productsApi, 
+  ordersApi, 
+  categoriesApi, 
+  filesApi,
+  type ProductSearchParams, 
+  type Product, 
+  type PaginatedResponse,
+  type CategoriesResponse
+} from '@/lib/api'
 
 // Products hooks
 export function useProducts(params: ProductSearchParams = {}) {
@@ -23,7 +32,7 @@ export function useCreateProduct() {
   return useMutation({
     mutationFn: productsApi.create,
     onSuccess: () => {
-      // Invalidate products query to refetch data
+      // Invalidate products queries to refetch data
       queryClient.invalidateQueries({ queryKey: ['products'] })
     },
   })
@@ -52,21 +61,12 @@ export function useDeleteProduct() {
   })
 }
 
-// Orders hooks
-export function useOrders() {
-  return useQuery({
-    queryKey: ['orders'],
-    queryFn: ordersApi.getAll,
-    staleTime: 2 * 60 * 1000, // 2 minutes (orders change more frequently)
-  })
-}
-
 // Categories hooks
 export function useCategories() {
-  return useQuery({
+  return useQuery<CategoriesResponse>({
     queryKey: ['categories'],
-    queryFn: categoriesApi.getAll,
-    staleTime: 10 * 60 * 1000, // 10 minutes (categories change less frequently)
+    queryFn: () => categoriesApi.getAll(),
+    staleTime: 10 * 60 * 1000, // 10 minutes
   })
 }
 
@@ -77,6 +77,31 @@ export function useCreateCategory() {
     mutationFn: categoriesApi.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] })
+    },
+  })
+}
+
+// Orders hooks
+export function useOrders() {
+  return useQuery({
+    queryKey: ['orders'],
+    queryFn: ordersApi.getAll,
+    staleTime: 2 * 60 * 1000, // 2 minutes (orders change more frequently)
+  })
+}
+
+// Image upload hooks
+export function useImageUpload() {
+  return useMutation({
+    mutationFn: async (file: File) => {
+      // Get upload URL
+      const uploadData = await filesApi.getImageUploadUrl()
+      
+      // Upload the file
+      await filesApi.uploadImage(uploadData.uploadUrl, file)
+      
+      // Return the public URL
+      return uploadData.publicImageUrl
     },
   })
 }

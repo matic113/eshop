@@ -2,8 +2,7 @@
 
 import { useAuth } from '@/providers/auth-provider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ProductsOverview } from '@/components/dashboard/products-overview'
-import { ProductsDataTable } from '@/components/dashboard/products-data-table'
+
 import { AppSidebar } from '@/components/app-sidebar'
 import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
@@ -46,8 +45,6 @@ export default function DashboardPage() {
           <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min">
             <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <ProductsOverview />
-
                       <Card>
                         <CardHeader>
                           <CardTitle>Orders</CardTitle>
@@ -107,11 +104,6 @@ export default function DashboardPage() {
               </p>
                   </CardContent>
                 </Card>
-              </div>
-
-              {/* Products Data Table */}
-              <div className="mt-8">
-                <ProductsDataTable />
               </div>
             </div>
           </div>

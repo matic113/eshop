@@ -272,7 +272,7 @@ export function ProductsDataTable() {
                           <div className="space-y-1">
                             <p className="font-medium leading-none">{product.name}</p>
                             <p className="text-sm text-muted-foreground" title={product.description}>
-                              {truncateText(product.description)}
+                              {truncateText(product.description, 70)}
                             </p>
                           </div>
                         </TableCell>
@@ -312,7 +312,7 @@ export function ProductsDataTable() {
                         
                         <TableCell>
                           <div className="flex flex-wrap gap-1">
-                            {product.categories.length > 0 ? (
+                            {product.categories && product.categories.length > 0 ? (
                               product.categories.slice(0, 2).map((category, index) => (
                                 <Badge key={index} variant="outline" className="text-xs">
                                   {category}
@@ -323,7 +323,7 @@ export function ProductsDataTable() {
                                 No category
                               </Badge>
                             )}
-                            {product.categories.length > 2 && (
+                            {product.categories && product.categories.length > 2 && (
                               <Badge variant="outline" className="text-xs">
                                 +{product.categories.length - 2}
                               </Badge>
