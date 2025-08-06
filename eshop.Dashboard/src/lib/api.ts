@@ -95,7 +95,15 @@ async function apiCall<T>(
     throw error
   }
 
-  return response.json()
+  const data = await response.json()
+  
+  // Check if the response is already wrapped in a data property
+  // If not, wrap it to match our ApiResponse interface
+  if (data && typeof data === 'object' && 'data' in data) {
+    return data
+  } else {
+    return { data }
+  }
 }
 
 // Authentication API functions
@@ -140,6 +148,7 @@ export const authApi = {
       fullName: string;
       profilePicture?: string;
     }>('/api/auth/me')
+    console.log('Auth me response:', response)
     if (!response || !response.data) throw new Error('Failed to get user profile')
     return response.data
   },
@@ -209,6 +218,7 @@ export const productsApi = {
     }
 
     const response = await apiCall<PaginatedResponse<Product>>(`/api/products?${queryString.toString()}`)
+    console.log('Products API response:', response)
     if (!response || !response.data) throw new Error('Failed to fetch products')
     return response.data
   },
