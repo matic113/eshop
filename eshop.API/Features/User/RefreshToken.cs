@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Auth.API.Features.User
 {
-    public record RefreshTokenRequest(string RefreshToken);
+    public record RefreshTokenRequest(string? RefreshToken, bool UseCookies = false);
     public record RefreshTokenResponse(string AccessToken, DateTime ExpiresAtUtc, string RefreshToken);
     public class RefreshTokenValidator : Validator<RefreshTokenRequest>
     {
@@ -16,6 +16,7 @@ namespace Auth.API.Features.User
         {
             RuleFor(x => x.RefreshToken)
                 .NotEmpty()
+                .When(x => !x.UseCookies)
                 .WithMessage("Refresh token is required.");
         }
     }
@@ -40,7 +41,19 @@ namespace Auth.API.Features.User
         }
         public override async Task HandleAsync(RefreshTokenRequest req, CancellationToken ct)
         {
-            var hashedToken = req.RefreshToken.HashedToken();
+            if (string.IsNullOrEmpty(req.RefreshToken) && !req.UseCookies)
+            {
+                AddError(x => x.RefreshToken, "Refresh token is required.");
+                await SendErrorsAsync(cancellation: ct);
+                return;
+            }
+            
+            var refreshToken = req.UseCookies ? 
+                HttpContext.Request.Cookies["refresh_token"] : 
+                req.RefreshToken;
+
+            var hashedToken = refreshToken!.HashedToken();
+
             var user = await _context.Users.FirstOrDefaultAsync(u => u.RefreshToken == hashedToken, ct);
 
             if (user == null)
@@ -66,6 +79,30 @@ namespace Auth.API.Features.User
             user.RefreshTokenExpiresAtUtc = refreshTokenExpirationDateInUtc;
 
             await _userManager.UpdateAsync(user);
+
+            if (req.UseCookies)
+            {
+                var httpResponse = HttpContext.Response;
+
+                var accessTokenCookieOptions = new CookieOptions
+                {
+                    HttpOnly = true, // Makes the cookie inaccessible to client-side script
+                    Expires = expirationDateInUtc,
+                    Secure = true, // Transmit the cookie only over HTTPS
+                    SameSite = SameSiteMode.None
+                };
+                httpResponse.Cookies.Append("access_token", jwtToken, accessTokenCookieOptions);
+
+                // Cookie options for the Refresh Token
+                var refreshTokenCookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Expires = refreshTokenExpirationDateInUtc,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                };
+                httpResponse.Cookies.Append("refresh_token", newRefreshToken, refreshTokenCookieOptions);
+            }
 
 
             var response = new RefreshTokenResponse(jwtToken, expirationDateInUtc, newRefreshToken);
