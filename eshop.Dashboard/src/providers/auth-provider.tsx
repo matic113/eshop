@@ -21,6 +21,7 @@ interface AuthContextType {
   logout: () => void
   refetchUser: () => void
   isAuthenticated: boolean
+  isFetched: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -33,17 +34,45 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const router = useRouter()
   const queryClient = useQueryClient()
 
+  // Enhanced authentication function that tries refresh if initial auth fails
+  const attemptAuthentication = async (): Promise<User | null> => {
+    try {
+      // First, try to get user data directly
+      const userData = await authApi.me()
+      return userData
+    } catch (error) {
+      try {
+        // If direct auth fails, try to refresh the token
+        await authApi.refreshToken()
+        // After successful refresh, try to get user data again
+        const userData = await authApi.me()
+        return userData
+      } catch (refreshError) {
+        // Both attempts failed, user is not authenticated
+        return null
+      }
+    }
+  }
+
   // Use React Query to fetch and cache user data
   const {
     data: user,
     isLoading,
     refetch: refetchUser,
+    isFetched,
   } = useQuery({
     queryKey: ['auth', 'me'],
-    queryFn: authApi.me,
-    retry: false, // Don't retry on auth failures
+    queryFn: attemptAuthentication,
+    retry: false, // Don't retry on auth failures - we handle it manually
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: true, // Refetch when user returns to tab
+  })
+
+  console.log('🔐 Auth Provider State:', { 
+    user, 
+    isLoading, 
+    isAuthenticated: !!user,
+    isFetched
   })
 
   // Logout mutation
@@ -81,6 +110,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       refetchUser()
     },
     isAuthenticated: !!user,
+    isFetched,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

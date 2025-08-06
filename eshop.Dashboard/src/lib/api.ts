@@ -148,7 +148,7 @@ export const authApi = {
       fullName: string;
       profilePicture?: string;
     }>('/api/auth/me')
-    console.log('Auth me response:', response)
+
     if (!response || !response.data) throw new Error('Failed to get user profile')
     return response.data
   },
@@ -157,6 +157,9 @@ export const authApi = {
   refreshToken: async () => {
     const response = await apiCall('/api/auth/refresh-token', {
       method: 'POST',
+      body: JSON.stringify({
+        useCookies: true
+      }),
     })
     return response
   },
@@ -218,7 +221,7 @@ export const productsApi = {
     }
 
     const response = await apiCall<PaginatedResponse<Product>>(`/api/products?${queryString.toString()}`)
-    console.log('Products API response:', response)
+
     if (!response || !response.data) throw new Error('Failed to fetch products')
     return response.data
   },
