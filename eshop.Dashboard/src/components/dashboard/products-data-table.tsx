@@ -17,6 +17,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import { Loader2, Search, Filter, ChevronLeft, ChevronRight, Edit, Package } from 'lucide-react'
 
 
@@ -256,16 +257,43 @@ export function ProductsDataTable() {
                     return (
                       <TableRow key={product.id}>
                         <TableCell>
-                          <Avatar className="h-12 w-12">
-                            <AvatarImage 
-                              src={product.coverPictureUrl} 
-                              alt={product.name}
-                              className="object-cover"
-                            />
-                            <AvatarFallback>
-                              <Package className="h-6 w-6" />
-                            </AvatarFallback>
-                          </Avatar>
+                          <HoverCard>
+                            <HoverCardTrigger asChild>
+                              <div className="cursor-pointer">
+                                <Avatar className="h-12 w-12">
+                                  <AvatarImage 
+                                    src={product.coverPictureUrl} 
+                                    alt={product.name}
+                                    className="object-cover"
+                                  />
+                                  <AvatarFallback>
+                                    <Package className="h-6 w-6" />
+                                  </AvatarFallback>
+                                </Avatar>
+                              </div>
+                            </HoverCardTrigger>
+                            <HoverCardContent className="w-80 p-0">
+                              <div className="relative">
+                                {product.coverPictureUrl ? (
+                                  <img
+                                    src={product.coverPictureUrl}
+                                    alt={product.name}
+                                    className="w-full h-64 object-cover rounded-md"
+                                  />
+                                ) : (
+                                  <div className="w-full h-64 bg-muted rounded-md flex items-center justify-center">
+                                    <Package className="h-16 w-16 text-muted-foreground" />
+                                  </div>
+                                )}
+                                <div className="p-3">
+                                  <h4 className="text-sm font-semibold">{product.name}</h4>
+                                  <p className="text-xs text-muted-foreground mt-1">
+                                    {product.productCode}
+                                  </p>
+                                </div>
+                              </div>
+                            </HoverCardContent>
+                          </HoverCard>
                         </TableCell>
                         
                         <TableCell>
