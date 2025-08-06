@@ -204,7 +204,7 @@ export function AddProductDialog({ children }: AddProductDialogProps) {
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="!max-w-6xl max-h-[90vh] overflow-y-auto sm:!max-w-6xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Package className="h-5 w-5" />
@@ -221,59 +221,65 @@ export function AddProductDialog({ children }: AddProductDialogProps) {
             <CardContent className="pt-6 space-y-4">
               <h3 className="text-lg font-medium">Basic Information</h3>
               
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Product Name *</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={handleInputChange('name')}
-                    className={errors.name ? 'border-red-500' : ''}
-                    placeholder="Enter product name"
-                  />
-                  {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+              <div className="space-y-6">
+                {/* English Fields */}
+                <div className="space-y-4">
+                  <h4 className="text-md font-medium text-muted-foreground">English</h4>
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Product Name *</Label>
+                    <Input
+                      id="name"
+                      value={formData.name}
+                      onChange={handleInputChange('name')}
+                      className={errors.name ? 'border-red-500' : ''}
+                      placeholder="Enter product name"
+                    />
+                    {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="description">Description *</Label>
+                    <textarea
+                      id="description"
+                      value={formData.description}
+                      onChange={handleInputChange('description')}
+                      className={`flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${errors.description ? 'border-red-500' : ''}`}
+                      placeholder="Enter product description"
+                      rows={3}
+                    />
+                    {errors.description && <p className="text-sm text-red-500">{errors.description}</p>}
+                  </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="nameArabic">Arabic Name *</Label>
-                  <Input
-                    id="nameArabic"
-                    value={formData.nameArabic}
-                    onChange={handleInputChange('nameArabic')}
-                    className={errors.nameArabic ? 'border-red-500' : ''}
-                    placeholder="أدخل اسم المنتج بالعربية"
-                    dir="rtl"
-                  />
-                  {errors.nameArabic && <p className="text-sm text-red-500">{errors.nameArabic}</p>}
-                </div>
-              </div>
+                {/* Arabic Fields */}
+                <div className="space-y-4">
+                  <h4 className="text-md font-medium text-muted-foreground">العربية</h4>
+                  <div className="space-y-2">
+                    <Label htmlFor="nameArabic">Arabic Name *</Label>
+                    <Input
+                      id="nameArabic"
+                      value={formData.nameArabic}
+                      onChange={handleInputChange('nameArabic')}
+                      className={errors.nameArabic ? 'border-red-500' : ''}
+                      placeholder="أدخل اسم المنتج بالعربية"
+                      dir="rtl"
+                    />
+                    {errors.nameArabic && <p className="text-sm text-red-500">{errors.nameArabic}</p>}
+                  </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="description">Description *</Label>
-                  <textarea
-                    id="description"
-                    value={formData.description}
-                    onChange={handleInputChange('description')}
-                    className={`flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${errors.description ? 'border-red-500' : ''}`}
-                    placeholder="Enter product description"
-                    rows={3}
-                  />
-                  {errors.description && <p className="text-sm text-red-500">{errors.description}</p>}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="descriptionArabic">Arabic Description *</Label>
-                  <textarea
-                    id="descriptionArabic"
-                    value={formData.descriptionArabic}
-                    onChange={handleInputChange('descriptionArabic')}
-                    className={`flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${errors.descriptionArabic ? 'border-red-500' : ''}`}
-                    placeholder="أدخل وصف المنتج بالعربية"
-                    dir="rtl"
-                    rows={3}
-                  />
-                  {errors.descriptionArabic && <p className="text-sm text-red-500">{errors.descriptionArabic}</p>}
+                  <div className="space-y-2">
+                    <Label htmlFor="descriptionArabic">Arabic Description *</Label>
+                    <textarea
+                      id="descriptionArabic"
+                      value={formData.descriptionArabic}
+                      onChange={handleInputChange('descriptionArabic')}
+                      className={`flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${errors.descriptionArabic ? 'border-red-500' : ''}`}
+                      placeholder="أدخل وصف المنتج بالعربية"
+                      dir="rtl"
+                      rows={3}
+                    />
+                    {errors.descriptionArabic && <p className="text-sm text-red-500">{errors.descriptionArabic}</p>}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -334,11 +340,12 @@ export function AddProductDialog({ children }: AddProductDialogProps) {
                   <Input
                     id="weight"
                     type="number"
+                    step="0.1"
                     min="0"
                     value={formData.weight}
                     onChange={handleInputChange('weight')}
                     className={errors.weight ? 'border-red-500' : ''}
-                    placeholder="0"
+                    placeholder="0.0"
                   />
                   {errors.weight && <p className="text-sm text-red-500">{errors.weight}</p>}
                 </div>
