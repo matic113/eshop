@@ -77,17 +77,20 @@ export function ProductsOverview() {
                     </p>
                   </div>
                   <div className="flex gap-1">
-                    {product.categories.slice(0, 2).map((category, index) => (
-                      <span key={index} className="text-xs bg-secondary px-2 py-1 rounded-full">
-                        {category}
-                      </span>
-                    ))}
-                    {product.categories.length > 2 && (
-                      <span className="text-xs bg-muted px-2 py-1 rounded-full">
-                        +{product.categories.length - 2}
-                      </span>
-                    )}
-                    {product.categories.length === 0 && (
+                    {product.categories && product.categories.length > 0 ? (
+                      <>
+                        {product.categories.slice(0, 2).map((category, index) => (
+                          <span key={index} className="text-xs bg-secondary px-2 py-1 rounded-full">
+                            {category}
+                          </span>
+                        ))}
+                        {product.categories.length > 2 && (
+                          <span className="text-xs bg-muted px-2 py-1 rounded-full">
+                            +{product.categories.length - 2}
+                          </span>
+                        )}
+                      </>
+                    ) : (
                       <span className="text-xs bg-muted px-2 py-1 rounded-full">
                         No category
                       </span>

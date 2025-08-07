@@ -264,7 +264,7 @@ export const productsApi = {
   },
 
   delete: async (id: string) => {
-    const response = await apiCall(`/products/delete/${id}`, {
+    const response = await apiCall(`/api/products/${id}`, {
       method: 'DELETE',
     })
     return response
