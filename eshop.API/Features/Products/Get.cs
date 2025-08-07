@@ -37,9 +37,9 @@ namespace eshop.API.Features.Products
                 Id = product.Id,
                 ProductCode = product.ProductCode,
                 Name = product.Name,
-                NameArabic = product.NameArabic,
+                NameArabic = product.ArabicName,
                 Description = product.Description,
-                DescriptionArabic = product.DescriptionArabic,
+                DescriptionArabic = product.ArabicDescription,
                 CoverPictureUrl = product.CoverPictureUrl,
                 Price = product.Price,
                 Stock = product.Stock,
@@ -48,7 +48,8 @@ namespace eshop.API.Features.Products
                 DiscountPercentage = product.DiscountPercentage,
                 Rating = product.Rating,
                 ReviewsCount = product.ReviewsCount,
-                ProductPictures = product.ProductPictures.Select(p => p.PictureUrl).ToList(),
+                ProductPictures = product.ProductPictures,
+                Categories = product.Categories,
                 SellerId = product.SellerId
             };
 
@@ -64,6 +65,7 @@ namespace eshop.API.Features.Products
             public string DescriptionArabic { get; set; }
             public string CoverPictureUrl { get; set; }
             public List<string> ProductPictures { get; set; } = [];
+            public List<string> Categories { get; set; } = [];
             public decimal Price { get; set; }
             public int Stock { get; set; }
             public decimal Weight { get; set; }

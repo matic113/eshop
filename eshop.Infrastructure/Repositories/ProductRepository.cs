@@ -180,10 +180,31 @@ namespace eshop.Infrastructure.Repositories
             return;
         }
 
-        public async Task<Product?> GetProductWithPicturesAsync(Guid productId)
+        public async Task<ProductDto?> GetProductWithPicturesAsync(Guid productId)
         {
             return await _context.Products
                 .Include(p => p.ProductPictures)
+                .Include(p => p.Categories)
+                .Select(p => new ProductDto
+                {
+                    Id = p.Id,
+                    ProductCode = p.ProductCode,
+                    Name = p.Name,
+                    ArabicName = p.NameArabic,
+                    Description = p.Description,
+                    ArabicDescription = p.DescriptionArabic,
+                    CoverPictureUrl = p.CoverPictureUrl,
+                    Price = p.Price,
+                    Stock = p.Stock,
+                    Weight = p.Weight,
+                    Color = p.Color,
+                    Rating = p.Rating,
+                    ReviewsCount = p.ReviewsCount,
+                    DiscountPercentage = p.DiscountPercentage,
+                    SellerId = p.SellerId,
+                    ProductPictures = p.ProductPictures.Select( x => x.PictureUrl).ToList(),
+                    Categories = p.Categories.Select(x => x.Name).ToList()
+                })
                 .FirstOrDefaultAsync(p => p.Id == productId);
         }
     }

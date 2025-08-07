@@ -9,6 +9,7 @@
         public required string ArabicName { get; set; }
         public required string ArabicDescription { get; set; }
         public required string CoverPictureUrl { get; set; }
+        public List<string>? ProductPictures { get; set; }
         public decimal Price { get; set; }
         public int Stock { get; set; }
         public decimal Weight { get; set; }
