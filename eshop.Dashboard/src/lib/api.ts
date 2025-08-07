@@ -55,6 +55,21 @@ export interface ImageUploadResponse {
   publicImageUrl: string
 }
 
+export interface ProductUpdateData {
+  name?: string
+  nameArabic?: string
+  description?: string
+  descriptionArabic?: string
+  coverPictureUrl?: string
+  price?: number
+  stock?: number
+  weight?: number
+  color?: string
+  discountPercentage?: number
+  categoryIds?: string[]
+  productPictures?: string[]
+}
+
 interface LoginCredentials {
   email: string
   password: string
@@ -256,7 +271,7 @@ export const productsApi = {
   },
 
   update: async (id: string, productData: any) => {
-    const response = await apiCall(`/products/update/${id}`, {
+    const response = await apiCall(`/api/products/${id}`, {
       method: 'PUT',
       body: JSON.stringify(productData),
     })

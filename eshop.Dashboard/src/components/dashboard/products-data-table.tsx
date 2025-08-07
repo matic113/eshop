@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useProducts, useDeleteProduct } from '@/hooks/use-api'
 import { type ProductSearchParams, type Product } from '@/lib/api'
 import { ProductViewDialog } from '@/components/dashboard/product-view-dialog'
+import { EditProductDialog } from '@/components/dashboard/edit-product-dialog'
 import {
   Table,
   TableBody,
@@ -51,6 +52,8 @@ export function ProductsDataTable() {
   
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null)
   const [viewDialogOpen, setViewDialogOpen] = useState(false)
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [editProductId, setEditProductId] = useState<string | null>(null)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [productToDelete, setProductToDelete] = useState<Product | null>(null)
 
@@ -59,6 +62,12 @@ export function ProductsDataTable() {
   const handleProductClick = (product: Product) => {
     setSelectedProductId(product.id)
     setViewDialogOpen(true)
+  }
+
+  const handleEditClick = (product: Product, event: React.MouseEvent) => {
+    event.stopPropagation() // Prevent row click
+    setEditProductId(product.id)
+    setEditDialogOpen(true)
   }
 
   const handleDeleteClick = (product: Product, event: React.MouseEvent) => {
@@ -415,7 +424,7 @@ export function ProductsDataTable() {
                               size="sm" 
                               variant="outline" 
                               className="h-7 px-2 text-xs"
-                              onClick={(e) => e.stopPropagation()}
+                              onClick={(e) => handleEditClick(product, e)}
                             >
                               <Edit className="h-3 w-3 mr-1" />
                               Edit
@@ -456,6 +465,18 @@ export function ProductsDataTable() {
           setViewDialogOpen(open)
           if (!open) {
             setSelectedProductId(null) // Clear selected product when dialog closes
+          }
+        }}
+      />
+
+      {/* Edit Product Dialog */}
+      <EditProductDialog
+        productId={editProductId}
+        open={editDialogOpen}
+        onOpenChange={(open) => {
+          setEditDialogOpen(open)
+          if (!open) {
+            setEditProductId(null) // Clear selected product when dialog closes
           }
         }}
       />

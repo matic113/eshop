@@ -399,41 +399,43 @@ export function AddProductDialog({ children }: AddProductDialogProps) {
               {/* Cover Image */}
               <div className="space-y-2">
                 <Label>Cover Image *</Label>
-                {formData.coverPictureUrl ? (
-                  <div className="relative inline-block">
-                    <img 
-                      src={formData.coverPictureUrl} 
-                      alt="Cover"
-                      className="w-32 h-32 object-cover rounded-lg border"
-                    />
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="icon"
-                      className="absolute -top-2 -right-2 h-6 w-6"
-                      onClick={() => setFormData(prev => ({ ...prev, coverPictureUrl: '' }))}
-                    >
-                      <X className="h-3 w-3" />
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0]
-                        if (file) handleImageUpload(file, 'cover')
-                      }}
-                      className="hidden"
-                      id="cover-upload"
-                    />
-                    <label htmlFor="cover-upload" className="cursor-pointer">
-                      <Upload className="h-8 w-8 mx-auto mb-2 text-gray-400" />
-                      <p className="text-sm text-gray-600">Click to upload cover image</p>
-                    </label>
-                  </div>
-                )}
+                <div>
+                  {formData.coverPictureUrl ? (
+                    <div className="relative inline-block">
+                      <img 
+                        src={formData.coverPictureUrl} 
+                        alt="Cover"
+                        className="w-32 h-32 object-cover rounded-lg border"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute -top-2 -right-2 h-6 w-6"
+                        onClick={() => setFormData(prev => ({ ...prev, coverPictureUrl: '' }))}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0]
+                          if (file) handleImageUpload(file, 'cover')
+                        }}
+                        className="hidden"
+                        id="cover-upload"
+                      />
+                      <label htmlFor="cover-upload" className="cursor-pointer">
+                        <Upload className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                        <p className="text-sm text-gray-600">Click to upload cover image</p>
+                      </label>
+                    </div>
+                  )}
+                </div>
                 {errors.coverImage && <p className="text-sm text-red-500">{errors.coverImage}</p>}
               </div>
 
