@@ -285,6 +285,7 @@ export function CreateOfferForm() {
       </Card>
 
       {/* Mobile Preview Section */}
+
       <div className="flex flex-col items-center">
         <Card className="w-full max-w-sm">
           <CardHeader className="text-center pb-4">
@@ -341,7 +342,7 @@ export function CreateOfferForm() {
                           />
                         </div>
                       ) : (
-                        <div className="h-20 bg-gray-200 flex items-center justify-center">
+                        <div className="h-23 bg-gray-200 flex items-center justify-center">
                           <div className="text-center">
                             <div className="w-8 h-8 mx-auto mb-1 bg-gray-300 rounded-lg flex items-center justify-center">
                               <Upload className="h-4 w-4 text-gray-500" />
@@ -352,7 +353,7 @@ export function CreateOfferForm() {
                       )}
 
                       {/* Content */}
-                      <div className="relative p-3">
+                      <div className="relative p-2">
                         <div className="text-black">
                           <h3 className="text-sm font-bold mb-1">
                             {formData.name || "Special Offer"}
@@ -377,7 +378,7 @@ export function CreateOfferForm() {
                           <div className="w-6 h-6 bg-gray-300 rounded"></div>
                         </div>
                         <p className="text-xs font-medium text-gray-900 mb-1">
-                          Fares
+                          Test Product
                         </p>
                         <p className="text-xs text-gray-600">100.0 EGP</p>
                       </div>
@@ -398,12 +399,12 @@ export function CreateOfferForm() {
                   {/* Bottom Navigation Bar */}
                   <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200">
                     <div className="flex items-center justify-around py-2">
-                      <div className="w-6 h-6 text-gray-400">
+                      <div className="w-5 h-5 text-gray-400">
                         <svg fill="currentColor" viewBox="0 0 24 24">
                           <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                         </svg>
                       </div>
-                      <div className="w-6 h-6 text-gray-400">
+                      <div className="w-5 h-5 text-gray-400">
                         <svg fill="currentColor" viewBox="0 0 24 24">
                           <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
                         </svg>
@@ -413,14 +414,9 @@ export function CreateOfferForm() {
                           <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z" />
                         </svg>
                       </div>
-                      <div className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center">
+                      <div className="w-6 h-6 p-1 bg-blue-500 text-white rounded-full flex items-center justify-center">
                         <svg fill="currentColor" viewBox="0 0 24 24">
                           <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-                        </svg>
-                      </div>
-                      <div className="w-6 h-6 text-gray-400">
-                        <svg fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                         </svg>
                       </div>
                     </div>
