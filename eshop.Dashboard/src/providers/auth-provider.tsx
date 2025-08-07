@@ -68,9 +68,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     refetchOnWindowFocus: true, // Refetch when user returns to tab
   })
 
-  console.log('🔐 Auth Provider State:', { 
-    user, 
-    isLoading, 
+  console.log('🔐 Auth Provider State:', {
+    user,
+    isLoading,
     isAuthenticated: !!user,
     isFetched
   })

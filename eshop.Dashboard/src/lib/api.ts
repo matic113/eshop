@@ -318,3 +318,48 @@ export const filesApi = {
     }
   },
 }
+
+// Offers API interfaces
+export interface Offer {
+  id: string
+  name: string
+  description: string
+  coverUrl: string
+  createdAt: string
+}
+
+export interface OffersResponse {
+  offers: {
+    items: Offer[]
+  }
+}
+
+export interface CreateOfferRequest {
+  name: string
+  description: string
+  offerCoverUrl: string
+}
+
+// Offers API functions
+export const offersApi = {
+  getAll: async (): Promise<OffersResponse> => {
+    const response = await apiCall<OffersResponse>('/api/offers')
+    if (!response || !response.data) throw new Error('Failed to fetch offers')
+    return response.data
+  },
+
+  create: async (offerData: CreateOfferRequest) => {
+    const response = await apiCall('/api/offers', {
+      method: 'POST',
+      body: JSON.stringify(offerData),
+    })
+    return response
+  },
+
+  delete: async (id: string) => {
+    const response = await apiCall(`/api/offers/${id}`, {
+      method: 'DELETE',
+    })
+    return response
+  },
+}
