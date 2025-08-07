@@ -151,6 +151,7 @@ namespace eshop.Infrastructure
             services.AddScoped<IReviewRepository, ReviewRepository>();
             services.AddScoped<IOfferRepository, OfferRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<ICouponRepository, CouponRepository>();
         }
 
         private static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
