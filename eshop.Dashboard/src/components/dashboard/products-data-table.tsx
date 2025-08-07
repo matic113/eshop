@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useProducts } from '@/hooks/use-api'
+import { useProducts, useDeleteProduct } from '@/hooks/use-api'
 import { type ProductSearchParams, type Product } from '@/lib/api'
 import { ProductViewDialog } from '@/components/dashboard/product-view-dialog'
 import {
@@ -19,7 +19,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
-import { Loader2, Search, Filter, ChevronLeft, ChevronRight, Edit, Package } from 'lucide-react'
+import { 
+  AlertDialog, 
+  AlertDialogAction, 
+  AlertDialogCancel, 
+  AlertDialogContent, 
+  AlertDialogDescription, 
+  AlertDialogFooter, 
+  AlertDialogHeader, 
+  AlertDialogTitle 
+} from '@/components/ui/alert-dialog'
+import { Loader2, Search, Filter, ChevronLeft, ChevronRight, Edit, Package, Trash2 } from 'lucide-react'
+import { toast } from 'sonner'
 
 
 
@@ -40,10 +51,35 @@ export function ProductsDataTable() {
   
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null)
   const [viewDialogOpen, setViewDialogOpen] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null)
+
+  const deleteProduct = useDeleteProduct()
 
   const handleProductClick = (product: Product) => {
     setSelectedProductId(product.id)
     setViewDialogOpen(true)
+  }
+
+  const handleDeleteClick = (product: Product, event: React.MouseEvent) => {
+    event.stopPropagation() // Prevent row click
+    setProductToDelete(product)
+    setDeleteDialogOpen(true)
+  }
+
+  const handleDeleteConfirm = () => {
+    if (productToDelete) {
+      deleteProduct.mutate(productToDelete.id, {
+        onSuccess: () => {
+          toast.success(`Product "${productToDelete.name}" has been deleted successfully`)
+          setDeleteDialogOpen(false)
+          setProductToDelete(null)
+        },
+        onError: (error) => {
+          toast.error(`Failed to delete product: ${error.message}`)
+        }
+      })
+    }
   }
 
   const handleSearchChange = (field: keyof ProductSearchParams, value: any) => {
@@ -314,7 +350,7 @@ export function ProductsDataTable() {
                           <div className="space-y-1">
                             <p className="font-medium leading-none">{product.name}</p>
                             <p className="text-sm text-muted-foreground" title={product.description}>
-                              {truncateText(product.description, 70)}
+                              {truncateText(product.description, 40)}
                             </p>
                           </div>
                         </TableCell>
@@ -374,10 +410,26 @@ export function ProductsDataTable() {
                         </TableCell>
                         
                         <TableCell className="text-right">
-                          <Button size="sm" variant="outline">
-                            <Edit className="h-4 w-4 mr-2" />
-                            Edit
-                          </Button>
+                          <div className="flex flex-col gap-1">
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              className="h-7 px-2 text-xs"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <Edit className="h-3 w-3 mr-1" />
+                              Edit
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              className="h-7 px-2 text-xs text-red-600 hover:text-red-700 hover:bg-red-50"
+                              onClick={(e) => handleDeleteClick(product, e)}
+                            >
+                              <Trash2 className="h-3 w-3 mr-1" />
+                              Delete
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     )
@@ -407,6 +459,36 @@ export function ProductsDataTable() {
           }
         }}
       />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the product 
+              <strong> "{productToDelete?.name}"</strong> from your store.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDeleteConfirm}
+              className="bg-red-600 hover:bg-red-700"
+              disabled={deleteProduct.isPending}
+            >
+              {deleteProduct.isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                'Delete Product'
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   )
 }

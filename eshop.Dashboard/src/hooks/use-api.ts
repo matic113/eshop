@@ -48,23 +48,24 @@ export function useCreateProduct() {
   })
 }
 
+export function useDeleteProduct() {
+  const queryClient = useQueryClient()
+  
+  return useMutation({
+    mutationFn: productsApi.delete,
+    onSuccess: () => {
+      // Invalidate products queries to refetch data
+      queryClient.invalidateQueries({ queryKey: ['products'] })
+    },
+  })
+}
+
 export function useUpdateProduct() {
   const queryClient = useQueryClient()
   
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: any }) => 
       productsApi.update(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] })
-    },
-  })
-}
-
-export function useDeleteProduct() {
-  const queryClient = useQueryClient()
-  
-  return useMutation({
-    mutationFn: productsApi.delete,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] })
     },
