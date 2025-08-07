@@ -35,6 +35,8 @@ namespace eshop.Infrastructure.Persistence
         public DbSet<Seller> Sellers { get; set; } = null!;
         public DbSet<Notification> Notifications { get; set; } = null!;
         public DbSet<UserNotification> UserNotifications { get; set; } = null!;
+        public DbSet<Coupon> Coupons { get; set; } = null!;
+        public DbSet<CouponsUsage> CouponsUsages { get; set; } = null!;
 
         // No Key
         public DbSet<ProductFtsResult> ProductFtsResults { get; set; } = null!;

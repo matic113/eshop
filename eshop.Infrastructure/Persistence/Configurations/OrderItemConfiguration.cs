@@ -18,7 +18,7 @@ namespace eshop.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasDefaultValue(1);
 
-            builder.Property(oi => oi.Price)
+            builder.Property(oi => oi.TotalPrice)
                 .IsRequired()
                 .HasColumnType("decimal(18,2)");
 
