@@ -1,15 +1,16 @@
 'use client'
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { 
-  productsApi, 
-  ordersApi, 
-  categoriesApi, 
+import {
+  productsApi,
+  ordersApi,
+  categoriesApi,
   filesApi,
-  type ProductSearchParams, 
-  type Product, 
+  type ProductSearchParams,
+  type Product,
   type PaginatedResponse,
-  type CategoriesResponse
+  type CategoriesResponse,
+  UpdateCategoryPayload
 } from '@/lib/api'
 
 // Products hooks
@@ -38,7 +39,7 @@ export function useProduct(id: string | null) {
 
 export function useCreateProduct() {
   const queryClient = useQueryClient()
-  
+
   return useMutation({
     mutationFn: productsApi.create,
     onSuccess: () => {
@@ -50,7 +51,7 @@ export function useCreateProduct() {
 
 export function useDeleteProduct() {
   const queryClient = useQueryClient()
-  
+
   return useMutation({
     mutationFn: productsApi.delete,
     onSuccess: () => {
@@ -60,11 +61,22 @@ export function useDeleteProduct() {
   })
 }
 
+export function useDeleteCategory() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: categoriesApi.delete,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['categories'] })
+    },
+  })
+}
+
 export function useUpdateProduct() {
   const queryClient = useQueryClient()
-  
+
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) => 
+    mutationFn: ({ id, data }: { id: string; data: any }) =>
       productsApi.update(id, data),
     onSuccess: (_, { id }) => {
       // Invalidate products list queries
@@ -86,7 +98,7 @@ export function useCategories() {
 
 export function useCreateCategory() {
   const queryClient = useQueryClient()
-  
+
   return useMutation({
     mutationFn: categoriesApi.create,
     onSuccess: () => {
@@ -94,6 +106,20 @@ export function useCreateCategory() {
     },
   })
 }
+
+export function useUpdateCategory() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: UpdateCategoryPayload }) =>
+      categoriesApi.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['categories'] })
+    },
+  })
+}
+
+
 
 // Orders hooks
 export function useOrders() {
@@ -110,10 +136,10 @@ export function useImageUpload() {
     mutationFn: async (file: File) => {
       // Get upload URL
       const uploadData = await filesApi.getImageUploadUrl()
-      
+
       // Upload the file
       await filesApi.uploadImage(uploadData.uploadUrl, file)
-      
+
       // Return the public URL
       return uploadData.publicImageUrl
     },
