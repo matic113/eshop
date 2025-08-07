@@ -9,5 +9,6 @@ namespace eshop.Application.Contracts.Repositories
         Task<PagedList<ProductDto>> SearchAndFilterProductsAsync(SearchAndFilterProductsRequest request);
         Task UpdateProductsBulkAsync(IEnumerable<Product> products);
         Task<ProductDto?> GetProductWithPicturesAsync(Guid productId);
+        Task<ProductDto?> UpdateProductAsync(Guid productId, UpdateProductRequest request);
     }
 }

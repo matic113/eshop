@@ -202,10 +202,96 @@ namespace eshop.Infrastructure.Repositories
                     ReviewsCount = p.ReviewsCount,
                     DiscountPercentage = p.DiscountPercentage,
                     SellerId = p.SellerId,
-                    ProductPictures = p.ProductPictures.Select( x => x.PictureUrl).ToList(),
+                    ProductPictures = p.ProductPictures.Select(x => x.PictureUrl).ToList(),
                     Categories = p.Categories.Select(x => x.Name).ToList()
                 })
                 .FirstOrDefaultAsync(p => p.Id == productId);
+        }
+
+        public async Task<ProductDto?> UpdateProductAsync(Guid productId, UpdateProductRequest request)
+        {
+            var product = await _context.Products
+                .Include(p => p.Categories)
+                .Include(p => p.ProductPictures)
+                .FirstOrDefaultAsync(p => p.Id == productId);
+
+            if (product == null)
+            {
+                return null;
+            }
+
+            // Update product properties
+            product.Name = request.Name ?? product.Name;
+            product.NameArabic = request.NameArabic ?? product.NameArabic;
+            product.Description = request.Description ?? product.Description;
+            product.DescriptionArabic = request.DescriptionArabic ?? product.DescriptionArabic;
+            product.CoverPictureUrl = request.CoverPictureUrl ?? product.CoverPictureUrl;
+            product.Price = request.Price ?? product.Price;
+            product.Stock = request.Stock ?? product.Stock;
+            product.Weight = request.Weight ?? product.Weight;
+            product.Color = request.Color ?? product.Color;
+            product.DiscountPercentage = request.DiscountPercentage.HasValue
+                ? (short)request.DiscountPercentage.Value : product.DiscountPercentage;
+            product.ModifiedAt = DateTime.UtcNow;
+
+
+            var categoryNames = request.CategoryIds == null
+                ? product.Categories.Select(c => c.Name).ToList() : new List<string>();
+
+            // Update categories
+            if (request.CategoryIds != null)
+            {
+                var newCategories = await _context.Categories
+                    .Where(c => request.CategoryIds.Contains(c.Id))
+                    .ToListAsync();
+
+                product.Categories = newCategories;
+
+                categoryNames = newCategories.Select(c => c.Name).ToList();
+            }
+
+
+            var productPictures = product.ProductPictures.Select(x => x.PictureUrl).ToList();
+            // Update product pictures
+            if (request.ProductPictures != null)
+            {
+                product.ProductPictures.Clear();
+
+                var newPictures = request.ProductPictures
+                    .Select(url => new ProductPicture
+                    {
+                        Id = Guid.NewGuid(),
+                        ProductId = productId,
+                        PictureUrl = url
+                    });
+
+                await _context.ProductPictures.AddRangeAsync(newPictures);
+
+                productPictures = request.ProductPictures;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return new ProductDto
+            {
+                Id = product.Id,
+                ProductCode = product.ProductCode,
+                SellerId = product.SellerId,
+                Name = product.Name,
+                ArabicName = product.NameArabic,
+                Description = product.Description,
+                ArabicDescription = product.DescriptionArabic,
+                CoverPictureUrl = product.CoverPictureUrl,
+                Price = product.Price,
+                DiscountPercentage = product.DiscountPercentage,
+                Stock = product.Stock,
+                Color = product.Color,
+                Weight = product.Weight,
+                Rating = product.Rating,
+                ReviewsCount = product.ReviewsCount,
+                ProductPictures = productPictures,
+                Categories = categoryNames
+            };
         }
     }
 }

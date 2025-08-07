@@ -1,6 +1,5 @@
-﻿using eshop.Application.Contracts;
-using eshop.Application.Contracts.Repositories;
-using eshop.Domain.Entities;
+﻿using eshop.Application.Contracts.Services;
+using eshop.Application.Dtos;
 using FastEndpoints;
 using FluentValidation;
 
@@ -10,15 +9,11 @@ namespace eshop.API.Features.Products
     {
         sealed class UpdateProductEndpoint : Endpoint<UpdateProductRequest, UpdateProductResponse>
         {
-            private readonly IGenericRepository<Product> _productRepository;
-            private readonly IGenericRepository<Category> _categoryRepository;
-            private readonly IUnitOfWork _unitOfWork;
+            private readonly IProductService _productService;
 
-            public UpdateProductEndpoint(IGenericRepository<Product> productRepository, IGenericRepository<Category> categoryRepository, IUnitOfWork unitOfWork)
+            public UpdateProductEndpoint(IProductService productService)
             {
-                _productRepository = productRepository;
-                _categoryRepository = categoryRepository;
-                _unitOfWork = unitOfWork;
+                _productService = productService;
             }
 
             public override void Configure()
@@ -32,133 +27,54 @@ namespace eshop.API.Features.Products
             public override async Task HandleAsync(UpdateProductRequest r, CancellationToken c)
             {
                 var productId = Route<Guid>("Id");
-                var product = await _productRepository.GetByIdAsync(productId);
 
-                if (product is null)
+                var result = await _productService.UpdateProductAsync(productId, r);
+
+                if (result is null)
                 {
-                    AddError("Product not found.");
-                    await SendErrorsAsync();
+                    await SendNotFoundAsync(c);
                     return;
                 }
 
-                if (r.Name is not null) product.Name = r.Name;
-                if (r.Description is not null) product.Description = r.Description;
-                if (r.CoverPictureUrl is not null) product.CoverPictureUrl = r.CoverPictureUrl;
-                if (r.Price.HasValue) product.Price = r.Price.Value;
-                if (r.Stock.HasValue) product.Stock = r.Stock.Value;
-                if (r.Weight.HasValue) product.Weight = r.Weight.Value;
-                if (r.Color is not null) product.Color = r.Color;
-                if (r.DiscountPercentage.HasValue) product.DiscountPercentage = (short)r.DiscountPercentage.Value;
-
-                if (r.CategoryIds is not null && r.CategoryIds.Count != 0)
-                {
-                    // Clear existing categories and add new ones
-                    product.Categories.Clear();
-
-                    var existingCategories = await _categoryRepository.GetAllAsync();
-                    foreach (var categoryId in r.CategoryIds)
-                    {
-                        var category = existingCategories.FirstOrDefault(c => c.Id == categoryId);
-                        if (category is not null)
-                        {
-                            product.Categories.Add(category);
-                        }
-                        else
-                        {
-                            AddError($"Category with ID {categoryId} does not exist.");
-                            await SendErrorsAsync();
-                            return;
-                        }
-                    }
-                }
-
-                // Add new pictures
-                if (r.ProductPictureUrls is not null)
-                {
-                    product.ProductPictures.Clear();
-
-                    foreach (var pictureUrl in r.ProductPictureUrls)
-                    {
-                        if (string.IsNullOrWhiteSpace(pictureUrl))
-                        {
-                            continue; // Skip empty picture URLs
-                        }
-                        product.ProductPictures.Add(new ProductPicture
-                        {
-                            Id = Guid.NewGuid(),
-                            ProductId = product.Id,
-                            PictureUrl = pictureUrl
-                        });
-                    }
-                }
-
-                await _productRepository.UpdateAsync(product);
-                await _unitOfWork.SaveChangesAsync(c);
-
                 var response = new UpdateProductResponse
                 {
-                    Id = product.Id,
-                    SellerId = product.SellerId,
-                    ProductCode = product.ProductCode,
-                    Name = product.Name,
-                    Description = product.Description,
-                    CoverPictureUrl = product.CoverPictureUrl,
-                    Price = product.Price,
-                    Stock = product.Stock,
-                    Weight = product.Weight,
-                    Color = product.Color,
-                    DiscountPercentage = product.DiscountPercentage,
-                    Categories = product.Categories
-                                .Select(c => new CategoryResponse { Id = c.Id, Name = c.Name }).ToList(),
-                    Pictures = product.ProductPictures
-                                .Select(p => new ProductPictureResponse { Id = p.Id, PictureUrl = p.PictureUrl }).ToList()
+                    Id = result.Id,
+                    SellerId = result.SellerId,
+                    ProductCode = result.ProductCode,
+                    Name = result.Name,
+                    NameArabic = result.ArabicName,
+                    Description = result.Description,
+                    DescriptionArabic = result.ArabicDescription,
+                    CoverPictureUrl = result.CoverPictureUrl,
+                    Price = result.Price,
+                    Stock = result.Stock,
+                    Weight = result.Weight,
+                    Color = result.Color,
+                    DiscountPercentage = result.DiscountPercentage,
+                    Categories = result.Categories,
+                    ProductPictures = result.ProductPictures
                 };
 
-                await SendOkAsync(response, c);
+                await SendOkAsync(response);
             }
-        }
-        sealed class UpdateProductRequest
-        {
-            public string? Name { get; set; }
-            public string? NameArabic { get; set; }
-            public string? Description { get; set; }
-            public string? DescriptionArabic { get; set; }
-            public string? CoverPictureUrl { get; set; }
-            public decimal? Price { get; set; }
-            public int? Stock { get; set; }
-            public decimal? Weight { get; set; }
-            public string? Color { get; set; }
-            public int? DiscountPercentage { get; set; }
-            public List<Guid>? CategoryIds { get; set; }
-            public List<string>? ProductPictureUrls { get; set; }
         }
         sealed class UpdateProductResponse
         {
             public Guid Id { get; set; }
             public Guid SellerId { get; set; }
-            public string ProductCode { get; set; }
-            public string Name { get; set; }
-            public string NameArabic { get; set; }
-            public string Description { get; set; }
-            public string DescriptionArabic { get; set; }
-            public string CoverPictureUrl { get; set; }
+            public string ProductCode { get; set; } = null!;
+            public string Name { get; set; } = null!;
+            public string NameArabic { get; set; } = null!;
+            public string Description { get; set; } = null!;
+            public string DescriptionArabic { get; set; } = null!;
+            public string CoverPictureUrl { get; set; } = null!;
             public decimal Price { get; set; }
             public int Stock { get; set; }
             public decimal Weight { get; set; }
-            public string Color { get; set; }
+            public string Color { get; set; } = null!;
             public short DiscountPercentage { get; set; } = 0;
-            public List<CategoryResponse> Categories { get; set; }
-            public List<ProductPictureResponse> Pictures { get; set; }
-        }
-        sealed class CategoryResponse
-        {
-            public Guid Id { get; set; }
-            public string Name { get; set; }
-        }
-        sealed class ProductPictureResponse
-        {
-            public Guid Id { get; set; }
-            public string PictureUrl { get; set; }
+            public List<string> Categories { get; set; } = new List<string>();
+            public List<string> ProductPictures { get; set; } = new List<string>();
         }
         sealed class UpdateProductValidator : Validator<UpdateProductRequest>
         {

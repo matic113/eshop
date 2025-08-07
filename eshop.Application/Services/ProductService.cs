@@ -18,5 +18,10 @@ namespace eshop.Application.Services
             var products = await _productRepository.SearchAndFilterProductsAsync(request);
             return products;
         }
+
+        public async Task<ProductDto?> UpdateProductAsync(Guid productId, UpdateProductRequest request)
+        {
+            return await _productRepository.UpdateProductAsync(productId, request);
+        }
     }
 }
