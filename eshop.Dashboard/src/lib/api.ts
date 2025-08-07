@@ -10,19 +10,22 @@ export interface Product {
   sellerId: string
   name: string
   description: string
-  nameArabic: string
-  descriptionArabic: string
+  nameArabic?: string
+  descriptionArabic?: string
   coverPictureUrl: string
   price: number
   stock: number
   weight: number
   color: string
+  rating?: number
+  reviewsCount?: number
   discountPercentage: number
-  categoryIds: string[]
-  categories: string[]
-  productPictureUrls: string[]
-  createdAt: string
-  updatedAt: string
+  categoryIds?: string[]
+  categories?: string[]
+  productPictureUrls?: string[] // For backward compatibility with list endpoint
+  productPictures?: string[] // For detail endpoint
+  createdAt?: string
+  updatedAt?: string
 }
 
 export interface PaginatedResponse<T> {
@@ -235,6 +238,12 @@ export const productsApi = {
     const response = await apiCall<PaginatedResponse<Product>>(`/api/products?${queryString.toString()}`)
 
     if (!response || !response.data) throw new Error('Failed to fetch products')
+    return response.data
+  },
+
+  getById: async (id: string): Promise<Product> => {
+    const response = await apiCall<Product>(`/api/products/${id}`)
+    if (!response || !response.data) throw new Error('Failed to fetch product details')
     return response.data
   },
 

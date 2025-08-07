@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useProducts } from '@/hooks/use-api'
 import { type ProductSearchParams, type Product } from '@/lib/api'
+import { ProductViewDialog } from '@/components/dashboard/product-view-dialog'
 import {
   Table,
   TableBody,
@@ -36,6 +37,14 @@ export function ProductsDataTable() {
   })
 
   const { data: products, isLoading, error, refetch } = useProducts(searchParams)
+  
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null)
+  const [viewDialogOpen, setViewDialogOpen] = useState(false)
+
+  const handleProductClick = (product: Product) => {
+    setSelectedProductId(product.id)
+    setViewDialogOpen(true)
+  }
 
   const handleSearchChange = (field: keyof ProductSearchParams, value: any) => {
     setSearchParams(prev => ({
@@ -72,7 +81,8 @@ export function ProductsDataTable() {
   }
 
   return (
-    <Card className="w-full">
+    <>
+      <Card className="w-full">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Package className="h-5 w-5" />
@@ -255,7 +265,11 @@ export function ProductsDataTable() {
                       : product.price
 
                     return (
-                      <TableRow key={product.id}>
+                      <TableRow 
+                        key={product.id}
+                        className="cursor-pointer hover:bg-muted/50 transition-colors"
+                        onClick={() => handleProductClick(product)}
+                      >
                         <TableCell>
                           <HoverCard>
                             <HoverCardTrigger asChild>
@@ -380,6 +394,19 @@ export function ProductsDataTable() {
           </div>
         )}
       </CardContent>
-    </Card>
+      </Card>
+      
+      {/* Product View Dialog */}
+      <ProductViewDialog
+        productId={selectedProductId}
+        open={viewDialogOpen}
+        onOpenChange={(open) => {
+          setViewDialogOpen(open)
+          if (!open) {
+            setSelectedProductId(null) // Clear selected product when dialog closes
+          }
+        }}
+      />
+    </>
   )
 }

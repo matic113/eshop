@@ -26,6 +26,16 @@ export function useProductsList() {
   return useProducts({ page: 1, pageSize: 10 })
 }
 
+// Hook for fetching a single product by ID
+export function useProduct(id: string | null) {
+  return useQuery<Product>({
+    queryKey: ['product', id],
+    queryFn: () => productsApi.getById(id!),
+    enabled: !!id, // Only run query if id is provided
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  })
+}
+
 export function useCreateProduct() {
   const queryClient = useQueryClient()
   
