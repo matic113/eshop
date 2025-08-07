@@ -8,7 +8,11 @@ namespace eshop.Domain.Entities
         public required string OrderNumber { get; set; }
         public Guid UserId { get; set; }
         public OrderStatus Status { get; set; } = OrderStatus.Pending; // Default status
+        public decimal ShippingPrice { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal Subtotal { get; set; }
         public decimal TotalPrice { get; set; }
+        public Guid? CouponId { get; set; }
         public Guid ShippingAddressId { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

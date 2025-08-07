@@ -15,6 +15,6 @@ namespace eshop.Domain.Entities
         public decimal MaxDiscount { get; set; }
 
         // Navigation properties
-        public ICollection<CouponsUsage> CouponsUsages { get; set; } = new List<CouponsUsage>();
+        public ICollection<CouponsUsage> CouponsUsages { get; set; } = new HashSet<CouponsUsage>();
     }
 }
