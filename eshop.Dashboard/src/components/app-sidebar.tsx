@@ -45,38 +45,43 @@ const data = {
       title: 'Products',
       url: '/dashboard/products',
       icon: Package,
-      items: [
-        {
-          title: 'All Products',
-          url: '/dashboard/products',
-        },
-        {
-          title: 'Add Product',
-          url: '/dashboard/products/add',
-        },
-        {
-          title: 'Categories',
-          url: '/dashboard/categories',
-        },
-      ],
+      // items: [
+      //   {
+      //     title: 'All Products',
+      //     url: '/dashboard/products',
+      //   },
+      //   {
+      //     title: 'Add Product',
+      //     url: '/dashboard/products/add',
+      //   },
+      //   {
+      //     title: 'Categories',
+      //     url: '/dashboard/categories',
+      //   },
+      // ],
+    },
+    {
+      title: 'Categories',
+      url: '/dashboard/categories',
+      icon: FolderOpen,
     },
     {
       title: 'Orders',
       url: '/dashboard/orders',
       icon: ShoppingBag,
       items: [
-        {
-          title: 'All Orders',
-          url: '/dashboard/orders',
-        },
-        {
-          title: 'Pending',
-          url: '/dashboard/orders/pending',
-        },
-        {
-          title: 'Completed',
-          url: '/dashboard/orders/completed',
-        },
+        // {
+        //   title: 'All Orders',
+        //   url: '/dashboard/orders',
+        // },
+        // {
+        //   title: 'Pending',
+        //   url: '/dashboard/orders/pending',
+        // },
+        // {
+        //   title: 'Completed',
+        //   url: '/dashboard/orders/completed',
+        // },
       ],
     },
     {

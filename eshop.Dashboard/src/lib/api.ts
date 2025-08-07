@@ -89,50 +89,55 @@ async function apiCall<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
-  const url = `${API_BASE_URL}${endpoint}`
-  
-  const defaultHeaders: Record<string, string> = {}
-  
-  // Only add Content-Type header if we're sending a body
-  if (options.body) {
-    defaultHeaders['Content-Type'] = 'application/json'
-  }
+  const url = `${API_BASE_URL}${endpoint}`;
 
-  // HTTP-only cookies will be automatically included by the browser
+  const defaultHeaders: Record<string, string> = {};
+
+  if (options.body) {
+    defaultHeaders['Content-Type'] = 'application/json';
+  }
 
   const config: RequestInit = {
     ...options,
-    credentials: 'include', // Include cookies in requests
+    credentials: 'include',
     headers: {
       ...defaultHeaders,
       ...options.headers,
     },
-  }
+  };
 
-  const response = await fetch(url, config)
-  
+  const response = await fetch(url, config);
+
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({ 
+    const errorData = await response.json().catch(() => ({
       message: `HTTP ${response.status}: ${response.statusText || 'Network error'}`,
-      status: response.status 
-    }))
-    
-    // Create a more descriptive error
-    const error = new Error(errorData.message || `HTTP error! status: ${response.status}`)
-    ;(error as any).status = response.status
-    ;(error as any).errors = errorData.errors
-    
-    throw error
+      status: response.status,
+    }));
+
+    const error = new Error(errorData.message || `HTTP error! status: ${response.status}`);
+    (error as any).status = response.status;
+    (error as any).errors = errorData.errors;
+
+    throw error;
   }
 
-  const data = await response.json()
-  
-  // Check if the response is already wrapped in a data property
-  // If not, wrap it to match our ApiResponse interface
+  //  ⬇️⬇️  -- هذا هو التعديل الرئيسي --  ⬇️⬇️
+
+  if (response.status === 200 && options.method === 'DELETE') {
+    return { data: null as T }; // أو يمكنك إرجاع { data: true as T } إذا كان ذلك أفضل
+  }
+
+  //  ⬆️⬆️  -- نهاية التعديل الرئيسي --  ⬆️⬆️
+
+
+  // الآن، فقط إذا لم تكن الاستجابة 204، قم بمحاولة قراءة الـ JSON
+  const data = await response.json();
+
+
   if (data && typeof data === 'object' && 'data' in data) {
-    return data
+    return data;
   } else {
-    return { data }
+    return { data };
   }
 }
 
@@ -215,18 +220,19 @@ export interface ProductSearchParams {
   pageSize?: number
 }
 
+
 // Products API functions
 export const productsApi = {
   getAll: async (params: ProductSearchParams = {}): Promise<PaginatedResponse<Product>> => {
     // Build query string with only non-null values
     const queryString = new URLSearchParams()
-    
+
     // Add default values if not provided
     const page = params.page || 1
     const pageSize = params.pageSize || 10
     queryString.append('page', page.toString())
     queryString.append('pageSize', pageSize.toString())
-    
+
     // Only add other parameters if they have actual values
     if (params.searchTerm && params.searchTerm.trim() !== '') {
       queryString.append('searchTerm', params.searchTerm)
@@ -294,6 +300,20 @@ export const ordersApi = {
   },
 }
 
+
+
+export interface CreateCategoryPayload {
+  name: string;
+  Description: string;
+  CoverPictureUrl: string;
+}
+
+export interface UpdateCategoryPayload {
+  newName: string;
+  newDescription: string;
+  NewCoverPictureUrl: string;
+}
+
 // Categories API functions
 export const categoriesApi = {
   getAll: async (): Promise<CategoriesResponse> => {
@@ -302,9 +322,30 @@ export const categoriesApi = {
     return response.data
   },
 
-  create: async (categoryData: any) => {
-    const response = await apiCall('/categories/create', {
+  create: async (categoryData: CreateCategoryPayload) => {
+    const response = await apiCall('/api/categories/', {
       method: 'POST',
+      body: JSON.stringify(categoryData),
+    })
+    return response
+  },
+
+  delete: async (id: string) => {
+    try {
+      const response = await apiCall(`/api/categories/${id}`, {
+        method: 'DELETE',
+      })
+      console.log(response);
+      return response
+    } catch (error) {
+      console.error('Failed to delete category:', error)
+      throw error
+    }
+  },
+
+  update: async (id: string, categoryData: UpdateCategoryPayload) => {
+    const response = await apiCall(`/api/categories/${id}`, {
+      method: 'PUT',
       body: JSON.stringify(categoryData),
     })
     return response
@@ -327,7 +368,7 @@ export const filesApi = {
         'Content-Type': file.type,
       },
     })
-    
+
     if (!response.ok) {
       throw new Error('Failed to upload image')
     }
