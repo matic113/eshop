@@ -7,6 +7,7 @@ using eshop.Application.Errors;
 using eshop.Application.Extensions;
 using eshop.Domain.Entities;
 using eshop.Domain.Enums;
+using System.Diagnostics.CodeAnalysis;
 
 namespace eshop.Application.Services
 {
@@ -16,15 +17,17 @@ namespace eshop.Application.Services
         private readonly IGenericRepository<CartItem> _cartItemRepository;
         private readonly IProductRepository _productRepository;
         private readonly ICouponRepository _couponRepository;
+        private readonly ICouponService _couponService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CartService(ICartRepository cartRepository, IProductRepository productRepository, IUnitOfWork unitOfWork, IGenericRepository<CartItem> cartItemRepository, ICouponRepository couponRepository)
+        public CartService(ICartRepository cartRepository, IProductRepository productRepository, IUnitOfWork unitOfWork, IGenericRepository<CartItem> cartItemRepository, ICouponRepository couponRepository, ICouponService couponService)
         {
             _cartRepository = cartRepository;
             _productRepository = productRepository;
             _unitOfWork = unitOfWork;
             _cartItemRepository = cartItemRepository;
             _couponRepository = couponRepository;
+            _couponService = couponService;
         }
 
         public async Task<ErrorOr<CartItem>> AddItemToUserCartAsync(Guid userId,
@@ -103,67 +106,20 @@ namespace eshop.Application.Services
             if (cart.CartItems.Count == 0)
             {
                 return CartErrors.Empty;
-            }   
-
-            var coupon = await _couponRepository.GetCouponByCodeWithUserUsageAsync(couponCode, userId);
-
-            if (coupon is null)
-            {
-                return CouponErrors.NotFound;
             }
 
-            if (coupon.ExpiresAt < DateTime.UtcNow)
+            var result = await _couponService.ValidateAndCalculateDiscountAsync(userId, couponCode, cart.CartItems);
+
+            if (result.IsError)
             {
-                return CouponErrors.CouponExpired;
+                return result.Errors;
             }
 
-            if (coupon.UsagesLeft <= 0)
-            {
-                return CouponErrors.CouponUsageLimitExceeded;
-            }
-
-            if (coupon.CouponsUsages.Any(cu => cu.UserId == userId && cu.TimesUsed >= coupon.TimesPerUser))
-            {
-                return CouponErrors.UserLimitExcedeed;
-            }
-
-            var totalItemsPrice = cart.CartItems.Sum(item =>
-            {
-                var baseUnitPrice = item.Product.Price;
-                var finalUnitPrice = baseUnitPrice * (1 - item.Product.DiscountPercentage / 100m);
-                return finalUnitPrice * item.Quantity;
-            }).RoundMoney();
-
-            var couponDiscount = coupon.CouponType switch
-            {
-                CouponType.Percentage => (totalItemsPrice * (coupon.DiscountValue / 100m)).RoundMoney(),
-                CouponType.FixedAmount => coupon.DiscountValue,
-                _ => 0
-            };
-
-            if (couponDiscount > coupon.MaxDiscount)
-            {
-                couponDiscount = coupon.MaxDiscount;
-            }
-
-            if (couponDiscount > totalItemsPrice)
-            {
-                couponDiscount = totalItemsPrice;
-            }
-
-            var finalPrice = totalItemsPrice - couponDiscount;
-            var cartPriceDto = new CartPriceDto
-            {
-                CartId = cart.Id,
-                OriginalPrice = totalItemsPrice,
-                DiscountAmount = couponDiscount,
-                FinalPrice = finalPrice,
-                CouponCode = coupon.CouponCode,
-                CouponType = coupon.CouponType.ToString(),
-                CouponValue = coupon.DiscountValue
-            };
+            var cartPriceDto = result.Value;
+            cartPriceDto.CartId = cart.Id;
 
             return cartPriceDto;
+
         }
 
         public async Task<ErrorOr<ItemDecrementDto>> DecrementItemQuantityInUserCartAsync(Guid userId, Guid itemId, int quantity = 1)
