@@ -20,6 +20,18 @@ namespace eshop.Infrastructure.Persistence.Configurations
             builder.Property(o => o.PaymentMethod)
                 .HasConversion<string>();
 
+            builder.Property(o => o.Subtotal)
+                .IsRequired()
+                .HasColumnType("decimal(18,2)");
+
+            builder.Property(o => o.DiscountAmount)
+                .IsRequired()
+                .HasColumnType("decimal(18,2)");
+
+            builder.Property(o => o.ShippingPrice)
+                .IsRequired()
+                .HasColumnType("decimal(18,2)");
+
             builder.Property(o => o.TotalPrice)
                 .HasColumnType("decimal(18,2)");
 

@@ -17,6 +17,14 @@ namespace eshop.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(50);
 
+            builder.Property(c => c.DiscountValue)
+                .IsRequired()
+                .HasColumnType("decimal(18,2)");
+
+            builder.Property(c => c.MaxDiscount)
+                .IsRequired()
+                .HasColumnType("decimal(18,2)");
+
             builder.Property(c => c.CouponType)
                 .IsRequired()
                 .HasConversion<string>();
