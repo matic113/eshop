@@ -21,6 +21,7 @@ namespace eshop.Application.Services
         private readonly IPublicCodeGenerator _publicCodeGenerator;
         private readonly IPaymobService _paymobService;
         private readonly ICouponService _couponService;
+        private readonly ICouponRepository _couponRepository;
 
         private static readonly ConcurrentDictionary<Guid, SemaphoreSlim> _productLocks = new ConcurrentDictionary<Guid, SemaphoreSlim>();
 
@@ -31,7 +32,8 @@ namespace eshop.Application.Services
             IProductRepository productRepository,
             IPaymobService paymobService,
             IUnitOfWork unitOfWork,
-            ICouponService couponService)
+            ICouponService couponService,
+            ICouponRepository couponRepository)
         {
             _orderRepository = orderRepository;
             _cartRepository = cartRepository;
@@ -41,6 +43,7 @@ namespace eshop.Application.Services
             _paymobService = paymobService;
             _unitOfWork = unitOfWork;
             _couponService = couponService;
+            _couponRepository = couponRepository;
         }
 
         public async Task<ErrorOr<OrderCheckoutDto>> CheckoutAsync(Guid userId,
@@ -120,6 +123,11 @@ namespace eshop.Application.Services
             // Handle Payment
             if (order.PaymentMethod == PaymentMethod.CashOnDelivery)
             {
+                // Mark the copoun as used if applicable
+                if(!string.IsNullOrEmpty(couponCode))
+                {
+                    await _couponRepository.RecordCouponUsageAsync(couponCode, userId);
+                }
 
                 order.OrderStatusHistories.Add(new OrderStatusHistory
                 {

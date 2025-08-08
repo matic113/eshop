@@ -15,6 +15,7 @@ namespace eshop.Application.Services
         private readonly IOrderRepository _orderRepository;
         private readonly IOrderHistoryRepository _orderHistoryRepository;
         private readonly ICartRepository _cartRepository;
+        private readonly ICouponRepository _couponRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public PaymobWebhookService(IPaymobHmacValidator hmacValidator,
@@ -22,7 +23,8 @@ namespace eshop.Application.Services
             IOrderRepository orderRepository,
             IUnitOfWork unitOfWork,
             ICartRepository cartRepository,
-            IOrderHistoryRepository orderHistoryRepository)
+            IOrderHistoryRepository orderHistoryRepository,
+            ICouponRepository couponRepository)
         {
             _hmacValidator = hmacValidator;
             _logger = logger;
@@ -30,6 +32,7 @@ namespace eshop.Application.Services
             _unitOfWork = unitOfWork;
             _cartRepository = cartRepository;
             _orderHistoryRepository = orderHistoryRepository;
+            _couponRepository = couponRepository;
         }
 
         public async Task<ErrorOr<Success>> ProcessTransactionAsync(TransactionProcessedCallbackDto transactionDto, string recievedHmac)
@@ -96,6 +99,12 @@ namespace eshop.Application.Services
                         order.Status = OrderStatus.Failed;
                         break;
                     }
+                }
+
+                // Mark the coupon as used if applicable
+                if (!string.IsNullOrEmpty(order.CouponCode))
+                {
+                    await _couponRepository.RecordCouponUsageAsync(order.CouponCode, order.UserId);
                 }
 
                 await _cartRepository.ClearUserCartAsync(order.UserId);

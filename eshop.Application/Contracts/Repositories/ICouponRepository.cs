@@ -7,5 +7,6 @@ namespace eshop.Application.Contracts.Repositories
     {
         Task<List<CouponDto>> GetAllCouponsAsync();
         Task<Coupon?> GetCouponByCodeWithUserUsageAsync(string couponCode, Guid userId);
+        Task RecordCouponUsageAsync(string couponCode, Guid userId);
     }
 }

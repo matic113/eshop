@@ -40,5 +40,38 @@ namespace eshop.Infrastructure.Repositories
 
             return coupon;
         }
+
+        public async Task RecordCouponUsageAsync(string couponCode, Guid userId)
+        {
+            var coupon = await _context.Coupons
+                .Include(c => c.CouponsUsages.Where(cu => cu.UserId == userId))
+                .FirstOrDefaultAsync(c => c.CouponCode == couponCode);
+
+            if (coupon == null)
+            {
+                throw new ArgumentException("Coupon not found.");
+            }
+
+            coupon.UsagesLeft -= 1;
+
+            if(!coupon.CouponsUsages.Any(cu => cu.UserId == userId))
+            {
+                coupon.CouponsUsages.Add(new CouponsUsage
+                {
+                    UserId = userId,
+                    CouponId = coupon.Id,
+                    TimesUsed = 1,
+                    LastUsedAt = DateTime.UtcNow
+                });
+            }
+            else
+            {
+                var usage = coupon.CouponsUsages.First(cu => cu.UserId == userId);
+                usage.TimesUsed += 1;
+                usage.LastUsedAt = DateTime.UtcNow;
+            }
+
+            return;
+        }
     }
 }
