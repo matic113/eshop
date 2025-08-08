@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Text;
 using ErrorOr;
 using eshop.Application.Contracts;
 using eshop.Application.Contracts.Repositories;
@@ -150,13 +151,17 @@ namespace eshop.Application.Services
                     if (product == null) return OrderErrors.ProductNotFound(cartItem.ProductId);
                     if (product.Stock < cartItem.Quantity) return OrderErrors.InsufficientStock(product.Name, product.Stock);
 
+                    decimal discountAmount = product.Price * product.DiscountPercentage / 100;
+
                     order.OrderItems.Add(new OrderItem
                     {
                         Id = Guid.NewGuid(),
                         OrderId = order.Id,
                         ProductId = cartItem.ProductId,
                         Quantity = cartItem.Quantity,
-                        UnitTotalPrice = product.Price,
+                        UnitSubTotal = product.Price,
+                        UnitTotalPrice = product.Price - discountAmount,
+                        UnitDiscountAmount = discountAmount,
                         SellerId = product.SellerId,
                     });
 
