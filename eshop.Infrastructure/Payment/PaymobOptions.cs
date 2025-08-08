@@ -9,5 +9,7 @@
         public required string HMAC { get; set; }
         public required int CardIntegrationId { get; set; }
         public required int WalletIntegrationId { get; set; }
+        public required string DiscountImageUrl { get; set; }
+        public required string ShippingImageUrl { get; set; }
     }
 }

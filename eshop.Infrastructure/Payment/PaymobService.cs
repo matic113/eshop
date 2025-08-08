@@ -40,6 +40,40 @@ namespace eshop.Infrastructure.Payment
 
             var user = await _userManager.FindByIdAsync(order.UserId.ToString());
 
+            // Prepare the order items for the request payload.
+            var orderItems = order.OrderItems.Select(oi => new ItemDto
+            {
+                Name = oi.Product.Name,
+                Amount = (int)(oi.UnitTotalPrice * 100),
+                Description = oi.Product.ProductCode,
+                Quantity = oi.Quantity,
+                Image = oi.Product.CoverPictureUrl
+            }).ToList();
+
+            if(order.ShippingPrice > 0)
+            {
+                orderItems.Add(new ItemDto
+                {
+                    Name = "Shipping",
+                    Amount = (int)(order.ShippingPrice * 100),
+                    Description = "Shipping cost",
+                    Quantity = 1,
+                    Image = _paymobOptions.ShippingImageUrl
+                });
+            }
+
+            if (order.DiscountAmount > 0)
+            {
+                orderItems.Add(new ItemDto
+                {
+                    Name = "Coupon Discount",
+                    Amount = (int)(-order.DiscountAmount * 100), // Negative amount for discounts
+                    Description = $"Coupon '{order.CouponCode}' applied",
+                    Quantity = 1,
+                    Image = _paymobOptions.DiscountImageUrl
+                });
+            }
+
             // 1. Create the request payload from your order data.
             var request = new PaymentIntentRequest
             {
@@ -48,14 +82,7 @@ namespace eshop.Infrastructure.Payment
                 PaymentMethods = [_paymobOptions.CardIntegrationId, _paymobOptions.WalletIntegrationId],
                 SpecialReference = order.Id.ToString(), // Use the OrderId as the special reference
 
-                Items = order.OrderItems.Select(oi => new ItemDto
-                {
-                    Name = oi.Product.Name,
-                    Amount = (int)(oi.UnitTotalPrice * 100),
-                    Description = oi.Product.ProductCode,
-                    Quantity = oi.Quantity,
-                    Image = oi.Product.CoverPictureUrl
-                }).ToList(),
+                Items = orderItems,
 
                 BillingData = new BillingDataDto
                 {
