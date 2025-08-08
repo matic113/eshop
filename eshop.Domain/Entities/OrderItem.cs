@@ -5,9 +5,9 @@
         public Guid Id { get; set; }
         public Guid SellerId { get; set; }
         public int Quantity { get; set; }
-        public decimal TotalPrice { get; set; }
-        public decimal SubTotal { get; set; }
-        public decimal DiscountAmount { get; set; }
+        public decimal UnitTotalPrice { get; set; }
+        public decimal UnitSubTotal { get; set; }
+        public decimal UnitDiscountAmount { get; set; }
 
         // Navigational properties
         public Guid OrderId { get; set; }

@@ -51,7 +51,7 @@ namespace eshop.Infrastructure.Payment
                 Items = order.OrderItems.Select(oi => new ItemDto
                 {
                     Name = oi.Product.Name,
-                    Amount = (int)(oi.TotalPrice * 100),
+                    Amount = (int)(oi.UnitTotalPrice * 100),
                     Description = oi.Product.ProductCode,
                     Quantity = oi.Quantity,
                     Image = oi.Product.CoverPictureUrl

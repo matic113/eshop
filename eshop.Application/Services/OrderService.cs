@@ -74,7 +74,7 @@ namespace eshop.Application.Services
             }
 
             // Finalize order details
-            order.TotalPrice = order.OrderItems.Sum(oi => oi.TotalPrice * oi.Quantity);
+            order.TotalPrice = order.OrderItems.Sum(oi => oi.UnitTotalPrice * oi.Quantity);
 
             order.Status = order.PaymentMethod == PaymentMethod.CashOnDelivery
                 ? OrderStatus.Processing
@@ -156,7 +156,7 @@ namespace eshop.Application.Services
                         OrderId = order.Id,
                         ProductId = cartItem.ProductId,
                         Quantity = cartItem.Quantity,
-                        TotalPrice = product.Price,
+                        UnitTotalPrice = product.Price,
                         SellerId = product.SellerId,
                     });
 
