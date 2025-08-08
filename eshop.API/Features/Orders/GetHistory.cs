@@ -58,7 +58,7 @@ namespace eshop.API.Features.Orders
 
                 if (string.IsNullOrEmpty(result.OrderCode))
                 {
-                    AddError("Order not found or history not available.");
+                    AddError("Orders.OrderNotFound: Order not found or history not available.");
                     await SendErrorsAsync(cancellation: c);
                     return;
                 }

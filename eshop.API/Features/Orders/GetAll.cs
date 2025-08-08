@@ -61,7 +61,7 @@ namespace eshop.API.Features.Orders
                 {
                     var badResponse = new GetAllOrdersResponse
                     {
-                        Message = "No orders found."
+                        Message = "Orders.NotFound: No orders found."
                     };
                     await SendOkAsync(badResponse);
                     return;
