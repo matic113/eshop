@@ -19,8 +19,10 @@ namespace eshop.API.Features.Carts
             public string ProductCoverUrl { get; set; } = "";
             public int ProductStock { get; set; }
             public decimal WeightInGrams { get; set; }
-            public decimal PricePerUnit { get; set; }
             public int Quantity { get; set; }
+            public decimal DiscountPercentage { get; set; }
+            public decimal BasePricePerUnit { get; set; }
+            public decimal FinalPricePerUnit { get; set; }
             public decimal TotalPrice { get; set; }
         }
 
@@ -64,17 +66,26 @@ namespace eshop.API.Features.Carts
                 var response = new GetCartResponse
                 {
                     CartId = cart.Id,
-                    CartItems = cart.CartItems.Select(item => new CartItemResponse
+                    CartItems = cart.CartItems.Select(item =>
                     {
-                        ItemId = item.Id,
-                        ProductId = item.ProductId,
-                        ProductName = item.Product.Name,
-                        ProductCoverUrl = item.Product.CoverPictureUrl,
-                        ProductStock = item.Product.Stock,
-                        WeightInGrams = item.Product.Weight,
-                        Quantity = item.Quantity,
-                        PricePerUnit = item.Product.Price,
-                        TotalPrice = item.Quantity * item.Product.Price
+                        var basePrice = item.Product.Price;
+                        var discountPct = item.Product.DiscountPercentage;
+                        var discountedUnitPrice = Math.Round(basePrice * (1 - discountPct / 100m), 2);
+
+                        return new CartItemResponse
+                        {
+                            ItemId = item.Id,
+                            ProductId = item.ProductId,
+                            ProductName = item.Product.Name,
+                            ProductCoverUrl = item.Product.CoverPictureUrl,
+                            ProductStock = item.Product.Stock,
+                            WeightInGrams = item.Product.Weight,
+                            Quantity = item.Quantity,
+                            DiscountPercentage = discountPct,
+                            BasePricePerUnit = basePrice,
+                            FinalPricePerUnit = discountedUnitPrice,
+                            TotalPrice = item.Quantity * discountedUnitPrice,
+                        };
                     }).ToList()
                 };
 
