@@ -1,5 +1,6 @@
 ﻿using ErrorOr;
 using eshop.Application.Dtos;
+using eshop.Domain.Entities;
 
 namespace eshop.Application.Contracts.Services
 {
@@ -13,5 +14,9 @@ namespace eshop.Application.Contracts.Services
             int timesPerUser,
             decimal discountValue,
             decimal maxDiscount);
+
+        Task<ErrorOr<CartPriceDto>> ValidateAndCalculateDiscountAsync(Guid userId,
+            string couponCode,
+            IEnumerable<CartItem> cartItems);
     }
 }

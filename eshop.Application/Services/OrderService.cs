@@ -20,6 +20,7 @@ namespace eshop.Application.Services
         private readonly IProductRepository _productRepository;
         private readonly IPublicCodeGenerator _publicCodeGenerator;
         private readonly IPaymobService _paymobService;
+        private readonly ICouponService _couponService;
 
         private static readonly ConcurrentDictionary<Guid, SemaphoreSlim> _productLocks = new ConcurrentDictionary<Guid, SemaphoreSlim>();
 
@@ -29,7 +30,8 @@ namespace eshop.Application.Services
             IAddressRepository addressRepository,
             IProductRepository productRepository,
             IPaymobService paymobService,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            ICouponService couponService)
         {
             _orderRepository = orderRepository;
             _cartRepository = cartRepository;
@@ -38,9 +40,11 @@ namespace eshop.Application.Services
             _productRepository = productRepository;
             _paymobService = paymobService;
             _unitOfWork = unitOfWork;
+            _couponService = couponService;
         }
 
-        public async Task<ErrorOr<OrderCheckoutDto>> CheckoutAsync(Guid userId, Guid shippingAddressId, string paymentMethod)
+        public async Task<ErrorOr<OrderCheckoutDto>> CheckoutAsync(Guid userId,
+            Guid shippingAddressId, string paymentMethod, string? couponCode)
         {
             var cart = await _cartRepository.GetCartWithProductsByUserIdAsync(userId);
 
@@ -74,8 +78,31 @@ namespace eshop.Application.Services
                 return stockUpdateResult.Errors;
             }
 
+            // Fixed shipping price for simplicity
+            // TODO: Make this configurable or dynamic based on address
+            order.ShippingPrice = 50;
+
+            order.Subtotal = order.OrderItems.Sum(oi => oi.UnitTotalPrice * oi.Quantity);
+            order.TotalPrice = order.Subtotal + order.ShippingPrice;
+            order.DiscountAmount = 0;
+
             // Finalize order details
-            order.TotalPrice = order.OrderItems.Sum(oi => oi.UnitTotalPrice * oi.Quantity);
+            if (!string.IsNullOrEmpty(couponCode))
+            {
+                var cartPriceResult = await _couponService.ValidateAndCalculateDiscountAsync(userId, couponCode, cart.CartItems);
+
+                if (cartPriceResult.IsError)
+                {
+                    return cartPriceResult.Errors;
+                }
+
+                var result = cartPriceResult.Value;
+
+                order.TotalPrice = result.FinalPrice + order.ShippingPrice;
+                order.DiscountAmount = result.DiscountAmount;
+                order.CouponCode = couponCode;
+                order.CouponId = result.CouponId;
+            }
 
             order.Status = order.PaymentMethod == PaymentMethod.CashOnDelivery
                 ? OrderStatus.Processing
@@ -89,7 +116,6 @@ namespace eshop.Application.Services
                 OrderStatus = OrderStatus.Pending,
                 ChangeDate = DateTime.UtcNow
             });
-
 
             // Handle Payment
             if (order.PaymentMethod == PaymentMethod.CashOnDelivery)

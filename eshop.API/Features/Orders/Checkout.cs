@@ -14,6 +14,7 @@ namespace eshop.API.Features.Orders
         {
             public Guid ShippingAddressId { get; set; }
             public string PaymentMethod { get; set; }
+            public string? CouponCode { get; set; }
         }
 
         sealed class OrderCheckoutValidator : Validator<OrderCheckoutRequest>
@@ -26,6 +27,9 @@ namespace eshop.API.Features.Orders
                     .NotEmpty().WithMessage("Payment method is required.")
                     .Must(pm => pm == PaymentMethod.CashOnDelivery.ToString() || pm == PaymentMethod.Paymob.ToString())
                     .WithMessage("Invalid payment method.");
+                RuleFor(x => x.CouponCode)
+                    .MaximumLength(50)
+                    .WithMessage("Coupon code must not exceed 50 characters.");
             }
         }
         sealed class OrderCheckoutResponse
@@ -65,7 +69,7 @@ namespace eshop.API.Features.Orders
                     return;
                 }
 
-                ErrorOr<OrderCheckoutDto> checkoutDto = await _orderService.CheckoutAsync(userId.Value, r.ShippingAddressId, r.PaymentMethod);
+                ErrorOr<OrderCheckoutDto> checkoutDto = await _orderService.CheckoutAsync(userId.Value, r.ShippingAddressId, r.PaymentMethod, r.CouponCode);
 
                 if (checkoutDto.IsError)
                 {
