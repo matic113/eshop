@@ -30,5 +30,15 @@ namespace eshop.Infrastructure.Repositories
 
             return coupons;
         }
+
+        public async Task<Coupon?> GetCouponByCodeWithUserUsageAsync(string couponCode, Guid userId)
+        {
+            var coupon = await _context.Coupons
+                .Include(c => c.CouponsUsages.Where(cu => cu.UserId == userId))
+                .Where(c => c.CouponCode == couponCode)
+                .FirstOrDefaultAsync();
+
+            return coupon;
+        }
     }
 }

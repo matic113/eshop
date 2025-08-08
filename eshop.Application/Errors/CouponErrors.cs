@@ -17,9 +17,9 @@ namespace eshop.Application.Errors
         public static Error CouponUsageLimitExceeded => Error.Validation(
             code: "Coupon.UsageLimitExceeded",
             description: "Coupon usage limit exceeded.");
-        public static Error CouponAlreadyUsed => Error.Validation(
-            code: "Coupon.AlreadyUsed",
-            description: "Coupon has already been used by this user.");
+        public static Error UserLimitExcedeed => Error.Validation(
+            code: "Coupon.UserLimitExceeded",
+            description: "Coupon has already been used the maximum allowed times by this user.");
         public static Error CouponAlreadyExists => Error.Validation(
             code: "Coupon.AlreadyExists",
             description: "A coupon with same code already exists.");

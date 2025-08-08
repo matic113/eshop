@@ -9,6 +9,10 @@ namespace eshop.Application.Errors
             code: "Cart.NotFound",
             description: "Cart not found for user.");
 
+        public static Error Empty => Error.NotFound(
+            code: "Cart.Empty",
+            description: "Cart is empty.");
+
         public static Error ProductNotFound => Error.NotFound(
             code: "Cart.ProductNotFound",
             description: "Product not found.");
