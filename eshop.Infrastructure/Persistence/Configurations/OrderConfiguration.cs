@@ -35,6 +35,10 @@ namespace eshop.Infrastructure.Persistence.Configurations
             builder.Property(o => o.TotalPrice)
                 .HasColumnType("decimal(18,2)");
 
+            builder.Property(o => o.CouponCode)
+                .HasMaxLength(50)
+                .IsRequired(false);
+
             builder.HasMany(o => o.OrderItems)
                 .WithOne(oi => oi.Order)
                 .HasForeignKey(oi => oi.OrderId)

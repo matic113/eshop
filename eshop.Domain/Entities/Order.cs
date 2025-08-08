@@ -13,6 +13,7 @@ namespace eshop.Domain.Entities
         public decimal Subtotal { get; set; }
         public decimal TotalPrice { get; set; }
         public Guid? CouponId { get; set; }
+        public string? CouponCode { get; set; }
         public Guid ShippingAddressId { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
