@@ -10,7 +10,10 @@ import {
   type Product,
   type PaginatedResponse,
   type CategoriesResponse,
-  UpdateCategoryPayload
+  UpdateCategoryPayload,
+  couponsApi,
+  type CouponsResponse,
+  type CreateCouponRequest,
 } from '@/lib/api'
 
 // Products hooks
@@ -119,7 +122,24 @@ export function useUpdateCategory() {
   })
 }
 
+// Coupons hooks
+export function useCoupons() {
+  return useQuery<CouponsResponse>({
+    queryKey: ['coupons'],
+    queryFn: couponsApi.getAll,
+    staleTime: 5 * 60 * 1000,
+  })
+}
 
+export function useCreateCoupon() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (data: CreateCouponRequest) => couponsApi.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['coupons'] })
+    },
+  })
+}
 
 // Orders hooks
 export function useOrders() {

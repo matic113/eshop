@@ -112,6 +112,11 @@ const data = {
       icon: Tag,
     },
     {
+      name: 'Coupons',
+      url: '/dashboard/coupons',
+      icon: Tag,
+    },
+    {
       name: 'Reports',
       url: '/dashboard/reports',
       icon: FileText,

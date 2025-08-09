@@ -419,3 +419,48 @@ export const offersApi = {
     return response
   },
 }
+
+// Coupons API interfaces
+export type CouponType = 'FixedAmount' | 'Percentage' | 'FreeShipping'
+
+export interface Coupon {
+  id: string
+  couponCode: string
+  couponType: CouponType
+  expiresAt: string
+  usagesLeft: number
+  timesPerUser: number
+  discountValue: number
+  maxDiscount: number
+}
+
+export interface CouponsResponse {
+  coupons: Coupon[]
+}
+
+export interface CreateCouponRequest {
+  couponCode: string
+  couponType: CouponType
+  expirationDate: string // ISO string with Z
+  usageTimes: number
+  timesPerUser: number
+  discountValue: number
+  maxDiscount: number
+}
+
+// Coupons API functions
+export const couponsApi = {
+  getAll: async (): Promise<CouponsResponse> => {
+    const response = await apiCall<CouponsResponse>('/api/coupons')
+    if (!response || !response.data) throw new Error('Failed to fetch coupons')
+    return response.data
+  },
+
+  create: async (couponData: CreateCouponRequest) => {
+    const response = await apiCall('/api/coupons', {
+      method: 'POST',
+      body: JSON.stringify(couponData),
+    })
+    return response
+  },
+}
