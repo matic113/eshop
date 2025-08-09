@@ -1,7 +1,5 @@
 'use client'
 
-import { ProductsDataTable } from '@/components/dashboard/products-data-table'
-import { AddProductDialog } from '@/components/dashboard/add-product-dialog'
 import { AppSidebar } from '@/components/app-sidebar'
 import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
@@ -11,7 +9,7 @@ import { useAuth } from '@/providers/auth-provider'
 import { CategoriesDataTable } from '@/components/dashboard/categories-data-table'
 import { AddCategoryDialog } from '@/components/dashboard/add-category-dialog'
 
-export default function CateoriesPage() {
+export default function CategoriesPage() {
   const { user } = useAuth()
 
   return (
@@ -45,8 +43,8 @@ export default function CateoriesPage() {
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
           <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-8">
+            <div className="p-6 space-y-8">
+              <div className="flex justify-between items-center">
                 <div>
                   <h1 className="text-3xl font-bold tracking-tight">Categories</h1>
                   <p className="text-muted-foreground">
@@ -56,9 +54,7 @@ export default function CateoriesPage() {
                 <AddCategoryDialog />
               </div>
 
-              <div>
-                <CategoriesDataTable />
-              </div>
+              <CategoriesDataTable />
             </div>
           </div>
         </div>

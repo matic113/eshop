@@ -136,7 +136,7 @@ export function CategoriesDataTable() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-[120px]">Image</TableHead>
+                      <TableHead className="w-[72px]">Image</TableHead>
                       <TableHead>Category Name</TableHead>
                       <TableHead className="text-center">Actions</TableHead>
                     </TableRow>
@@ -149,18 +149,18 @@ export function CategoriesDataTable() {
                           key={category.id}
                           className="hover:bg-muted/50 transition-colors"
                         >
-                          <TableCell>
+                          <TableCell className="py-2 align-middle">
                             <HoverCard>
                               <HoverCardTrigger asChild>
                                 <div className="cursor-pointer">
-                                  <Avatar className="h-20 w-20">
+                                  <Avatar className="h-10 w-10 md:h-12 md:w-12">
                                     <AvatarImage
                                       src={category.coverPictureUrl}
                                       alt={category.name}
                                       className="object-cover"
                                     />
                                     <AvatarFallback>
-                                      <Package className="h-6 w-6" />
+                                      <Package className="h-5 w-5" />
                                     </AvatarFallback>
                                   </Avatar>
                                 </div>
@@ -186,22 +186,22 @@ export function CategoriesDataTable() {
                             </HoverCard>
                           </TableCell>
 
-                          <TableCell>
-                            <div className="space-y-1">
+                          <TableCell className="py-2 align-middle">
+                            <div className="space-y-0.5">
                               <p className="font-medium leading-none">{category.name}</p>
-                              <p className="text-sm text-muted-foreground" title={category.description}>
+                              <p className="text-sm text-muted-foreground truncate" title={category.description}>
                                 {truncateText(category.description, 100)}
                               </p>
                             </div>
                           </TableCell>
 
 
-                          <TableCell className="text-right" key={category.id}>
-                            <div className="flex items-center flex-col gap-2">
+                          <TableCell className="py-2 text-center align-middle">
+                            <div className="flex items-center justify-center gap-2">
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="h-7 w-50 px-2 hover:cursor-pointer text-xs"
+                                className="h-8 px-3 text-xs hover:cursor-pointer"
                                 onClick={(e) => handleEditClick(category, e)}
                               >
                                 <Edit className="h-3 w-3 mr-1" />
@@ -210,7 +210,7 @@ export function CategoriesDataTable() {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="h-7 px-2 w-50 text-xs text-red-600 hover:cursor-pointer hover:text-red-700 hover:bg-red-50"
+                                className="h-8 px-3 text-xs text-red-600 hover:cursor-pointer hover:text-red-700 hover:bg-red-50"
                                 onClick={(e) => handleDeleteClick(category, e)}
                               >
                                 <Trash2 className="h-3 w-3 mr-1" />
