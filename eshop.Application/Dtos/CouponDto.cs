@@ -7,6 +7,7 @@
         public string CouponType { get; set; } = null!;
         public DateTime ExpiresAt { get; set; }
         public int UsagesLeft { get; set; }
+        public int TimesUsed { get; set; }
         public int TimesPerUser { get; set; }
         public decimal DiscountValue { get; set; }
         public decimal MaxDiscount { get; set; }

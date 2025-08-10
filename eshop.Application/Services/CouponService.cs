@@ -51,6 +51,7 @@ namespace eshop.Application.Services
                 CouponType = couponTypeResult,
                 ExpiresAt = expirationDate,
                 UsagesLeft = usageTimes,
+                TimesUsed = 0,
                 TimesPerUser = timesPerUser,
                 DiscountValue = discountValue,
                 MaxDiscount = maxDiscount
@@ -66,6 +67,7 @@ namespace eshop.Application.Services
                 CouponType = coupon.CouponType.ToString(),
                 ExpiresAt = coupon.ExpiresAt,
                 UsagesLeft = coupon.UsagesLeft,
+                TimesUsed = coupon.TimesUsed,
                 TimesPerUser = coupon.TimesPerUser,
                 DiscountValue = coupon.DiscountValue,
                 MaxDiscount = coupon.MaxDiscount

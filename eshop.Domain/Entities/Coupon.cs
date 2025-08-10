@@ -9,6 +9,7 @@ namespace eshop.Domain.Entities
         public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
         public DateTime ExpiresAt { get; set; }
         public int UsagesLeft { get; set; }
+        public int TimesUsed { get; set; }
         public int TimesPerUser { get; set; }
         public CouponType CouponType { get; set; }
         public decimal DiscountValue { get; set; } = 0;

@@ -22,6 +22,7 @@ namespace eshop.Infrastructure.Repositories
                     CouponType = c.CouponType.ToString(),
                     ExpiresAt = c.ExpiresAt,
                     UsagesLeft = c.UsagesLeft,
+                    TimesUsed = c.TimesUsed,
                     TimesPerUser = c.TimesPerUser,
                     DiscountValue = c.DiscountValue,
                     MaxDiscount = c.MaxDiscount
@@ -53,8 +54,9 @@ namespace eshop.Infrastructure.Repositories
             }
 
             coupon.UsagesLeft -= 1;
+            coupon.TimesUsed += 1;
 
-            if(!coupon.CouponsUsages.Any(cu => cu.UserId == userId))
+            if (!coupon.CouponsUsages.Any(cu => cu.UserId == userId))
             {
                 coupon.CouponsUsages.Add(new CouponsUsage
                 {
