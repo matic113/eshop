@@ -163,8 +163,6 @@ namespace eshop.Infrastructure
                     opt.UseSqlServer(configuration.GetConnectionString("Monster"),
                         b => b.MigrationsAssembly("eshop.Infrastructure"));
                 });
-
-                return;
             }
 
             // Default to SQL Server, uncomment Postgres if needed

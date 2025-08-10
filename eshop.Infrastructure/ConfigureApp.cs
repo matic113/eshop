@@ -1,4 +1,5 @@
 ﻿using eshop.Infrastructure.Persistence;
+using eshop.Infrastructure.Persistence.Seed;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +17,8 @@ namespace eshop.Infrastructure
             using var scope = app.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             await db.Database.MigrateAsync();
+
+            await RoleSeeder.SeedRolesAsync(scope.ServiceProvider);
         }
     }
 }
