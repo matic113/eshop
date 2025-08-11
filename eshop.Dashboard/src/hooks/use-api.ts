@@ -14,6 +14,9 @@ import {
   couponsApi,
   type CouponsResponse,
   type CreateCouponRequest,
+  type OrdersAdminParams,
+  type OrdersAdminResponse,
+  type UpdateOrderStatusPayload,
 } from '@/lib/api'
 
 // Products hooks
@@ -142,11 +145,21 @@ export function useCreateCoupon() {
 }
 
 // Orders hooks
-export function useOrders() {
-  return useQuery({
-    queryKey: ['orders'],
-    queryFn: ordersApi.getAll,
-    staleTime: 2 * 60 * 1000, // 2 minutes (orders change more frequently)
+export function useOrders(params: OrdersAdminParams = {}) {
+  return useQuery<OrdersAdminResponse>({
+    queryKey: ['orders', params],
+    queryFn: () => ordersApi.getAdmin(params),
+    staleTime: 2 * 60 * 1000,
+  })
+}
+
+export function useUpdateOrderStatus() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (payload: UpdateOrderStatusPayload) => ordersApi.updateStatus(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['orders'] })
+    },
   })
 }
 

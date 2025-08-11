@@ -292,10 +292,99 @@ export const productsApi = {
   },
 }
 
+// Orders domain types
+export type OrderStatus =
+  | 'Pending'
+  | 'Completed'
+  | 'Failed'
+  | 'Processing'
+  | 'Shipped'
+  | 'Delivered'
+  | 'Cancelled'
+
+export type OrderPeriod = '1d' | '3d' | '7d' | '30d'
+
+export interface OrderCustomerInfo {
+  customerId: string
+  fullName: string
+  email: string
+  phoneNumber: string
+}
+
+export interface OrderShippingDetails {
+  addressId: string
+  state: string
+  city: string
+  street: string
+  apartment: string
+  notes?: string
+  phoneNumber: string
+}
+
+export interface Order {
+  orderId: string
+  orderCode: string
+  createdAt: string
+  updatedAt: string
+  status: OrderStatus
+  totalPrice: number
+  shippingPrice: number
+  discountAmout?: number
+  couponCode?: string | null
+  paymentMethod: string
+  customerInfo: OrderCustomerInfo
+  shippingDetails: OrderShippingDetails
+}
+
+export interface OrdersAdminParams {
+  period?: OrderPeriod
+  page?: number
+  pageSize?: number
+}
+
+export interface OrdersAdminResponse {
+  period: OrderPeriod
+  orders: {
+    items: Order[]
+    page: number
+    pageSize: number
+    totalCount: number
+    hasNextPage: boolean
+    hasPreviousPage: boolean
+  }
+}
+
+export interface UpdateOrderStatusPayload {
+  orderId: string
+  status: OrderStatus
+  notes?: string
+}
+
 // Orders API functions
 export const ordersApi = {
-  getAll: async () => {
-    const response = await apiCall('/orders/get-all')
+  getAdmin: async (
+    params: OrdersAdminParams = {}
+  ): Promise<OrdersAdminResponse> => {
+    const query = new URLSearchParams()
+    const page = params.page || 1
+    const pageSize = params.pageSize || 20
+    const period = params.period || '1d'
+    query.append('page', String(page))
+    query.append('pageSize', String(pageSize))
+    query.append('period', period)
+
+    const response = await apiCall<OrdersAdminResponse>(
+      `/api/orders/admin?${query.toString()}`
+    )
+    if (!response || !response.data) throw new Error('Failed to fetch orders')
+    return response.data
+  },
+
+  updateStatus: async (payload: UpdateOrderStatusPayload) => {
+    const response = await apiCall(`/api/orders/admin/order-status`, {
+      method: 'PUT',
+      body: JSON.stringify(payload),
+    })
     return response
   },
 }
