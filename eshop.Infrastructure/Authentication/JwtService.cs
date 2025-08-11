@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using eshop.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -11,10 +12,12 @@ namespace eshop.Infrastructure.Authentication
     public class JwtService
     {
         private readonly JwtOptions _jwtOptions;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public JwtService(IOptions<JwtOptions> options)
+        public JwtService(IOptions<JwtOptions> options, UserManager<ApplicationUser> userManager)
         {
             _jwtOptions = options.Value;
+            _userManager = userManager;
         }
 
         public (string jwtToken, DateTime expiresAtUtc) GenerateJwtToken(ApplicationUser user)
@@ -26,12 +29,15 @@ namespace eshop.Infrastructure.Authentication
                 signingKey,
                 SecurityAlgorithms.HmacSha256);
 
+            var userRoles = _userManager.GetRolesAsync(user).Result;
+
             var claims = new[]
             {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Email, user.Email!),
             new Claim(JwtRegisteredClaimNames.Name, user.ToString()),
+            new Claim("roles", string.Join(",", userRoles)),
             new Claim("picture", user.ProfilePicture ?? ""),
         };
 
