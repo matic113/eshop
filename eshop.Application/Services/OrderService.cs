@@ -8,6 +8,7 @@ using eshop.Application.Dtos;
 using eshop.Application.Errors;
 using eshop.Domain.Entities;
 using eshop.Domain.Enums;
+using eShop.Application.Dtos.Orders;
 
 namespace eshop.Application.Services
 {
@@ -243,6 +244,11 @@ namespace eshop.Application.Services
         {
             var orders = await _orderRepository.GetOrdersByUserIdAsync(userId, limit);
             return orders;
+        }
+
+        public async Task<PagedList<GetOrderDto>> GetAllOrdersAsync(string period, int page, int pageSize)
+        {
+            return await _orderRepository.GetAllOrdersAsync(period, page, pageSize);
         }
     }
 }
