@@ -52,7 +52,7 @@ namespace Auth.API.Features.User
                 HttpContext.Request.Cookies["refresh_token"] : 
                 req.RefreshToken;
 
-            var hashedToken = refreshToken!.HashedToken();
+            var hashedToken = refreshToken?.HashedToken();
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.RefreshToken == hashedToken, ct);
 
