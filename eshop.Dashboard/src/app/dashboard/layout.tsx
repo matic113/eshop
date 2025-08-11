@@ -1,6 +1,7 @@
 'use client'
 
 import { AppSidebarProvider } from '@/providers/sidebar-provider'
+import { AdminProtection } from '@/components/admin-protection'
 
 export default function DashboardLayout({
   children,
@@ -8,8 +9,10 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   return (
-    <AppSidebarProvider>
-      {children}
-    </AppSidebarProvider>
+    <AdminProtection>
+      <AppSidebarProvider>
+        {children}
+      </AppSidebarProvider>
+    </AdminProtection>
   )
 }

@@ -141,6 +141,54 @@ async function apiCall<T>(
   }
 }
 
+// Cookie utilities for caching
+const ADMIN_STATUS_COOKIE = 'admin_status'
+const ADMIN_STATUS_EXPIRY_COOKIE = 'admin_status_expiry'
+const PROFILE_PICTURE_CACHE_COOKIE = 'cached_profile_picture'
+const PROFILE_PICTURE_EXPIRY_COOKIE = 'cached_profile_picture_expiry'
+const USER_INFO_CACHE_COOKIE = 'cached_user_info'
+const USER_INFO_EXPIRY_COOKIE = 'cached_user_info_expiry'
+const CURRENT_USER_ID_COOKIE = 'current_user_id'
+
+export const cookieUtils = {
+  set: (name: string, value: string, expirationMinutes: number) => {
+    const expiresAt = new Date(Date.now() + expirationMinutes * 60 * 1000)
+    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expiresAt.toUTCString()}; path=/; SameSite=Strict`
+  },
+
+  get: (name: string): string | null => {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'))
+    return match ? decodeURIComponent(match[2]) : null
+  },
+
+  remove: (name: string) => {
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
+  },
+
+  isExpired: (expiryKey: string): boolean => {
+    const expiry = cookieUtils.get(expiryKey)
+    if (!expiry) return true
+    return new Date() > new Date(expiry)
+  },
+
+  // Clear all authentication-related cookies
+  clearAllAuthCookies: () => {
+    cookieUtils.remove(ADMIN_STATUS_COOKIE)
+    cookieUtils.remove(ADMIN_STATUS_EXPIRY_COOKIE)
+    cookieUtils.remove(PROFILE_PICTURE_CACHE_COOKIE)
+    cookieUtils.remove(PROFILE_PICTURE_EXPIRY_COOKIE)
+    cookieUtils.remove(USER_INFO_CACHE_COOKIE)
+    cookieUtils.remove(USER_INFO_EXPIRY_COOKIE)
+    cookieUtils.remove(CURRENT_USER_ID_COOKIE)
+  },
+
+  // Check if the cached data belongs to a different user
+  isDataForDifferentUser: (userId: string): boolean => {
+    const currentUserId = cookieUtils.get(CURRENT_USER_ID_COOKIE)
+    return currentUserId !== null && currentUserId !== userId
+  }
+}
+
 // Authentication API functions
 export const authApi = {
   // Regular email/password login
@@ -170,13 +218,14 @@ export const authApi = {
     window.location.href = url
   },
 
-  // Get current user profile
+  // Get current user profile with caching
   me: async (): Promise<{
     userId: string;
     email: string;
     fullName: string;
     profilePicture?: string;
   }> => {
+    // First, fetch fresh data to get the current user ID
     const response = await apiCall<{
       userId: string;
       email: string;
@@ -185,7 +234,53 @@ export const authApi = {
     }>('/api/auth/me')
 
     if (!response || !response.data) throw new Error('Failed to get user profile')
-    return response.data
+    
+    const currentUserId = response.data.userId
+    
+    // If cached data is for a different user, clear all cache
+    if (cookieUtils.isDataForDifferentUser(currentUserId)) {
+      console.log('🔄 Different user detected, clearing all cached data')
+      cookieUtils.clearAllAuthCookies()
+    }
+    
+    // Check if we have valid cached data for THIS user
+    if (!cookieUtils.isExpired(USER_INFO_EXPIRY_COOKIE)) {
+      const cachedUserInfo = cookieUtils.get(USER_INFO_CACHE_COOKIE)
+      if (cachedUserInfo) {
+        try {
+          const userData = JSON.parse(cachedUserInfo)
+          // Verify the cached data is for the current user
+          if (userData.userId === currentUserId) {
+            // Return cached data with profile picture optimization
+            return {
+              ...userData,
+              profilePicture: authApi.getCachedProfilePicture(userData.profilePicture)
+            }
+          }
+        } catch (error) {
+          // If parsing fails, continue to cache fresh data
+          console.warn('Failed to parse cached user info:', error)
+        }
+      }
+    }
+    
+    // Cache the fresh user info for 1 hour
+    const userDataToCache = {
+      userId: response.data.userId,
+      email: response.data.email,
+      fullName: response.data.fullName,
+      profilePicture: response.data.profilePicture
+    }
+    
+    cookieUtils.set(USER_INFO_CACHE_COOKIE, JSON.stringify(userDataToCache), 60)
+    cookieUtils.set(USER_INFO_EXPIRY_COOKIE, new Date(Date.now() + 60 * 60 * 1000).toISOString(), 60)
+    cookieUtils.set(CURRENT_USER_ID_COOKIE, currentUserId, 60)
+    
+    // Return data with profile picture caching
+    return {
+      ...response.data,
+      profilePicture: authApi.getCachedProfilePicture(response.data.profilePicture)
+    }
   },
 
   // Refresh token
@@ -204,6 +299,71 @@ export const authApi = {
     await apiCall('/api/auth/logout', {
       method: 'POST',
     })
+    // Clear ALL authentication-related data on logout
+    cookieUtils.clearAllAuthCookies()
+  },
+
+  // Check if user is admin with caching
+  checkAdmin: async (): Promise<boolean> => {
+    // First get current user to ensure we're checking admin for the right user
+    const currentUser = await authApi.me()
+    const currentUserId = currentUser.userId
+    
+    // If cached data is for a different user, clear admin cache
+    if (cookieUtils.isDataForDifferentUser(currentUserId)) {
+      cookieUtils.remove(ADMIN_STATUS_COOKIE)
+      cookieUtils.remove(ADMIN_STATUS_EXPIRY_COOKIE)
+    }
+    
+    // Check cache first
+    if (!cookieUtils.isExpired(ADMIN_STATUS_EXPIRY_COOKIE)) {
+      const cachedStatus = cookieUtils.get(ADMIN_STATUS_COOKIE)
+      if (cachedStatus !== null) {
+        return cachedStatus === 'true'
+      }
+    }
+
+    try {
+      // Make API call to check admin status
+      await apiCall('/api/auth/admin')
+      
+      // Cache the positive result for 1 hour
+      cookieUtils.set(ADMIN_STATUS_COOKIE, 'true', 60)
+      cookieUtils.set(ADMIN_STATUS_EXPIRY_COOKIE, new Date(Date.now() + 60 * 60 * 1000).toISOString(), 60)
+      
+      return true
+    } catch (error) {
+      // Cache the negative result for 1 hour
+      cookieUtils.set(ADMIN_STATUS_COOKIE, 'false', 60)
+      cookieUtils.set(ADMIN_STATUS_EXPIRY_COOKIE, new Date(Date.now() + 60 * 60 * 1000).toISOString(), 60)
+      
+      return false
+    }
+  },
+
+  // Get cached profile picture or return original
+  getCachedProfilePicture: (originalUrl?: string): string | undefined => {
+    if (!originalUrl) return originalUrl
+
+    // Check if we have a cached version that's not expired
+    if (!cookieUtils.isExpired(PROFILE_PICTURE_EXPIRY_COOKIE)) {
+      const cached = cookieUtils.get(PROFILE_PICTURE_CACHE_COOKIE)
+      if (cached && cached === originalUrl) {
+        // Return the same URL but we know it's "cached" in the sense that we're not making new requests
+        return originalUrl
+      }
+    }
+
+    // Cache the profile picture URL for 24 hours
+    cookieUtils.set(PROFILE_PICTURE_CACHE_COOKIE, originalUrl, 24 * 60)
+    cookieUtils.set(PROFILE_PICTURE_EXPIRY_COOKIE, new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), 24 * 60)
+    
+    return originalUrl
+  },
+
+  // Clear user info cache (useful for forced refresh)
+  clearUserCache: () => {
+    cookieUtils.clearAllAuthCookies()
   },
 }
 
