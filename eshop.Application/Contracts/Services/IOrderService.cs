@@ -13,5 +13,6 @@ namespace eshop.Application.Contracts.Services
         Task<IEnumerable<Order>> GetOrdersByUserIdAsync(Guid userId, int limit);
         Task<PagedList<GetOrderDto>> GetAllOrdersAsync(
             string period, int page, int pageSize);
+        Task<ErrorOr<bool>> UpdateOrderStatusAsync(Guid orderId, string status, string notes = "");
     }
 }

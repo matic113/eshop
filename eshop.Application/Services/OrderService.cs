@@ -21,6 +21,7 @@ namespace eshop.Application.Services
         private readonly IProductRepository _productRepository;
         private readonly IPublicCodeGenerator _publicCodeGenerator;
         private readonly IPaymobService _paymobService;
+        private readonly IOrderHistoryRepository _orderHistoryRepository;
         private readonly ICouponService _couponService;
         private readonly ICouponRepository _couponRepository;
 
@@ -34,7 +35,8 @@ namespace eshop.Application.Services
             IPaymobService paymobService,
             IUnitOfWork unitOfWork,
             ICouponService couponService,
-            ICouponRepository couponRepository)
+            ICouponRepository couponRepository,
+            IOrderHistoryRepository orderHistoryRepository)
         {
             _orderRepository = orderRepository;
             _cartRepository = cartRepository;
@@ -45,6 +47,7 @@ namespace eshop.Application.Services
             _unitOfWork = unitOfWork;
             _couponService = couponService;
             _couponRepository = couponRepository;
+            _orderHistoryRepository = orderHistoryRepository;
         }
 
         public async Task<ErrorOr<OrderCheckoutDto>> CheckoutAsync(Guid userId,
@@ -249,6 +252,42 @@ namespace eshop.Application.Services
         public async Task<PagedList<GetOrderDto>> GetAllOrdersAsync(string period, int page, int pageSize)
         {
             return await _orderRepository.GetAllOrdersAsync(period, page, pageSize);
+        }
+
+        public async Task<ErrorOr<bool>> UpdateOrderStatusAsync(Guid orderId, string status, string notes = "")
+        {
+            var order = await _orderRepository.GetByIdAsync(orderId);
+
+            if (order is null)
+            {
+                return OrderErrors.NotFound;
+            }
+            
+            var validStatus = Enum.TryParse<OrderStatus>(status, true, out var orderStatus);
+            if (!validStatus)
+            {
+                return OrderErrors.InvalidOrderStatus;
+            }
+
+            if (order.Status == orderStatus)
+            {
+                return true; // No change needed
+            }
+
+            order.Status = orderStatus;
+
+            await _orderHistoryRepository.AddAsync(new OrderStatusHistory
+            {
+                Id = Guid.NewGuid(),
+                OrderId = order.Id,
+                OrderCode = order.OrderNumber,
+                OrderStatus = orderStatus,
+                ChangeDate = DateTime.UtcNow,
+                Notes = notes
+            });
+
+            await _unitOfWork.SaveChangesAsync();
+            return true;
         }
     }
 }

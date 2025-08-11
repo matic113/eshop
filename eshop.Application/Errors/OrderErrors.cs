@@ -23,5 +23,11 @@ namespace eshop.Application.Errors
         public static Error PaymentIntentFailed => Error.Failure(
             code: "Order.PaymentIntentFailed",
             description: "Failed to create a payment intent with the payment provider.");
+        public static Error NotFound => Error.NotFound(
+            code: "Order.NotFound",
+            description: "The specified order was not found.");
+        public static Error InvalidOrderStatus => Error.Validation(
+            code: "Order.InvalidOrderStatus",
+            description: "The provided order status is invalid.");
     }
 }
