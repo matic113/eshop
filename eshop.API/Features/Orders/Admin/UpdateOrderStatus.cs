@@ -38,6 +38,13 @@ namespace eshop.API.Features.Orders.Admin
             {
                 Put("/api/orders/admin/order-status");
                 Roles(ApplicationRoles.Admin);
+                Description(x => x
+                    .WithTags("Orders")
+                    .WithDescription("Update order status for admin.")
+                    .Produces(200)
+                    .ProducesProblem(400)
+                    .ProducesProblem(401)
+                    .ProducesProblem(403));
             }
 
             public override async Task HandleAsync(UpdateOrderStatusRequest r, CancellationToken c)

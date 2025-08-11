@@ -43,6 +43,13 @@ namespace eshop.API.Features.Orders.Admin
             {
                 Get("/api/orders/admin");
                 Roles(ApplicationRoles.Admin);
+                Description(x => x
+                    .WithTags("Orders")
+                    .WithDescription("Get all orders for admin.")
+                    .Produces<GetAllOrdersForAdminResponse>(200)
+                    .ProducesProblem(400)
+                    .ProducesProblem(401)
+                    .ProducesProblem(403));
             }
 
             public override async Task HandleAsync(GetAllOrdersForAdminRequest r, CancellationToken c)
