@@ -134,8 +134,10 @@ This repository contains both the backend API and the administration dashboard. 
 - **Email Service**: SMTP Integration
 
 ## Getting Started
-4. **Configuration**
+**Configuration**
    - Set up your environment variables in `appsettings.json` you can find an example with all field to provide. 
    - Configure Google OAuth credentials
    - Set up Paymob API keys
    - Configure R2 storage credentials
+
+   - On first run the application will run the migrations and seed the roles
