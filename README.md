@@ -1,6 +1,45 @@
 # eshop
 
-A modern e-commerce platform built with ASP.NET Core and Next.js, featuring a comprehensive set of e-commerce capabilities.
+A robust e-commerce REST API built with ASP.NET Core, primarily designed for a Flutter mobile application, complemented by a modern Next.js admin dashboard for platform management.
+
+## Related Repositories
+- 📱 Mobile App: [eshop-flutter](https://github.com/YousefDewidar/eshop_mobile_app) - Flutter-based mobile application
+- 🎯 Dashboard: Current repository includes the Next.js admin interface
+
+## Overview
+This repository contains both the backend API and the administration dashboard. The API is designed with mobile-first principles, optimized for the Flutter mobile app, while the Next.js dashboard provides a comprehensive interface for platform management.
+
+## Screenshots
+
+<details>
+<summary>📱 Mobile App Screenshots</summary>
+
+### Mobile Application
+![Mobile App Screenshots](readme-assets/mobile-app.jpg)
+*Flutter mobile application showcasing the main shopping experience*
+
+</details>
+
+<details>
+<summary>🖥️ Admin Dashboard Screenshots</summary>
+
+### Dashboard Interface
+![Products Management](readme-assets/products.png)
+*Products listing and management interface*
+
+![Product Details](readme-assets/product_details.png)
+*Detailed product information and editing*
+
+![Orders Dashboard](readme-assets/orders.png)
+*Order management and tracking system*
+
+![Promotional Offers](readme-assets/offers.png)
+*Offer creation and management interface*
+
+![Coupon Management](readme-assets/coupons.png)
+*Coupon system and discount management*
+
+</details>
 
 ## Features
 
